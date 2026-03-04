@@ -3,132 +3,95 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Relevé de Nettoyage Global</title>
+<title>Relevé de Nettoyage</title>
 <style>
 :root {
-  --teal-dark:#1B6B7B; --teal-mid:#2E9DB5; --teal-light:#C8EFF5;
-  --teal-alt:#E0F7FA; --green:#4CAF50; --green-light:#D7F5DC;
-  --orange:#FF9800; --red:#F44336; --white:#fff;
-  --blue-neg:#1565C0; --teal-mat:#00695C;
-  --radius:8px; --shadow:0 1px 5px rgba(0,0,0,.1);
+  --teal-dark:#1B6B7B;--teal-mid:#2E9DB5;--teal-light:#C8EFF5;
+  --teal-alt:#E0F7FA;--green:#4CAF50;--green-light:#D7F5DC;
+  --red:#F44336;--white:#fff;--radius:8px;--shadow:0 1px 5px rgba(0,0,0,.1);
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-html,body{height:100%;margin:0;}body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f4f8;color:#333;font-size:13px;display:flex;flex-direction:column;}#app-wrapper{flex:1;display:flex;flex-direction:column;overflow:hidden;}.content{flex:1;overflow-y:auto;overflow-x:auto;padding:14px;}
-
-/* TOPBAR */
-.topbar{background:var(--teal-dark);color:#fff;padding:10px 18px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;box-shadow:0 2px 8px rgba(0,0,0,.3);}
-.topbar h1{font-size:17px;font-weight:700;}
-.topbar .sub{font-size:10px;opacity:.75;margin-top:2px;}
-.bio-badge{background:var(--green);color:#fff;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;}
-.btn{border:none;border-radius:6px;cursor:pointer;font-weight:600;transition:all .15s;}
-.btn-white{background:#fff;color:var(--teal-dark);padding:7px 14px;font-size:12px;}
+html,body{height:100%;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f4f8;color:#333;font-size:13px;display:flex;flex-direction:column;}
+.topbar{background:var(--teal-dark);color:#fff;padding:10px 18px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,.3);flex-shrink:0;}
+.topbar h1{font-size:16px;font-weight:700;}
+.topbar .sub{font-size:10px;opacity:.75;margin-top:1px;}
+#conn-status{font-size:11px;padding:3px 10px;border-radius:20px;background:rgba(255,255,255,.15);color:#fff;}
+.bio-badge{background:var(--green);color:#fff;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;}
+.btn{border:none;border-radius:6px;cursor:pointer;font-weight:600;transition:all .15s;padding:6px 13px;font-size:12px;}
+.btn-white{background:#fff;color:var(--teal-dark);}
 .btn-white:hover{background:var(--teal-light);}
-.btn-primary{background:var(--teal-mid);color:#fff;padding:7px 14px;font-size:12px;}
+.btn-primary{background:var(--teal-mid);color:#fff;}
 .btn-primary:hover{background:var(--teal-dark);}
-.btn-danger{background:var(--red);color:#fff;padding:5px 10px;font-size:11px;}
-.btn-danger:hover{background:#c62828;}
-.btn-dup{background:#7B1FA2;color:#fff;padding:5px 10px;font-size:11px;}
-.btn-dup:hover{background:#4a148c;}
+.btn-danger{background:var(--red);color:#fff;padding:4px 9px;font-size:11px;}
+.btn-dup{background:#7B1FA2;color:#fff;padding:4px 9px;font-size:11px;}
 .btn-sm{padding:4px 9px;font-size:11px;}
-
-/* TABS */
-.tabs{background:var(--teal-mid);display:flex;overflow-x:auto;padding:0 16px;gap:2px;scrollbar-width:thin;}
-.tab{padding:9px 14px;color:rgba(255,255,255,.7);cursor:pointer;font-size:12px;font-weight:600;border-bottom:3px solid transparent;white-space:nowrap;transition:all .2s;display:flex;align-items:center;gap:6px;}
+.tabs{background:var(--teal-mid);display:flex;overflow-x:auto;padding:0 12px;gap:1px;scrollbar-width:thin;flex-shrink:0;}
+.tab{padding:8px 13px;color:rgba(255,255,255,.7);cursor:pointer;font-size:12px;font-weight:600;border-bottom:3px solid transparent;white-space:nowrap;transition:all .2s;display:flex;align-items:center;gap:5px;}
 .tab:hover{color:#fff;}
 .tab.active{color:#fff;border-bottom-color:#fff;background:rgba(255,255,255,.12);}
 .tab .badge{background:rgba(255,255,255,.25);border-radius:10px;padding:1px 6px;font-size:10px;}
-
-/* CONTENT */
-.content{padding:14px;overflow-x:auto;}
-
-/* META ROW */
-.meta-row{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center;background:#fff;padding:10px 14px;border-radius:var(--radius);box-shadow:var(--shadow);}
+.tab-div{width:1px;background:rgba(255,255,255,.25);margin:6px 2px;}
+.content{flex:1;overflow-y:auto;overflow-x:auto;padding:14px;}
+.meta-row{display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap;align-items:center;background:#fff;padding:9px 13px;border-radius:var(--radius);box-shadow:var(--shadow);}
 .meta-row label{font-size:11px;font-weight:700;color:var(--teal-dark);}
-.meta-row input,.meta-row select{border:1px solid #ccc;border-radius:5px;padding:5px 9px;font-size:12px;background:#fafafa;}
+.meta-row input,.meta-row select{border:1px solid #ccc;border-radius:5px;padding:4px 8px;font-size:12px;}
 .meta-row input:focus{outline:none;border-color:var(--teal-mid);}
-
-/* PROGRESS */
-.progress-zone{background:#fff;border-radius:var(--radius);padding:10px 14px;margin-bottom:14px;box-shadow:var(--shadow);}
-.progress-title{font-size:11px;font-weight:700;color:var(--teal-dark);margin-bottom:6px;}
-.progress-bar{background:#e0e0e0;border-radius:100px;height:10px;overflow:hidden;}
+.progress-zone{background:#fff;border-radius:var(--radius);padding:9px 13px;margin-bottom:12px;box-shadow:var(--shadow);}
+.progress-bar{background:#e0e0e0;border-radius:100px;height:9px;overflow:hidden;}
 .progress-fill{height:100%;background:var(--teal-mid);border-radius:100px;transition:width .4s;}
-.progress-label{font-size:10px;color:#777;margin-top:3px;text-align:right;}
-
-/* SECTION HEADER */
-.sec-hdr{background:var(--teal-light);color:var(--teal-dark);font-size:13px;font-weight:700;padding:7px 10px;margin:10px 0 0;border-left:4px solid var(--teal-mid);border-radius:4px;}
-
-/* TABLE */
+.progress-label{font-size:10px;color:#777;margin-top:2px;text-align:right;}
+.sec-hdr{background:var(--teal-light);color:var(--teal-dark);font-size:12px;font-weight:700;padding:6px 9px;margin:8px 0 0;border-left:4px solid var(--teal-mid);border-radius:4px;}
 .releve-table{width:100%;border-collapse:collapse;background:#fff;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);font-size:11px;}
 .releve-table thead tr{background:var(--teal-dark);}
-.releve-table thead th{padding:5px 3px;text-align:center;font-weight:700;border:1px solid rgba(255,255,255,.15);font-size:10px;color:#fff;}
-.releve-table thead th.th-equip{text-align:left;padding-left:9px;min-width:150px;}
-.releve-table thead th.th-period{min-width:75px;}
-.releve-table thead th.th-day{width:26px;min-width:26px;}
+.releve-table thead th{padding:4px 2px;text-align:center;font-weight:700;border:1px solid rgba(255,255,255,.15);font-size:10px;color:#fff;}
+.releve-table thead th.th-equip{text-align:left;padding-left:8px;min-width:150px;}
+.releve-table thead th.th-period{min-width:70px;}
+.releve-table thead th.th-day{width:24px;min-width:24px;}
 .releve-table tbody tr:nth-child(odd){background:#fff;}
 .releve-table tbody tr:nth-child(even){background:var(--teal-alt);}
 .releve-table tbody tr:hover{background:#B2EBF2;}
-.releve-table tbody td{padding:3px;border:1px solid #ccc;vertical-align:middle;}
-.releve-table tbody td.td-equip{font-weight:600;padding-left:9px;font-size:11px;}
+.releve-table tbody td{padding:2px;border:1px solid #ccc;vertical-align:middle;}
+.releve-table tbody td.td-equip{font-weight:600;padding-left:8px;}
 .releve-table tbody td.td-period{text-align:center;font-size:10px;color:#555;}
-.releve-table tbody td.td-day,.releve-table tbody td.td-ampm{text-align:center;padding:2px;}
-/* BIO row */
-.bio-row td{background:var(--green-light) !important;}
+.bio-row td{background:var(--green-light)!important;}
 .bio-row td.td-equip{color:#2e7d32;font-weight:700;}
-
-/* CHECKBOX */
 .cb-wrap{display:flex;align-items:center;justify-content:center;}
-.cb-wrap input[type=checkbox]{width:15px;height:15px;cursor:pointer;accent-color:var(--teal-mid);}
+.cb-wrap input[type=checkbox]{width:14px;height:14px;cursor:pointer;accent-color:var(--teal-mid);}
 .bio-row .cb-wrap input[type=checkbox]{accent-color:var(--green);}
-
-/* AM/PM label */
-.ampm-label{font-size:8px;font-weight:700;color:#fff;text-align:center;}
-
-/* TEMP TABLE */
 .temp-table{width:100%;border-collapse:collapse;background:#fff;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);font-size:10px;}
 .temp-table th,.temp-table td{border:1px solid #ccc;padding:2px 1px;text-align:center;}
-.temp-table .t-label{font-weight:700;min-width:55px;padding:2px 5px;}
+.t-label{font-weight:700;min-width:52px;padding:2px 4px;}
 .temp-ok{background:#E8F5E9;color:#2E7D32;}
 .temp-warn{background:#FFF8E1;color:#F57F17;}
 .temp-alert{background:#FFEBEE;color:#C62828;}
 .temp-dot{background:#E0E0E0;color:#757575;}
-
-/* APPAREILS MANAGER */
-.appareils-manager{background:#fff;border-radius:var(--radius);padding:14px;margin-bottom:14px;box-shadow:var(--shadow);}
-.appareils-manager h3{font-size:13px;font-weight:700;color:var(--teal-dark);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
-.app-list{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
-.app-card{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:6px;border:1px solid #e0e0e0;background:#fafafa;transition:border-color .2s;}
-.app-card:hover{border-color:var(--teal-mid);}
+.ampm-label{font-size:8px;font-weight:700;color:#fff;}
+.appareils-manager{background:#fff;border-radius:var(--radius);padding:13px;margin-bottom:13px;box-shadow:var(--shadow);}
+.appareils-manager h3{font-size:13px;font-weight:700;color:var(--teal-dark);margin-bottom:11px;}
+.app-list{display:flex;flex-direction:column;gap:7px;margin-bottom:13px;}
+.app-card{display:flex;align-items:center;gap:8px;padding:8px 11px;border-radius:6px;border:1px solid #e0e0e0;background:#fafafa;}
 .app-card.active{border-left:3px solid var(--teal-mid);}
 .app-card.inactive{opacity:.55;border-left:3px solid #ccc;}
-.app-card .app-icon{font-size:18px;}
 .app-card .app-name{font-weight:700;font-size:12px;flex:1;}
 .app-card .app-type{font-size:10px;color:#888;background:#e0e0e0;padding:2px 7px;border-radius:10px;}
 .app-card input.rename-input{border:1px solid var(--teal-mid);border-radius:4px;padding:3px 7px;font-size:12px;font-weight:700;flex:1;}
-.app-card-actions{display:flex;gap:5px;flex-wrap:wrap;}
-.add-form{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;padding:10px;background:#f5f5f5;border-radius:6px;}
+.app-card-actions{display:flex;gap:4px;flex-wrap:wrap;}
+.add-form{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;padding:9px;background:#f5f5f5;border-radius:6px;}
 .add-form label{font-size:11px;font-weight:700;color:var(--teal-dark);}
-.add-form input,.add-form select{border:1px solid #ccc;border-radius:5px;padding:6px 10px;font-size:12px;}
-.inactive-section{margin-top:12px;}
-.inactive-title{font-size:11px;font-weight:700;color:#999;margin-bottom:6px;}
-
-/* COMMENT */
-.comment-box{background:#fff;border-radius:var(--radius);padding:12px 14px;margin-top:14px;box-shadow:var(--shadow);}
-.comment-box h3{font-size:12px;font-weight:700;color:var(--teal-dark);margin-bottom:7px;}
-.comment-box textarea{width:100%;min-height:70px;border:1px solid #ccc;border-radius:5px;padding:7px;font-size:11px;resize:vertical;font-family:inherit;}
-
-/* TOAST */
-#toast{position:fixed;bottom:18px;right:18px;background:var(--teal-dark);color:#fff;padding:9px 16px;border-radius:7px;font-size:12px;opacity:0;transition:opacity .3s;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,.3);}
+.add-form input,.add-form select{border:1px solid #ccc;border-radius:5px;padding:5px 9px;font-size:12px;}
+.inactive-title{font-size:11px;font-weight:700;color:#999;margin:10px 0 6px;}
+.comment-box{background:#fff;border-radius:var(--radius);padding:11px 13px;margin-top:12px;box-shadow:var(--shadow);}
+.comment-box h3{font-size:12px;font-weight:700;color:var(--teal-dark);margin-bottom:6px;}
+.comment-box textarea{width:100%;min-height:65px;border:1px solid #ccc;border-radius:5px;padding:6px;font-size:11px;resize:vertical;font-family:inherit;}
+#toast{position:fixed;bottom:16px;right:16px;padding:8px 15px;border-radius:7px;font-size:12px;opacity:0;transition:opacity .3s;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,.3);pointer-events:none;}
 #toast.show{opacity:1;}
-
-/* LOADING */
-.loading{display:flex;align-items:center;justify-content:center;padding:40px;color:var(--teal-mid);}
-.spinner{width:22px;height:22px;border:3px solid var(--teal-light);border-top-color:var(--teal-mid);border-radius:50%;animation:spin .8s linear infinite;margin-right:10px;}
+#toast.ok{background:#1B6B7B;color:#fff;}
+#toast.err{background:#c62828;color:#fff;}
+.loading{display:flex;align-items:center;justify-content:center;padding:50px;color:var(--teal-mid);}
+.spinner{width:20px;height:20px;border:3px solid var(--teal-light);border-top-color:var(--teal-mid);border-radius:50%;animation:spin .8s linear infinite;margin-right:10px;}
 @keyframes spin{to{transform:rotate(360deg);}}
-
-/* DIVIDER */
-.tab-divider{width:1px;background:rgba(255,255,255,.3);margin:6px 2px;}
-
-@media print{.topbar,.tabs,.meta-row .btn,.appareils-manager,.comment-box .btn,.btn{display:none!important;}.content{padding:0;}}
+@media print{.topbar,.tabs,.btn,#toast{display:none!important;}.content{padding:0;}}
 </style>
 </head>
 <body>
@@ -136,174 +99,164 @@ html,body{height:100%;margin:0;}body{font-family:'Segoe UI',Arial,sans-serif;bac
 <div class="topbar">
   <div>
     <h1>🧹 Relevé de Nettoyage Global</h1>
-    <div class="sub">Digitalisation des relevés</div>
+    <div class="sub" id="ss-name">Connexion...</div>
   </div>
   <div style="display:flex;gap:8px;align-items:center;">
-    <span class="bio-badge">✅ Produit BIO</span>
-    <button class="btn btn-white" onclick="window.print()">🖨️ Imprimer</button>
+    <span id="conn-status">⏳</span>
+    <span class="bio-badge">✅ BIO</span>
+    <button class="btn btn-white" onclick="window.print()">🖨️</button>
   </div>
 </div>
 
-<div id="app-wrapper"><div class="tabs" id="tabs-bar">
-  <div class="tab active" data-tab="chaud" onclick="switchTab('chaud',this)">🔥 Labo Chaud</div>
-  <div class="tab" data-tab="froid" onclick="switchTab('froid',this)">❄️ Labo Froid</div>
-  <div class="tab" data-tab="autres" onclick="switchTab('autres',this)">🏭 Autres Zones</div>
-  <div class="tab" data-tab="biannuel" onclick="switchTab('biannuel',this)">📅 Bi-Annuel</div>
-  <div class="tab-divider"></div>
-  <div class="tab" data-tab="temp-manager" onclick="switchTab('temp-manager',this)">⚙️ Appareils <span class="badge" id="badge-app">0</span></div>
-  <!-- appareils tabs insérés dynamiquement -->
+<div class="tabs" id="tabs-bar">
+  <div class="tab active" onclick="switchTab('chaud',this)">🔥 Labo Chaud</div>
+  <div class="tab" onclick="switchTab('froid',this)">❄️ Labo Froid</div>
+  <div class="tab" onclick="switchTab('autres',this)">🏭 Autres Zones</div>
+  <div class="tab" onclick="switchTab('biannuel',this)">📅 Bi-Annuel</div>
+  <div class="tab-div"></div>
+  <div class="tab" onclick="switchTab('temp-manager',this)">⚙️ Appareils <span class="badge" id="badge-app">0</span></div>
 </div>
 
 <div class="content" id="main-content">
-  <div class="loading"><div class="spinner"></div> Chargement...</div>
+  <div class="loading"><div class="spinner"></div> Connexion à Google Sheets...</div>
 </div>
 
-</div><!-- /app-wrapper -->
 <div id="toast"></div>
 
 <script>
-// ══════════════════════════════════════════════════════
-// DONNÉES STATIQUES
-// ══════════════════════════════════════════════════════
-const DATA = {
-  chaud:{
-    title:"Laboratoire Chaud",
-    sections:[
-      {name:"CIP",items:[{n:"pH eau de rinçage",p:"Semaines"}]},
-      {name:"Laboratoire Chaud",items:[
-        {n:"Bonde au sol",p:"Semaine"},{n:"Échelles",p:"Semaines"},{n:"Placard",p:"Mois"},
-        {n:"Poubelles",p:"Semaine"},{n:"Triplaneur (CIP)",p:"Semaines"},
-        {n:"Pasteurisateur (CIP)",p:"Semaines"},{n:"Homogénéisateur (CIP)",p:"Semaines"},
-        {n:"Refroidisseur (CIP)",p:"Semaines"},{n:"Flexibles / Tuyaux (CIP)",p:"Semaines"},
-        {n:"Chiller (Circuit de refroid.)",p:"Mois"},{n:"Chaudière",p:"Mois"},
-        {n:"Filtre Mix-Plant",p:"Jours"}
-      ]},
-      {name:"Chambre froide positive",items:[
-        {n:"Sol",p:"Semaines"},{n:"Palettes",p:"Semaines"},{n:"Étagères",p:"Semaines"},
-        {n:"Flexibles / Tuyaux (CIP)",p:"Semaines"},{n:"Tank à lait (CIP)",p:"Cycle réapr."}
-      ]}
-    ]
-  },
-  froid:{
-    title:"Laboratoire Froid",
-    sections:[
-      {name:"CIP",items:[{n:"pH eau de rinçage",p:"Semaines"}]},
-      {name:"Laboratoire Froid",items:[
-        {n:"Bondes au sol",p:"Semaines"},{n:"Poubelles",p:"Semaines"},
-        {n:"Casier / Placard",p:"Semaines"},{n:"Cuve (CIP)",p:"Semaines"},
-        {n:"Freezers (CIP)",p:"Semaines"},{n:"Rippy (CIP)",p:"Semaines"},
-        {n:"Ingrédients Feeder (CIP)",p:"Semaines"},{n:"Rotax / Dosapack (CIP)",p:"Semaines"},
-        {n:"Flexibles / Tuyaux (CIP)",p:"Semaines"},{n:"Pièces évasées (cuves)",p:"Jour"}
-      ]}
-    ]
-  },
-  autres:{
-    title:"Autres Zones",
-    sections:[
-      {name:"Réserves sèches",items:[{n:"Sol",p:"Semaines"},{n:"Palettes",p:"Semaines"}]},
-      {name:"Réserves des emballages",items:[{n:"Sol",p:"Semaines"}]},
-      {name:"Plonge",items:[{n:"Bonde au sol",p:"Semaines"},{n:"Placard",p:"Mois"},{n:"Poubelles",p:"Semaines"},{n:"Lave-batterie",p:"Semaines"}]},
-      {name:"Local à poubelle",items:[{n:"Murs proches",p:"Semaines"},{n:"Sol",p:"Semaines"},{n:"Bennes à ordure",p:"Semaines"}]},
-      {name:"Quai & couloirs",items:[{n:"Sol",p:"Semaines"}]},
-      {name:"Camion",items:[{n:"Intérieur cargaison",p:"Semaines"}]},
-      {name:"Salle de pause & Vestiaires & WC",items:[
-        {n:"Sol",p:"Semaines"},{n:"Casiers",p:"Mois"},{n:"Toilettes avec cuvette",p:"Semaines"},
-        {n:"Placard",p:"Mois"},{n:"Poubelles",p:"Semaines"}
-      ]}
-    ]
-  },
-  biannuel:{
-    title:"Fréquences Bi-Annuelles",
-    sections:[
-      {name:"Laboratoire Chaud",items:[{n:"Plafonds",p:"6 mois"},{n:"Murs éloignés",p:"6 mois"}]},
-      {name:"Laboratoire Froid",items:[{n:"Plafonds",p:"6 mois"},{n:"Murs éloignés",p:"6 mois"}]},
-      {name:"Chambre froide positive",items:[{n:"Plafonds",p:"6 mois"},{n:"Murs",p:"6 mois"}]},
-      {name:"Chambre froide négative & Sas d'expédition",items:[
-        {n:"Plafonds",p:"Années"},{n:"Murs",p:"Années"},{n:"Sol",p:"Années"},
-        {n:"Rideaux à lanières",p:"Années"},{n:"Racks",p:"Années"},{n:"Vêtements protect. froid",p:"Mois"}
-      ]},
-      {name:"Réserves sèches",items:[{n:"Plafonds",p:"Années"},{n:"Murs",p:"Années"}]},
-      {name:"Réserves des emballages",items:[{n:"Plafonds",p:"Années"},{n:"Murs",p:"Années"},{n:"Racks",p:"Années"}]},
-      {name:"Plonge",items:[{n:"Plafonds",p:"6 mois"},{n:"Murs éloignés",p:"6 mois"}]},
-      {name:"Local à poubelle",items:[{n:"Plafonds",p:"6 mois"},{n:"Murs éloignés",p:"6 mois"}]},
-      {name:"Quai & couloirs",items:[{n:"Chariot élévateur",p:"6 mois"},{n:"Laveuse",p:"6 mois"}]},
-      {name:"Chambre froide ⊖",items:[{n:"Murs",p:"Années"},{n:"Plafond",p:"Années"},{n:"Ventilation",p:"Années"}]},
-      {name:"Camion",items:[{n:"Carrosserie extérieure",p:"3 mois"},{n:"Cabine",p:"3 mois"}]},
-      {name:"Salle de pause & Vestiaires & WC",items:[{n:"Plafonds",p:"6 mois"},{n:"Murs",p:"6 mois"}]}
-    ]
-  }
-};
+// ══ CONFIG ════════════════════════════════════════════════
+// URL de votre Apps Script /exec — MODIFIEZ ICI
+const API_URL = 'https://script.google.com/macros/s/AKfycbyV-HS1QE3mVzVjSjxettY-6XHyVz0g9VV0X2Yy896MnUz5LhfU-oS-8NrUiPKzdnvX/exec';
 
-const MONTHS=["Jan","Fev","Mar","Avr","Mai","Juin","Juil","Août","Sept","Oct","Nov","Déc"];
-const TEMPS_NEG=["···",-9,-10,-11,-12,-13,-14,-15,-16,-17,-18,-19,-20,-21,-22,"···"];
+// ══ API ═══════════════════════════════════════════════════
+async function api(action, params={}) {
+  const res = await fetch(API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain' }, // évite le preflight CORS
+    body: JSON.stringify({ action, ...params })
+  });
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  return res.json();
+}
+
+// ══ DONNÉES STATIQUES ═════════════════════════════════════
+const SHEET_NAMES = {
+  chaud:  'Labo Chaud \u2013 Hebdo',
+  froid:  'Labo Froid \u2013 Hebdo',
+  autres: 'Autres Zones \u2013 Hebdo'
+};
+const DATA = {
+  chaud:{ title:'Laboratoire Chaud', sections:[
+    {name:'CIP',items:[{n:'pH eau de rinçage',p:'Semaines'}]},
+    {name:'Laboratoire Chaud',items:[
+      {n:'Bonde au sol',p:'Semaine'},{n:'Échelles',p:'Semaines'},{n:'Placard',p:'Mois'},
+      {n:'Poubelles',p:'Semaine'},{n:'Triplaneur (CIP)',p:'Semaines'},
+      {n:'Pasteurisateur (CIP)',p:'Semaines'},{n:'Homogénéisateur (CIP)',p:'Semaines'},
+      {n:'Refroidisseur (CIP)',p:'Semaines'},{n:'Flexibles / Tuyaux (CIP)',p:'Semaines'},
+      {n:'Chiller (Circuit de refroid.)',p:'Mois'},{n:'Chaudière',p:'Mois'},{n:'Filtre Mix-Plant',p:'Jours'}
+    ]},
+    {name:'Chambre froide positive',items:[
+      {n:'Sol',p:'Semaines'},{n:'Palettes',p:'Semaines'},{n:'Étagères',p:'Semaines'},
+      {n:'Flexibles / Tuyaux (CIP)',p:'Semaines'},{n:'Tank à lait (CIP)',p:'Cycle réapr.'}
+    ]}
+  ]},
+  froid:{ title:'Laboratoire Froid', sections:[
+    {name:'CIP',items:[{n:'pH eau de rinçage',p:'Semaines'}]},
+    {name:'Laboratoire Froid',items:[
+      {n:'Bondes au sol',p:'Semaines'},{n:'Poubelles',p:'Semaines'},
+      {n:'Casier / Placard',p:'Semaines'},{n:'Cuve (CIP)',p:'Semaines'},
+      {n:'Freezers (CIP)',p:'Semaines'},{n:'Rippy (CIP)',p:'Semaines'},
+      {n:'Ingrédients Feeder (CIP)',p:'Semaines'},{n:'Rotax / Dosapack (CIP)',p:'Semaines'},
+      {n:'Flexibles / Tuyaux (CIP)',p:'Semaines'},{n:'Pièces évasées (cuves)',p:'Jour'}
+    ]}
+  ]},
+  autres:{ title:'Autres Zones', sections:[
+    {name:'Réserves sèches',items:[{n:'Sol',p:'Semaines'},{n:'Palettes',p:'Semaines'}]},
+    {name:'Réserves des emballages',items:[{n:'Sol',p:'Semaines'}]},
+    {name:'Plonge',items:[{n:'Bonde au sol',p:'Semaines'},{n:'Placard',p:'Mois'},{n:'Poubelles',p:'Semaines'},{n:'Lave-batterie',p:'Semaines'}]},
+    {name:'Local à poubelle',items:[{n:'Murs proches',p:'Semaines'},{n:'Sol',p:'Semaines'},{n:'Bennes à ordure',p:'Semaines'}]},
+    {name:'Quai & couloirs',items:[{n:'Sol',p:'Semaines'}]},
+    {name:'Camion',items:[{n:'Intérieur cargaison',p:'Semaines'}]},
+    {name:'Salle de pause & Vestiaires & WC',items:[
+      {n:'Sol',p:'Semaines'},{n:'Casiers',p:'Mois'},{n:'Toilettes avec cuvette',p:'Semaines'},
+      {n:'Placard',p:'Mois'},{n:'Poubelles',p:'Semaines'}
+    ]}
+  ]},
+  biannuel:{ title:'Fréquences Bi-Annuelles', sections:[
+    {name:'Laboratoire Chaud',items:[{n:'Plafonds',p:'6 mois'},{n:'Murs éloignés',p:'6 mois'}]},
+    {name:'Laboratoire Froid',items:[{n:'Plafonds',p:'6 mois'},{n:'Murs éloignés',p:'6 mois'}]},
+    {name:'Chambre froide positive',items:[{n:'Plafonds',p:'6 mois'},{n:'Murs',p:'6 mois'}]},
+    {name:"Chambre froide négative & Sas d'expédition",items:[
+      {n:'Plafonds',p:'Années'},{n:'Murs',p:'Années'},{n:'Sol',p:'Années'},
+      {n:'Rideaux à lanières',p:'Années'},{n:'Racks',p:'Années'},{n:'Vêtements protect. froid',p:'Mois'}
+    ]},
+    {name:'Réserves sèches',items:[{n:'Plafonds',p:'Années'},{n:'Murs',p:'Années'}]},
+    {name:'Réserves des emballages',items:[{n:'Plafonds',p:'Années'},{n:'Murs',p:'Années'},{n:'Racks',p:'Années'}]},
+    {name:'Plonge',items:[{n:'Plafonds',p:'6 mois'},{n:'Murs éloignés',p:'6 mois'}]},
+    {name:'Local à poubelle',items:[{n:'Plafonds',p:'6 mois'},{n:'Murs éloignés',p:'6 mois'}]},
+    {name:'Quai & couloirs',items:[{n:'Chariot élévateur',p:'6 mois'},{n:'Laveuse',p:'6 mois'}]},
+    {name:'Chambre froide ⊖',items:[{n:'Murs',p:'Années'},{n:'Plafond',p:'Années'},{n:'Ventilation',p:'Années'}]},
+    {name:'Camion',items:[{n:'Carrosserie extérieure',p:'3 mois'},{n:'Cabine',p:'3 mois'}]},
+    {name:'Salle de pause & Vestiaires & WC',items:[{n:'Plafonds',p:'6 mois'},{n:'Murs',p:'6 mois'}]}
+  ]}
+};
+const MONTHS=['Jan','Fev','Mar','Avr','Mai','Juin','Juil','Août','Sept','Oct','Nov','Déc'];
+const TEMPS_NEG=['···',-9,-10,-11,-12,-13,-14,-15,-16,-17,-18,-19,-20,-21,-22,'···'];
 const TEMPS_MAT=[9,8,7,6,5,4,3,2,1,0,-1];
 const ALERT_NEG=new Set([-15,-14,-13,-12,-11,-10,-9]);
 const TARGET_NEG=new Set([-18,-19,-20,-21,-22]);
 
-// STATE
-const S={
-  tab:'chaud',
-  checks:{},           // checks[tabId][key] = bool
-  appChecks:{},        // appChecks[appId][key] = bool
-  comments:{},
-  meta:{},
-  appareils:[],        // liste depuis Sheets
-  renaming:{}          // renaming[id] = bool
+// ══ STATE ═════════════════════════════════════════════════
+const S = {
+  tab:'chaud', checks:{}, appChecks:{}, comments:{}, meta:{},
+  appareils:[], renaming:{}, loaded:new Set()
 };
 
-// ══════════════════════════════════════════════════════
-// INIT
-// ══════════════════════════════════════════════════════
-window.onload = () => {
-  loadAppareils();
-};
-
-function loadAppareils() {
-  // Webapp mode: full page, no modal constraints
-  document.documentElement.style.height = '100%';
-  const c = document.getElementById('main-content');
-  c.innerHTML = '<div class="loading"><div class="spinner"></div> Chargement des appareils...</div>';
-  if (typeof google !== 'undefined') {
-    google.script.run.withSuccessHandler(initApp).withFailureHandler(e => {
-      initApp({appareils:[], sheets:{}});
-    }).getAppData();
-  } else {
-    // Mode démo sans Sheets
-    initApp({appareils:[
-      {id:'demo1',nom:'Chambre froide -18°C',type:'neg',actif:true},
-      {id:'demo2',nom:'Cuve maturation C-01',type:'mat',actif:true},
-    ], sheets:{}});
+// ══ INIT ══════════════════════════════════════════════════
+window.onload = async () => {
+  try {
+    const r = await api('ping');
+    if (r.ok) {
+      document.getElementById('conn-status').textContent = '✅ Connecté';
+      document.getElementById('conn-status').style.background = 'rgba(76,175,80,.4)';
+      document.getElementById('ss-name').textContent = r.ssName;
+    } else {
+      showConnError(r.error);
+      return;
+    }
+    const data = await api('getAppData');
+    S.appareils = data.appareils || [];
+    updateAppareilsTabs();
+    loadAndRender('chaud');
+  } catch(e) {
+    showConnError(e.message);
   }
+};
+
+function showConnError(msg) {
+  document.getElementById('conn-status').textContent = '❌ Hors ligne';
+  document.getElementById('conn-status').style.background = 'rgba(244,67,54,.4)';
+  document.getElementById('main-content').innerHTML =
+    `<div style="padding:30px;color:#c62828;">
+      <strong>❌ Impossible de joindre Google Sheets</strong><br><br>${msg}<br><br>
+      <em>Vérifiez que le script est déployé en accès public et que l'ID du Sheets est bien mémorisé
+      (menu Nettoyage App → Initialiser les feuilles).</em>
+    </div>`;
 }
 
-function initApp(data) {
-  S.appareils = data.appareils || [];
-  updateAppareilsTabs();
-  renderTab('chaud');
-}
-
-// ══════════════════════════════════════════════════════
-// TABS
-// ══════════════════════════════════════════════════════
+// ══ TABS ══════════════════════════════════════════════════
 function updateAppareilsTabs() {
-  // Supprimer les tabs dynamiques existants
   document.querySelectorAll('.tab[data-app-id]').forEach(t => t.remove());
-
   const bar = document.getElementById('tabs-bar');
   const actifs = S.appareils.filter(a => a.actif);
-
   actifs.forEach(app => {
     const div = document.createElement('div');
-    div.className = 'tab' + (S.tab === 'app_'+app.id ? ' active' : '');
-    div.setAttribute('data-tab', 'app_'+app.id);
+    div.className = 'tab' + (S.tab==='app_'+app.id?' active':'');
     div.setAttribute('data-app-id', app.id);
-    const icon = app.type === 'neg' ? '🔵' : '🟢';
-    div.innerHTML = `${icon} ${app.nom}`;
-    div.onclick = function() { switchTab('app_'+app.id, this); };
+    div.innerHTML = (app.type==='neg'?'🔵 ':'🟢 ') + esc(app.nom);
+    div.onclick = () => switchTab('app_'+app.id, div);
     bar.appendChild(div);
   });
-
-  // Badge
   document.getElementById('badge-app').textContent = actifs.length;
 }
 
@@ -311,565 +264,452 @@ function switchTab(tab, el) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   if(el) el.classList.add('active');
   S.tab = tab;
-  const c = document.getElementById('main-content');
-  c.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
-  setTimeout(() => renderTab(tab), 30);
+  if (tab === 'temp-manager') { renderTab(tab); return; }
+  if (S.loaded.has(tab)) { renderTab(tab); return; }
+  loadAndRender(tab);
 }
 
+async function loadAndRender(tab) {
+  const c = document.getElementById('main-content');
+  c.innerHTML = '<div class="loading"><div class="spinner"></div> Chargement...</div>';
+  try {
+    if (tab === 'biannuel') {
+      const st = await api('loadBiannuelState');
+      applyBiannuelState(st);
+    } else if (tab.startsWith('app_')) {
+      const id = tab.replace('app_','');
+      const st = await api('loadAppareilState', { appareilId: id });
+      S.appChecks[id] = st || {};
+    } else {
+      const st = await api('loadHebdoState', { sheetName: SHEET_NAMES[tab] });
+      applyHebdoState(tab, st);
+    }
+    S.loaded.add(tab);
+  } catch(e) {
+    toast('⚠️ Chargement partiel: '+e.message, true);
+  }
+  renderTab(tab);
+}
+
+function applyHebdoState(tabId, st) {
+  if (!st) return;
+  S.checks[tabId] = {};
+  S.meta[tabId] = S.meta[tabId] || {};
+  for (const [k,v] of Object.entries(st)) {
+    if (k==='_month') S.meta[tabId].month = v || new Date().toISOString().slice(0,7);
+    else if (k==='_visa') S.meta[tabId].visa = v||'';
+    else if (k==='_comment') S.comments[tabId] = v||'';
+    else S.checks[tabId][k] = v===true;
+  }
+}
+
+function applyBiannuelState(st) {
+  if (!st) return;
+  S.checks['biannuel'] = {};
+  for (const [k,v] of Object.entries(st)) {
+    if (k==='_comment') S.comments['biannuel']=v||'';
+    else S.checks['biannuel'][k] = v===true;
+  }
+}
+
+// ══ RENDER ════════════════════════════════════════════════
 function renderTab(tab) {
   const c = document.getElementById('main-content');
-  if (tab === 'temp-manager') c.innerHTML = buildManager();
+  if (tab==='temp-manager') c.innerHTML = buildManager();
   else if (tab.startsWith('app_')) {
-    const id = tab.replace('app_','');
-    const app = S.appareils.find(a => a.id === id);
-    if (app) c.innerHTML = app.type === 'neg' ? buildTempNeg(app) : buildTempMat(app);
-    else c.innerHTML = '<p style="padding:20px">Appareil introuvable.</p>';
+    const app = S.appareils.find(a=>a.id===tab.replace('app_',''));
+    c.innerHTML = app ? (app.type==='neg' ? buildTempNeg(app) : buildTempMat(app)) : '<p style="padding:20px">Appareil introuvable</p>';
   }
-  else if (tab === 'biannuel') c.innerHTML = buildBiannuel();
+  else if (tab==='biannuel') c.innerHTML = buildBiannuel();
   else c.innerHTML = buildHebdo(tab);
 }
 
-// ══════════════════════════════════════════════════════
-// GESTIONNAIRE D'APPAREILS
-// ══════════════════════════════════════════════════════
-function buildManager() {
-  const actifs = S.appareils.filter(a => a.actif);
-  const inactifs = S.appareils.filter(a => !a.actif);
-
-  let cards = actifs.map(app => buildAppCard(app, true)).join('') || '<p style="color:#999;font-size:12px;padding:8px 0;">Aucun appareil actif.</p>';
-  let inCards = inactifs.length ? `
-    <div class="inactive-section">
-      <div class="inactive-title">🗂️ Appareils désactivés (historique conservé)</div>
-      ${inactifs.map(app => buildAppCard(app, false)).join('')}
-    </div>` : '';
-
-  return `
-  <div class="appareils-manager">
-    <h3>🌡️ Gestion des appareils de température</h3>
-    <div class="app-list" id="app-list">${cards}</div>
-    ${inCards}
-    <div class="add-form">
-      <div>
-        <label>Nom de l'appareil</label><br>
-        <input type="text" id="new-nom" placeholder="Ex: Chambre froide sud" style="width:220px;margin-top:3px;">
-      </div>
-      <div>
-        <label>Type</label><br>
-        <select id="new-type" style="margin-top:3px;">
-          <option value="neg">❄️ Chambre froide négative (–9°C → –22°C)</option>
-          <option value="mat">🧪 Cuve de maturation (–1°C → 9°C)</option>
-        </select>
-      </div>
-      <button class="btn btn-primary" onclick="ajouterAppareil()">➕ Ajouter l'appareil</button>
-    </div>
-  </div>
-  <div style="background:#E3F2FD;border-radius:8px;padding:12px 16px;font-size:11px;color:#1565C0;">
-    <strong>ℹ️ Comment ça fonctionne :</strong> Chaque appareil crée sa propre feuille dans Google Sheets.<br>
-    Désactiver un appareil masque sa feuille mais conserve l'historique. Vous pouvez le réactiver à tout moment.<br>
-    Les appareils actifs apparaissent comme onglets dans la barre de navigation.
-  </div>`;
-}
-
-function buildAppCard(app, actif) {
-  const icon = app.type === 'neg' ? '❄️' : '🧪';
-  const typeLabel = app.type === 'neg' ? 'Chambre froide ⊖' : 'Maturation';
-  const statusClass = actif ? 'active' : 'inactive';
-  const isRenaming = S.renaming[app.id];
-
-  return `<div class="app-card ${statusClass}" id="card-${app.id}">
-    <span class="app-icon">${icon}</span>
-    ${isRenaming
-      ? `<input class="rename-input" id="rename-${app.id}" value="${escHtml(app.nom)}" onkeydown="if(event.key==='Enter')confirmRename('${app.id}')">`
-      : `<span class="app-name">${escHtml(app.nom)}</span>`}
-    <span class="app-type">${typeLabel}</span>
-    <div class="app-card-actions">
-      ${isRenaming
-        ? `<button class="btn btn-primary btn-sm" onclick="confirmRename('${app.id}')">✓ Ok</button>
-           <button class="btn btn-sm" style="background:#eee;" onclick="cancelRename('${app.id}')">Annuler</button>`
-        : actif
-          ? `<button class="btn btn-sm" style="background:#E3F2FD;color:#1565C0;" onclick="switchTab('app_${app.id}',null);document.querySelector('[data-app-id=${app.id}]')?.click()">👁 Voir</button>
-             <button class="btn btn-dup btn-sm" onclick="dupliquer('${app.id}')">⎘ Dupliquer</button>
-             <button class="btn btn-sm" style="background:#E8F5E9;color:#2e7d32;" onclick="startRename('${app.id}')">✏️ Renommer</button>
-             <button class="btn btn-danger btn-sm" onclick="desactiver('${app.id}')">🗑 Désactiver</button>`
-          : `<button class="btn btn-primary btn-sm" onclick="reactiver('${app.id}')">♻️ Réactiver</button>`
-      }
-    </div>
-  </div>`;
-}
-
-// ── Actions appareils ─────────────────────────────────
-
-function ajouterAppareil() {
-  const nom = document.getElementById('new-nom').value.trim();
-  const type = document.getElementById('new-type').value;
-  if (!nom) { showToast('⚠️ Entrez un nom pour l\'appareil'); return; }
-  showToast('⏳ Création en cours...');
-  if (typeof google !== 'undefined') {
-    google.script.run.withSuccessHandler(app => {
-      S.appareils.push(app);
-      document.getElementById('new-nom').value = '';
-      updateAppareilsTabs();
-      renderTab('temp-manager');
-      showToast('✅ Appareil "'+app.nom+'" créé !');
-    }).addAppareil(nom, type);
-  } else {
-    const app = {id:'demo_'+Date.now(), nom, type, actif:true};
-    S.appareils.push(app);
-    document.getElementById('new-nom').value = '';
-    updateAppareilsTabs();
-    renderTab('temp-manager');
-    showToast('✅ Appareil "'+app.nom+'" créé (démo)');
-  }
-}
-
-function dupliquer(id) {
-  showToast('⏳ Duplication...');
-  if (typeof google !== 'undefined') {
-    google.script.run.withSuccessHandler(app => {
-      S.appareils.push(app);
-      updateAppareilsTabs();
-      renderTab('temp-manager');
-      showToast('✅ Dupliqué : "'+app.nom+'"');
-    }).dupliquerAppareil(id);
-  } else {
-    const src = S.appareils.find(a => a.id===id);
-    const app = {id:'demo_'+Date.now(), nom:src.nom+' (copie)', type:src.type, actif:true};
-    S.appareils.push(app);
-    updateAppareilsTabs();
-    renderTab('temp-manager');
-    showToast('✅ Dupliqué (démo)');
-  }
-}
-
-function startRename(id) {
-  S.renaming[id] = true;
-  renderTab('temp-manager');
-  setTimeout(() => { const el = document.getElementById('rename-'+id); if(el) el.focus(); }, 50);
-}
-
-function cancelRename(id) {
-  delete S.renaming[id];
-  renderTab('temp-manager');
-}
-
-function confirmRename(id) {
-  const el = document.getElementById('rename-'+id);
-  if (!el) return;
-  const nouveauNom = el.value.trim();
-  if (!nouveauNom) return;
-  if (typeof google !== 'undefined') {
-    google.script.run.withSuccessHandler(ok => {
-      const app = S.appareils.find(a => a.id===id);
-      if (app) app.nom = nouveauNom;
-      delete S.renaming[id];
-      updateAppareilsTabs();
-      renderTab('temp-manager');
-      showToast('✅ Renommé en "'+nouveauNom+'"');
-    }).renommerAppareil(id, nouveauNom);
-  } else {
-    const app = S.appareils.find(a => a.id===id);
-    if (app) app.nom = nouveauNom;
-    delete S.renaming[id];
-    updateAppareilsTabs();
-    renderTab('temp-manager');
-    showToast('✅ Renommé (démo)');
-  }
-}
-
-function desactiver(id) {
-  const app = S.appareils.find(a => a.id===id);
-  if (!confirm('Désactiver "'+app.nom+'" ?\nL\'historique sera conservé, vous pourrez le réactiver.')) return;
-  if (typeof google !== 'undefined') {
-    google.script.run.withSuccessHandler(() => {
-      app.actif = false;
-      if (S.tab === 'app_'+id) S.tab = 'temp-manager';
-      updateAppareilsTabs();
-      renderTab('temp-manager');
-      showToast('🗑 "'+app.nom+'" désactivé');
-    }).supprimerAppareil(id);
-  } else {
-    app.actif = false;
-    if (S.tab === 'app_'+id) S.tab = 'temp-manager';
-    updateAppareilsTabs();
-    renderTab('temp-manager');
-    showToast('🗑 Désactivé (démo)');
-  }
-}
-
-function reactiver(id) {
-  const app = S.appareils.find(a => a.id===id);
-  if (typeof google !== 'undefined') {
-    google.script.run.withSuccessHandler(() => {
-      app.actif = true;
-      updateAppareilsTabs();
-      renderTab('temp-manager');
-      showToast('♻️ "'+app.nom+'" réactivé !');
-    }).reactiverAppareil(id);
-  } else {
-    app.actif = true;
-    updateAppareilsTabs();
-    renderTab('temp-manager');
-    showToast('♻️ Réactivé (démo)');
-  }
-}
-
-// ══════════════════════════════════════════════════════
-// HEBDOMADAIRE
-// ══════════════════════════════════════════════════════
+// ══ BUILD HEBDO ═══════════════════════════════════════════
 function buildHebdo(tabId) {
-  const d = DATA[tabId];
-  if (!d) return '<p>Données manquantes.</p>';
+  const d = DATA[tabId]; if(!d) return '';
   const days = Array.from({length:31},(_,i)=>i+1);
-  if (!S.checks[tabId]) S.checks[tabId] = {};
-  if (!S.meta[tabId]) S.meta[tabId] = {month: new Date().toISOString().slice(0,7), visa:''};
-
-  let total=0, checked=0;
-  d.sections.forEach(s => s.items.forEach(item => {
-    days.forEach(day => { total++; if(S.checks[tabId][item.n+'__'+day]) checked++; });
-  }));
-  // BIO
-  days.forEach(day => { total++; if(S.checks[tabId]['BIO__'+day]) checked++; });
-  const pct = total>0 ? Math.round(checked/total*100) : 0;
-
-  let html = `
+  if(!S.checks[tabId]) S.checks[tabId]={};
+  if(!S.meta[tabId]) S.meta[tabId]={month:new Date().toISOString().slice(0,7),visa:''};
+  let total=0,checked=0;
+  days.forEach(day=>{ total++; if(S.checks[tabId]['BIO__'+day]) checked++; });
+  d.sections.forEach(s=>s.items.forEach(it=>days.forEach(day=>{ total++; if(S.checks[tabId][it.n+'__'+day]) checked++; })));
+  const pct=total>0?Math.round(checked/total*100):0;
+  let html=`
   <div class="meta-row">
     <label>Mois / Année :</label>
-    <input type="month" value="${S.meta[tabId].month}" onchange="S.meta['${tabId}'].month=this.value">
+    <input type="month" value="${S.meta[tabId].month}" onchange="S.meta['${tabId}'].month=this.value;api('saveMeta',{sheetName:'${SHEET_NAMES[tabId]}',moisAnnee:this.value,visa:S.meta['${tabId}'].visa})">
     <label>Visa :</label>
-    <input type="text" placeholder="Initiales" value="${S.meta[tabId].visa}" style="width:90px" onchange="S.meta['${tabId}'].visa=this.value">
-    <span style="font-size:12px;font-weight:700;color:var(--teal-dark);margin-left:8px;">${d.title}</span>
+    <input type="text" placeholder="Initiales" value="${esc(S.meta[tabId].visa)}" style="width:85px" onchange="S.meta['${tabId}'].visa=this.value;api('saveMeta',{sheetName:'${SHEET_NAMES[tabId]}',moisAnnee:S.meta['${tabId}'].month,visa:this.value})">
+    <strong style="color:var(--teal-dark);font-size:12px;">${d.title}</strong>
   </div>
   <div class="progress-zone">
-    <div class="progress-title">Progression du mois — ${d.title}</div>
-    <div class="progress-bar"><div class="progress-fill" id="prog-${tabId}" style="width:${pct}%"></div></div>
-    <div class="progress-label" id="prog-lbl-${tabId}">${checked} / ${total} (${pct}%)</div>
+    <div style="font-size:11px;font-weight:700;color:var(--teal-dark);margin-bottom:5px;">Progression</div>
+    <div class="progress-bar"><div class="progress-fill" id="pb-${tabId}" style="width:${pct}%"></div></div>
+    <div class="progress-label" id="pl-${tabId}">${checked}/${total} (${pct}%)</div>
   </div>
   <div style="overflow-x:auto;">
   <table class="releve-table">
     <thead><tr>
-      <th class="th-equip">Équipement</th>
-      <th class="th-period">Périodicité</th>
+      <th class="th-equip">Équipement</th><th class="th-period">Périodicité</th>
       ${days.map(d=>`<th class="th-day">${d}</th>`).join('')}
-    </tr></thead>
-    <tbody>
+    </tr></thead><tbody>
     <tr class="bio-row">
       <td class="td-equip">✅ Produit BIO</td>
       <td class="td-period" style="background:var(--green-light)">Quotidien</td>
-      ${days.map(day => {
-        const ck = S.checks[tabId]['BIO__'+day] ? 'checked' : '';
-        return `<td class="td-day" style="background:var(--green-light)"><div class="cb-wrap"><input type="checkbox" ${ck} onchange="toggleCheck('${tabId}','BIO',${day},this.checked)"></div></td>`;
+      ${days.map(day=>{
+        const ck=S.checks[tabId]['BIO__'+day]?'checked':'';
+        return `<td style="background:var(--green-light)"><div class="cb-wrap"><input type="checkbox" ${ck} onchange="tick('${tabId}','BIO',${day},this.checked)"></div></td>`;
       }).join('')}
     </tr>`;
-
-  d.sections.forEach(section => {
-    html += `<tr><td colspan="33" class="sec-hdr" style="padding:7px 10px;">${section.name}</td></tr>`;
-    section.items.forEach(item => {
-      html += `<tr>
-        <td class="td-equip">${item.n}</td>
-        <td class="td-period">${item.p}</td>
-        ${days.map(day => {
-          const ck = S.checks[tabId][item.n+'__'+day] ? 'checked' : '';
-          return `<td class="td-day"><div class="cb-wrap"><input type="checkbox" ${ck} onchange="toggleCheck('${tabId}','${item.n.replace(/'/g,"\\'")}',${day},this.checked)"></div></td>`;
-        }).join('')}
-      </tr>`;
+  d.sections.forEach(sec=>{
+    html+=`<tr><td colspan="33" class="sec-hdr">${sec.name}</td></tr>`;
+    sec.items.forEach(it=>{
+      html+=`<tr><td class="td-equip">${it.n}</td><td class="td-period">${it.p}</td>
+        ${days.map(day=>{
+          const ck=S.checks[tabId][it.n+'__'+day]?'checked':'';
+          return `<td><div class="cb-wrap"><input type="checkbox" ${ck} onchange="tick('${tabId}',${JSON.stringify(it.n)},${day},this.checked)"></div></td>`;
+        }).join('')}</tr>`;
     });
   });
-
-  html += `</tbody></table></div>
-  <div class="comment-box">
-    <h3>📝 Anomalies & Commentaires</h3>
-    <textarea id="cmt-${tabId}" placeholder="Date + description...">${S.comments[tabId]||''}</textarea>
-    <button class="btn btn-primary" style="margin-top:6px;" onclick="saveComment('${tabId}')">💾 Enregistrer</button>
+  html+=`</tbody></table></div>
+  <div class="comment-box"><h3>📝 Anomalies & Commentaires</h3>
+    <textarea id="cmt-${tabId}" placeholder="Date + description...">${esc(S.comments[tabId]||'')}</textarea>
+    <button class="btn btn-primary" style="margin-top:5px" onclick="saveComment('${tabId}')">💾 Enregistrer</button>
   </div>`;
   return html;
 }
 
-// ══════════════════════════════════════════════════════
-// BI-ANNUEL
-// ══════════════════════════════════════════════════════
+// ══ BUILD BIANNUEL ════════════════════════════════════════
 function buildBiannuel() {
-  const d = DATA.biannuel;
-  const key = 'biannuel';
-  if (!S.checks[key]) S.checks[key] = {};
-
-  let total=0, checked=0;
-  d.sections.forEach(s => s.items.forEach(item => {
-    MONTHS.forEach(m => { total++; if(S.checks[key][item.n+'__'+m]) checked++; });
-  }));
-  MONTHS.forEach(m => { total++; if(S.checks[key]['BIO__'+m]) checked++; });
-  const pct = total>0 ? Math.round(checked/total*100) : 0;
-
-  let html = `
+  const d=DATA.biannuel;
+  if(!S.checks['biannuel']) S.checks['biannuel']={};
+  let total=0,checked=0;
+  MONTHS.forEach((_,mi)=>{ total++; if(S.checks['biannuel']['BIO__'+mi]) checked++; });
+  d.sections.forEach(s=>s.items.forEach(it=>MONTHS.forEach((_,mi)=>{ total++; if(S.checks['biannuel'][it.n+'__'+mi]) checked++; })));
+  const pct=total>0?Math.round(checked/total*100):0;
+  let html=`
   <div class="meta-row">
-    <label>Année :</label>
-    <input type="number" value="${new Date().getFullYear()}" min="2020" max="2099" style="width:85px">
-    <label>Visa :</label>
-    <input type="text" placeholder="Initiales" style="width:90px">
+    <label>Année :</label><input type="number" value="${new Date().getFullYear()}" style="width:80px">
+    <label>Visa :</label><input type="text" placeholder="Initiales" style="width:85px">
   </div>
   <div class="progress-zone">
-    <div class="progress-title">Progression annuelle — Fréquences bi-annuelles</div>
+    <div style="font-size:11px;font-weight:700;color:var(--teal-dark);margin-bottom:5px;">Progression annuelle</div>
     <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
-    <div class="progress-label">${checked} / ${total} (${pct}%)</div>
+    <div class="progress-label">${checked}/${total} (${pct}%)</div>
   </div>
   <div style="overflow-x:auto;">
   <table class="releve-table">
     <thead><tr>
-      <th class="th-equip">Équipement</th>
-      <th class="th-period">Périodicité</th>
-      ${MONTHS.map(m=>`<th style="min-width:52px">${m}</th>`).join('')}
-    </tr></thead>
-    <tbody>
+      <th class="th-equip">Équipement</th><th class="th-period">Périodicité</th>
+      ${MONTHS.map(m=>`<th style="min-width:50px">${m}</th>`).join('')}
+    </tr></thead><tbody>
     <tr class="bio-row">
       <td class="td-equip">✅ Produit BIO</td>
       <td class="td-period" style="background:var(--green-light)">Mensuel</td>
-      ${MONTHS.map(m => {
-        const ck = S.checks[key]['BIO__'+m] ? 'checked' : '';
-        return `<td class="td-day" style="background:var(--green-light)"><div class="cb-wrap"><input type="checkbox" ${ck} onchange="toggleCheck('biannuel','BIO','${m}',this.checked)"></div></td>`;
+      ${MONTHS.map((_,mi)=>{
+        const ck=S.checks['biannuel']['BIO__'+mi]?'checked':'';
+        return `<td style="background:var(--green-light)"><div class="cb-wrap"><input type="checkbox" ${ck} onchange="tickBi('BIO',${mi},this.checked)"></div></td>`;
       }).join('')}
     </tr>`;
-
-  d.sections.forEach(section => {
-    html += `<tr><td colspan="14" class="sec-hdr" style="padding:7px 10px;">${section.name}</td></tr>`;
-    section.items.forEach(item => {
-      html += `<tr>
-        <td class="td-equip">${item.n}</td>
-        <td class="td-period">${item.p}</td>
-        ${MONTHS.map(m => {
-          const ck = S.checks[key][item.n+'__'+m] ? 'checked' : '';
-          return `<td class="td-day"><div class="cb-wrap"><input type="checkbox" ${ck} onchange="toggleCheck('biannuel','${item.n.replace(/'/g,"\\'")}','${m}',this.checked)"></div></td>`;
-        }).join('')}
-      </tr>`;
+  d.sections.forEach(sec=>{
+    html+=`<tr><td colspan="14" class="sec-hdr">${sec.name}</td></tr>`;
+    sec.items.forEach(it=>{
+      html+=`<tr><td class="td-equip">${it.n}</td><td class="td-period">${it.p}</td>
+        ${MONTHS.map((_,mi)=>{
+          const ck=S.checks['biannuel'][it.n+'__'+mi]?'checked':'';
+          return `<td><div class="cb-wrap"><input type="checkbox" ${ck} onchange="tickBi(${JSON.stringify(it.n)},${mi},this.checked)"></div></td>`;
+        }).join('')}</tr>`;
     });
   });
-
-  html += `</tbody></table></div>
-  <div class="comment-box">
-    <h3>📝 Anomalies & Commentaires</h3>
-    <textarea id="cmt-biannuel" placeholder="Date + description...">${S.comments['biannuel']||''}</textarea>
-    <button class="btn btn-primary" style="margin-top:6px;" onclick="saveComment('biannuel')">💾 Enregistrer</button>
+  html+=`</tbody></table></div>
+  <div class="comment-box"><h3>📝 Anomalies & Commentaires</h3>
+    <textarea id="cmt-biannuel" placeholder="Date + description...">${esc(S.comments['biannuel']||'')}</textarea>
+    <button class="btn btn-primary" style="margin-top:5px" onclick="saveComment('biannuel')">💾 Enregistrer</button>
   </div>`;
   return html;
 }
 
-// ══════════════════════════════════════════════════════
-// TEMPÉRATURE CHAMBRE NÉGATIVE
-// ══════════════════════════════════════════════════════
+// ══ BUILD TEMP NEG ════════════════════════════════════════
 function buildTempNeg(app) {
-  const key = app.id;
-  if (!S.appChecks[key]) S.appChecks[key] = {};
-  const days = Array.from({length:31},(_,i)=>i+1);
-
-  let total=0, checked=0;
-  TEMPS_NEG.forEach(t => {
-    if (t==='···') return;
-    days.forEach(d => {
-      ['AM','PM'].forEach(slot => {
-        total++;
-        if (S.appChecks[key][t+'__'+d+'__'+slot]) checked++;
-      });
-    });
-  });
-  const pct = total>0 ? Math.round(checked/total*100) : 0;
-
-  let html = `
+  const key=app.id; if(!S.appChecks[key]) S.appChecks[key]={};
+  const days=Array.from({length:31},(_,i)=>i+1);
+  let total=0,checked=0;
+  TEMPS_NEG.forEach(t=>{ if(t==='···') return; days.forEach(d=>['AM','PM'].forEach(slot=>{ total++; if(S.appChecks[key][t+'__'+d+'__'+slot]) checked++; })); });
+  const pct=total>0?Math.round(checked/total*100):0;
+  let html=`
   <div class="meta-row">
-    <span style="font-size:14px;font-weight:700;color:#1565C0">❄️ ${escHtml(app.nom)}</span>
-    <label>Mois / Année :</label>
-    <input type="month" value="${new Date().toISOString().slice(0,7)}" id="meta-month-${key}">
-    <label>Visa :</label>
-    <input type="text" placeholder="Initiales" style="width:80px" id="meta-visa-${key}">
-    <button class="btn btn-primary btn-sm" onclick="saveTempMeta('${key}')">💾 Méta</button>
+    <span style="font-size:13px;font-weight:700;color:#1565C0">❄️ ${esc(app.nom)}</span>
+    <label>Mois/Année :</label><input type="month" value="${new Date().toISOString().slice(0,7)}" id="meta-m-${key}">
+    <label>Visa :</label><input type="text" style="width:75px" id="meta-v-${key}" placeholder="Initiales">
+    <button class="btn btn-primary btn-sm" onclick="saveAppMeta('${key}')">💾</button>
   </div>
-  <div class="meta-row" style="background:#FFF3E0;">
-    <span style="font-size:11px;font-weight:700;color:#E65100;">✗ Valeur d'alerte ≥ −15°C &nbsp;|&nbsp; ✓ Valeur cible ≤ −18°C &nbsp;|&nbsp; ⚠️ En cas de dépassement, prévenir un Responsable</span>
+  <div class="meta-row" style="background:#FFF3E0">
+    <span style="font-size:11px;font-weight:700;color:#E65100">✗ alerte ≥ −15°C &nbsp;|&nbsp; ✓ cible ≤ −18°C &nbsp;|&nbsp; ⚠️ En cas de dépassement, prévenir un Responsable</span>
   </div>
   <div class="progress-zone">
-    <div class="progress-title">Progression — ${escHtml(app.nom)}</div>
     <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:#1565C0"></div></div>
-    <div class="progress-label">${checked} / ${total} cases (${pct}%)</div>
+    <div class="progress-label">${checked}/${total} (${pct}%)</div>
   </div>
-  <div style="overflow-x:auto;">
-  <table class="temp-table">
+  <div style="overflow-x:auto;"><table class="temp-table">
     <thead>
-      <tr style="background:#1565C0;color:#fff;">
-        <th class="t-label">T°</th>
-        ${days.map(d=>`<th colspan="2">${d}</th>`).join('')}
-        <th>Visa</th>
-      </tr>
-      <tr style="background:#1976D2;color:#fff;font-size:9px;">
-        <th></th>
-        ${days.map(()=>'<th class="ampm-label">AM</th><th class="ampm-label">PM</th>').join('')}
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>`;
-
-  TEMPS_NEG.forEach(t => {
-    let cls, icon='', display;
-    if (t==='···') { cls='temp-dot'; display='···'; }
-    else if (ALERT_NEG.has(t)) { cls='temp-alert'; icon='✗ '; display=icon+t+'°C'; }
-    else if (TARGET_NEG.has(t)) { cls='temp-ok'; icon='✓ '; display=icon+t+'°C'; }
-    else { cls='temp-warn'; display=t+'°C'; }
-
-    html += `<tr><td class="t-label ${cls}">${display}</td>`;
-    days.forEach(d => {
-      ['AM','PM'].forEach(slot => {
-        const ck = S.appChecks[key][t+'__'+d+'__'+slot] ? 'checked' : '';
-        html += `<td class="${cls}"><div class="cb-wrap"><input type="checkbox" ${ck} onchange="toggleAppCheck('${key}','${t}__${d}__${slot}',this.checked)"></div></td>`;
+      <tr style="background:#1565C0;color:#fff"><th class="t-label">T°</th>${days.map(d=>`<th colspan="2">${d}</th>`).join('')}<th>Visa</th></tr>
+      <tr style="background:#1976D2;color:#fff;font-size:8px"><th></th>${days.map(()=>'<th class="ampm-label">AM</th><th class="ampm-label">PM</th>').join('')}<th></th></tr>
+    </thead><tbody>`;
+  TEMPS_NEG.forEach(t=>{
+    let cls,lbl;
+    if(t==='···'){cls='temp-dot';lbl='···';}
+    else if(ALERT_NEG.has(t)){cls='temp-alert';lbl='✗ '+t+'°C';}
+    else if(TARGET_NEG.has(t)){cls='temp-ok';lbl='✓ '+t+'°C';}
+    else{cls='temp-warn';lbl=t+'°C';}
+    html+=`<tr><td class="t-label ${cls}">${lbl}</td>`;
+    days.forEach(d=>{
+      ['AM','PM'].forEach(slot=>{
+        const ck=S.appChecks[key][t+'__'+d+'__'+slot]?'checked':'';
+        html+=`<td class="${cls}"><div class="cb-wrap"><input type="checkbox" ${ck} onchange="tickApp('${key}',${JSON.stringify(t)},${d},'${slot}',this.checked)"></div></td>`;
       });
     });
-    html += `<td class="${cls}" style="background:var(--teal-alt)"></td></tr>`;
+    html+=`<td class="temp-dot"></td></tr>`;
   });
-
-  // Visa row
-  html += `<tr style="background:var(--teal-light)"><td class="t-label" style="font-weight:700;font-size:10px;">Visa</td>`;
-  days.forEach(d => {
-    html += `<td colspan="2"><input type="text" maxlength="4" style="width:100%;border:none;background:transparent;text-align:center;font-size:9px;" title="Visa jour ${d}"></td>`;
-  });
-  html += `<td></td></tr>`;
-
-  html += `</tbody></table></div>
-  <div class="comment-box">
-    <h3>📝 Anomalies & Commentaires (Date + description)</h3>
-    <textarea id="cmt-app-${key}" placeholder="Ex: 05/03 - Température montée à -13°C suite coupure courant...">${S.comments['app_'+key]||''}</textarea>
-    <button class="btn btn-primary" style="margin-top:6px;" onclick="saveAppComment('${key}')">💾 Enregistrer</button>
+  html+=`<tr style="background:var(--teal-light)"><td class="t-label" style="font-weight:700;font-size:10px">Visa</td>`;
+  days.forEach(d=>{ html+=`<td colspan="2"><input type="text" maxlength="4" style="width:100%;border:none;background:transparent;text-align:center;font-size:9px"></td>`; });
+  html+=`<td></td></tr></tbody></table></div>
+  <div class="comment-box"><h3>📝 Anomalies</h3>
+    <textarea id="cmt-app-${key}" placeholder="Date + description...">${esc(S.comments['app_'+key]||'')}</textarea>
+    <button class="btn btn-primary" style="margin-top:5px" onclick="saveAppComment('${key}')">💾 Enregistrer</button>
   </div>`;
   return html;
 }
 
-// ══════════════════════════════════════════════════════
-// TEMPÉRATURE MATURATION
-// ══════════════════════════════════════════════════════
+// ══ BUILD TEMP MAT ════════════════════════════════════════
 function buildTempMat(app) {
-  const key = app.id;
-  if (!S.appChecks[key]) S.appChecks[key] = {};
-  const days = Array.from({length:31},(_,i)=>i+1);
-
-  let total=0, checked=0;
-  TEMPS_MAT.forEach(t => {
-    days.forEach(d => { total++; if(S.appChecks[key][t+'__'+d]) checked++; });
-  });
-  const pct = total>0 ? Math.round(checked/total*100) : 0;
-
-  let html = `
+  const key=app.id; if(!S.appChecks[key]) S.appChecks[key]={};
+  const days=Array.from({length:31},(_,i)=>i+1);
+  let total=0,checked=0;
+  TEMPS_MAT.forEach(t=>days.forEach(d=>{ total++; if(S.appChecks[key][t+'__'+d]) checked++; }));
+  const pct=total>0?Math.round(checked/total*100):0;
+  let html=`
   <div class="meta-row">
-    <span style="font-size:14px;font-weight:700;color:#00695C">🧪 ${escHtml(app.nom)}</span>
-    <label>Année/Mois :</label>
-    <input type="month" value="${new Date().toISOString().slice(0,7)}" id="meta-month-${key}">
-    <label>Visa :</label>
-    <input type="text" placeholder="Initiales" style="width:80px">
-    <button class="btn btn-primary btn-sm" onclick="saveTempMeta('${key}')">💾 Méta</button>
+    <span style="font-size:13px;font-weight:700;color:#00695C">🧪 ${esc(app.nom)}</span>
+    <label>Année/Mois :</label><input type="month" value="${new Date().toISOString().slice(0,7)}" id="meta-m-${key}">
+    <label>Visa :</label><input type="text" style="width:75px" id="meta-v-${key}" placeholder="Initiales">
+    <button class="btn btn-primary btn-sm" onclick="saveAppMeta('${key}')">💾</button>
   </div>
-  <div class="meta-row" style="background:#E0F2F1;">
-    <span style="font-size:11px;font-weight:700;color:#004D40;">✓ Valeur cible ≤ 4°C &nbsp;|&nbsp; ✗ Valeur d'alerte ≥ 6°C &nbsp;|&nbsp; 🔬 Thermomètre laser &nbsp;|&nbsp; ⚠️ En cas de dépassement, prévenir un Responsable</span>
+  <div class="meta-row" style="background:#E0F2F1">
+    <span style="font-size:11px;font-weight:700;color:#004D40">✓ cible ≤ 4°C &nbsp;|&nbsp; ✗ alerte ≥ 6°C &nbsp;|&nbsp; 🔬 Thermomètre laser &nbsp;|&nbsp; ⚠️ En cas de dépassement, prévenir un Responsable</span>
   </div>
   <div class="progress-zone">
-    <div class="progress-title">Progression — ${escHtml(app.nom)}</div>
     <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:#00695C"></div></div>
-    <div class="progress-label">${checked} / ${total} cases (${pct}%)</div>
+    <div class="progress-label">${checked}/${total} (${pct}%)</div>
   </div>
-  <div style="overflow-x:auto;">
-  <table class="temp-table">
-    <thead>
-      <tr style="background:#00695C;color:#fff;">
-        <th class="t-label" style="background:#004D40;">T°</th>
-        ${days.map(d=>`<th>${d}</th>`).join('')}
-        <th>Visa</th>
-      </tr>
-    </thead>
+  <div style="overflow-x:auto;"><table class="temp-table">
+    <thead><tr style="background:#00695C;color:#fff"><th class="t-label" style="background:#004D40">T°</th>${days.map(d=>`<th>${d}</th>`).join('')}<th>Visa</th></tr></thead>
     <tbody>`;
-
-  TEMPS_MAT.forEach(t => {
-    let cls, icon='';
-    if(t>=6){cls='temp-alert';icon='✗ ';}
-    else if(t<=4){cls='temp-ok';icon='✓ ';}
-    else{cls='temp-warn';}
-
-    html += `<tr><td class="t-label ${cls}">${icon}${t}°C</td>`;
-    days.forEach(d => {
-      const ck = S.appChecks[key][t+'__'+d] ? 'checked' : '';
-      html += `<td class="${cls}"><div class="cb-wrap"><input type="checkbox" ${ck} onchange="toggleAppCheck('${key}','${t}__${d}',this.checked)"></div></td>`;
+  TEMPS_MAT.forEach(t=>{
+    let cls,icon;
+    if(t>=6){cls='temp-alert';icon='✗ ';}else if(t<=4){cls='temp-ok';icon='✓ ';}else{cls='temp-warn';icon='';}
+    html+=`<tr><td class="t-label ${cls}">${icon}${t}°C</td>`;
+    days.forEach(d=>{
+      const ck=S.appChecks[key][t+'__'+d]?'checked':'';
+      html+=`<td class="${cls}"><div class="cb-wrap"><input type="checkbox" ${ck} onchange="tickApp('${key}',${t},${d},null,this.checked)"></div></td>`;
     });
-    html += `<td style="background:var(--teal-alt)"></td></tr>`;
+    html+=`<td style="background:var(--teal-alt)"></td></tr>`;
   });
-
-  html += `</tbody></table></div>
-  <div class="comment-box">
-    <h3>📝 Anomalies & Commentaires (Date + description)</h3>
-    <textarea id="cmt-app-${key}" placeholder="Ex: 12/03 - Température cuve 5°C...">${S.comments['app_'+key]||''}</textarea>
-    <button class="btn btn-primary" style="margin-top:6px;" onclick="saveAppComment('${key}')">💾 Enregistrer</button>
+  html+=`</tbody></table></div>
+  <div class="comment-box"><h3>📝 Anomalies</h3>
+    <textarea id="cmt-app-${key}" placeholder="Date + description...">${esc(S.comments['app_'+key]||'')}</textarea>
+    <button class="btn btn-primary" style="margin-top:5px" onclick="saveAppComment('${key}')">💾 Enregistrer</button>
   </div>`;
   return html;
 }
 
-// ══════════════════════════════════════════════════════
-// ACTIONS
-// ══════════════════════════════════════════════════════
-function toggleCheck(tabKey, itemName, day, val) {
-  if (!S.checks[tabKey]) S.checks[tabKey] = {};
-  S.checks[tabKey][itemName+'__'+day] = val;
-  updateProgress(tabKey);
-  showToast(val ? `✅ ${itemName} – Jour ${day}` : `☐ ${itemName} – Jour ${day} décoché`);
-  if (typeof google !== 'undefined') google.script.run.saveCheckboxValue(tabKey, itemName, day, val);
+// ══ BUILD MANAGER ═════════════════════════════════════════
+function buildManager() {
+  const actifs=S.appareils.filter(a=>a.actif);
+  const inactifs=S.appareils.filter(a=>!a.actif);
+  let cards=actifs.map(a=>buildCard(a,true)).join('')||'<p style="color:#999;font-size:12px;padding:8px 0">Aucun appareil actif.</p>';
+  let inCards=inactifs.length?`<div class="inactive-title">🗂️ Désactivés (historique conservé)</div>${inactifs.map(a=>buildCard(a,false)).join('')}`:'';
+  return `
+  <div class="appareils-manager">
+    <h3>🌡️ Gestion des appareils de température</h3>
+    <div class="app-list">${cards}</div>
+    ${inCards}
+    <div class="add-form">
+      <div><label>Nom de l'appareil</label><br><input type="text" id="new-nom" placeholder="Ex: Chambre froide sud" style="width:200px;margin-top:3px"></div>
+      <div><label>Type</label><br>
+        <select id="new-type" style="margin-top:3px">
+          <option value="neg">❄️ Chambre froide négative (–9°C→–22°C)</option>
+          <option value="mat">🧪 Cuve de maturation (–1°C→9°C)</option>
+        </select>
+      </div>
+      <button class="btn btn-primary" onclick="ajouterAppareil()">➕ Ajouter</button>
+    </div>
+  </div>
+  <div style="background:#E3F2FD;border-radius:8px;padding:11px 15px;font-size:11px;color:#1565C0">
+    <strong>ℹ️</strong> Chaque appareil crée sa propre feuille dans Google Sheets. Désactiver masque la feuille mais conserve l'historique.
+  </div>`;
 }
 
-function toggleAppCheck(appId, ck, val) {
-  if (!S.appChecks[appId]) S.appChecks[appId] = {};
+function buildCard(app, actif) {
+  const icon=app.type==='neg'?'❄️':'🧪';
+  const lbl=app.type==='neg'?'Chambre ⊖':'Maturation';
+  const isRen=S.renaming[app.id];
+  return `<div class="app-card ${actif?'active':'inactive'}">
+    <span style="font-size:18px">${icon}</span>
+    ${isRen
+      ? `<input class="rename-input" id="ren-${app.id}" value="${esc(app.nom)}" onkeydown="if(event.key==='Enter')confirmRen('${app.id}')">`
+      : `<span class="app-name">${esc(app.nom)}</span>`}
+    <span class="app-type">${lbl}</span>
+    <div class="app-card-actions">
+      ${isRen
+        ? `<button class="btn btn-primary btn-sm" onclick="confirmRen('${app.id}')">✓</button>
+           <button class="btn btn-sm" style="background:#eee" onclick="cancelRen('${app.id}')">✕</button>`
+        : actif
+          ? `<button class="btn btn-sm" style="background:#E3F2FD;color:#1565C0" onclick="goToApp('${app.id}')">👁 Voir</button>
+             <button class="btn btn-dup btn-sm" onclick="dupApp('${app.id}')">⎘ Dupliquer</button>
+             <button class="btn btn-sm" style="background:#E8F5E9;color:#2e7d32" onclick="startRen('${app.id}')">✏️ Renommer</button>
+             <button class="btn btn-danger btn-sm" onclick="delApp('${app.id}')">🗑 Désactiver</button>`
+          : `<button class="btn btn-primary btn-sm" onclick="reactApp('${app.id}')">♻️ Réactiver</button>`}
+    </div>
+  </div>`;
+}
+
+// ══ ACTIONS CHECKBOX ══════════════════════════════════════
+async function tick(tabId, itemName, day, val) {
+  if(!S.checks[tabId]) S.checks[tabId]={};
+  S.checks[tabId][itemName+'__'+day] = val;
+  updateProg(tabId);
+  toast(val?'✅':'☐');
+  try {
+    const r = await api('saveHebdo', { sheetName: SHEET_NAMES[tabId], itemName, day, value: val });
+    if (r && !r.ok) toast('⚠️ '+r.error, true);
+  } catch(e) { toast('❌ '+e.message, true); }
+}
+
+async function tickBi(itemName, monthIndex, val) {
+  if(!S.checks['biannuel']) S.checks['biannuel']={};
+  S.checks['biannuel'][itemName+'__'+monthIndex] = val;
+  toast(val?'✅':'☐');
+  try {
+    const r = await api('saveBiannuel', { itemName, monthIndex, value: val });
+    if (r && !r.ok) toast('⚠️ '+r.error, true);
+  } catch(e) { toast('❌ '+e.message, true); }
+}
+
+async function tickApp(appId, tempVal, day, slot, val) {
+  if(!S.appChecks[appId]) S.appChecks[appId]={};
+  const ck = slot ? `${tempVal}__${day}__${slot}` : `${tempVal}__${day}`;
   S.appChecks[appId][ck] = val;
-  showToast(val ? '✅ Validé' : '☐ Décoché');
-  if (typeof google !== 'undefined') google.script.run.saveAppareilCheckbox(appId, ck, val);
+  toast(val?'✅':'☐');
+  try {
+    const r = await api('saveAppareilTemp', { appareilId: appId, tempVal, day, slot, value: val });
+    if (r && !r.ok) toast('⚠️ '+r.error, true);
+  } catch(e) { toast('❌ '+e.message, true); }
 }
 
-function updateProgress(tabKey) {
-  const d = DATA[tabKey]; if (!d) return;
-  const days = Array.from({length:31},(_,i)=>i+1);
-  let total=0, checked=0;
-  d.sections.forEach(s => s.items.forEach(item => {
-    days.forEach(day => { total++; if(S.checks[tabKey][item.n+'__'+day]) checked++; });
-  }));
-  days.forEach(day => { total++; if(S.checks[tabKey]['BIO__'+day]) checked++; });
-  const pct = total>0 ? Math.round(checked/total*100) : 0;
-  const pb = document.getElementById('prog-'+tabKey);
-  const lbl = document.getElementById('prog-lbl-'+tabKey);
-  if (pb) pb.style.width = pct+'%';
-  if (lbl) lbl.textContent = checked+' / '+total+' ('+pct+'%)';
+// ══ ACTIONS SAVE ══════════════════════════════════════════
+async function saveComment(tabId) {
+  const el=document.getElementById('cmt-'+tabId); if(!el) return;
+  S.comments[tabId]=el.value;
+  try { await api('saveComment',{sheetName:tabId==='biannuel'?'Fréquences Bi-Annuelles':SHEET_NAMES[tabId],comment:el.value}); toast('💾 Enregistré'); }
+  catch(e){ toast('❌ '+e.message,true); }
+}
+async function saveAppComment(appId) {
+  const el=document.getElementById('cmt-app-'+appId); if(!el) return;
+  S.comments['app_'+appId]=el.value;
+  try { await api('saveAppareilComment',{appareilId:appId,comment:el.value}); toast('💾 Enregistré'); }
+  catch(e){ toast('❌ '+e.message,true); }
+}
+async function saveAppMeta(appId) {
+  const m=document.getElementById('meta-m-'+appId)?.value||'';
+  const v=document.getElementById('meta-v-'+appId)?.value||'';
+  try { await api('saveAppareilMeta',{appareilId:appId,moisAnnee:m,visa:v}); toast('💾 Méta enregistrée'); }
+  catch(e){ toast('❌ '+e.message,true); }
 }
 
-function saveComment(tabKey) {
-  const el = document.getElementById('cmt-'+tabKey);
-  if (!el) return;
-  S.comments[tabKey] = el.value;
-  showToast('💾 Commentaire enregistré !');
-  if (typeof google !== 'undefined') google.script.run.saveComment(tabKey, el.value);
+// ══ ACTIONS APPAREILS ═════════════════════════════════════
+async function ajouterAppareil() {
+  const nom=document.getElementById('new-nom').value.trim();
+  const type=document.getElementById('new-type').value;
+  if(!nom){ toast('⚠️ Entrez un nom',true); return; }
+  toast('⏳ Création...');
+  try {
+    const app=await api('addAppareil',{nom,type});
+    S.appareils.push(app);
+    document.getElementById('new-nom').value='';
+    updateAppareilsTabs(); renderTab('temp-manager');
+    toast('✅ '+app.nom+' créé !');
+  } catch(e){ toast('❌ '+e.message,true); }
 }
 
-function saveAppComment(appId) {
-  const el = document.getElementById('cmt-app-'+appId);
-  if (!el) return;
-  S.comments['app_'+appId] = el.value;
-  showToast('💾 Commentaire enregistré !');
-  if (typeof google !== 'undefined') google.script.run.saveAppareilComment(appId, el.value);
+async function dupApp(id) {
+  toast('⏳ Duplication...');
+  try {
+    const app=await api('dupliquerAppareil',{sourceId:id});
+    S.appareils.push(app);
+    updateAppareilsTabs(); renderTab('temp-manager');
+    toast('✅ Dupliqué : '+app.nom);
+  } catch(e){ toast('❌ '+e.message,true); }
 }
 
-function saveTempMeta(appId) {
-  const m = document.getElementById('meta-month-'+appId);
-  const v = document.getElementById('meta-visa-'+appId);
-  showToast('💾 Méta enregistrée');
-  if (typeof google !== 'undefined') google.script.run.saveAppareilMeta(appId, m?.value||'', v?.value||'');
+function startRen(id){ S.renaming[id]=true; renderTab('temp-manager'); setTimeout(()=>document.getElementById('ren-'+id)?.focus(),50); }
+function cancelRen(id){ delete S.renaming[id]; renderTab('temp-manager'); }
+async function confirmRen(id) {
+  const el=document.getElementById('ren-'+id); if(!el) return;
+  const nv=el.value.trim(); if(!nv) return;
+  try {
+    await api('renommerAppareil',{id,nouveauNom:nv});
+    const app=S.appareils.find(a=>a.id===id); if(app) app.nom=nv;
+    delete S.renaming[id];
+    updateAppareilsTabs(); renderTab('temp-manager');
+    toast('✅ Renommé en "'+nv+'"');
+  } catch(e){ toast('❌ '+e.message,true); }
 }
 
-// ══════════════════════════════════════════════════════
-// UTILS
-// ══════════════════════════════════════════════════════
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2200);
+async function delApp(id) {
+  const app=S.appareils.find(a=>a.id===id);
+  if(!confirm('Désactiver "'+app.nom+'" ?\nL\'historique sera conservé.')) return;
+  try {
+    await api('supprimerAppareil',{id});
+    app.actif=false;
+    if(S.tab==='app_'+id) S.tab='temp-manager';
+    updateAppareilsTabs(); renderTab('temp-manager');
+    toast('🗑 Désactivé');
+  } catch(e){ toast('❌ '+e.message,true); }
 }
 
-function escHtml(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+async function reactApp(id) {
+  try {
+    await api('reactiverAppareil',{id});
+    const app=S.appareils.find(a=>a.id===id); if(app) app.actif=true;
+    updateAppareilsTabs(); renderTab('temp-manager');
+    toast('♻️ Réactivé !');
+  } catch(e){ toast('❌ '+e.message,true); }
 }
+
+function goToApp(id) {
+  const el=document.querySelector(`[data-app-id="${id}"]`);
+  if(el) el.click(); else switchTab('app_'+id,null);
+}
+
+// ══ UTILS ═════════════════════════════════════════════════
+function updateProg(tabId) {
+  const d=DATA[tabId]; if(!d) return;
+  const days=Array.from({length:31},(_,i)=>i+1);
+  let total=0,checked=0;
+  days.forEach(day=>{ total++; if(S.checks[tabId]['BIO__'+day]) checked++; });
+  d.sections.forEach(s=>s.items.forEach(it=>days.forEach(day=>{ total++; if(S.checks[tabId][it.n+'__'+day]) checked++; })));
+  const pct=total>0?Math.round(checked/total*100):0;
+  const pb=document.getElementById('pb-'+tabId); if(pb) pb.style.width=pct+'%';
+  const pl=document.getElementById('pl-'+tabId); if(pl) pl.textContent=`${checked}/${total} (${pct}%)`;
+}
+
+function toast(msg, err=false) {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='show '+(err?'err':'ok');
+  clearTimeout(t._t); t._t=setTimeout(()=>t.className='',2000);
+}
+
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 </script>
 </body>
 </html>
