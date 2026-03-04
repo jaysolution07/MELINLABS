@@ -584,26 +584,20 @@ async function fetchRSS(url) {
 
   if (!data.items) return [];
 
-  return data.items.map(item => {
-    const xml = new DOMParser().parseFromString(
-      `<item>
-        <title>${item.title}</title>
-        <link>${item.link}</link>
-        <description>${item.description}</description>
-        <pubDate>${item.pubDate}</pubDate>
-      </item>`,
-      'text/xml'
-    );
-
-    return xml.querySelector("item");
-  });
+  return data.items.map(item => ({
+    title: item.title,
+    link: item.link,
+    description: item.description,
+    pubDate: item.pubDate,
+    image: item.thumbnail || item.enclosure?.link || null
+  }));
 }
 // ═══════════════════════════════════════════════════════════
 // PARSER UN ITEM RSS → objet deal
 // ═══════════════════════════════════════════════════════════
 function parseItem(item, src) {
 
-  const getText = tag => item.querySelector(tag)?.textContent?.trim() || '';
+  const getText = tag => item[tag] || '';
 
   const title = getText('title');
   if (!title) return null;
@@ -612,8 +606,7 @@ function parseItem(item, src) {
 
   const descHtml = getText('description');
 
-  const imgMatch = descHtml.match(/<img[^>]+src="([^">]+)"/);
-  const image = imgMatch ? imgMatch[1] : null;
+  const image = item.image || null;
 
   const desc = descHtml.replace(/<[^>]*>/g,'').slice(0,200);
 
@@ -924,6 +917,7 @@ renderQueueItems();
 </script>
 </body>
 </html>
+
 
 
 
