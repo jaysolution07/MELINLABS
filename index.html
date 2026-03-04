@@ -422,7 +422,7 @@ body::before {
 // On passe par allorigins.win comme proxy CORS gratuit
 // pour lire les flux RSS publics depuis le navigateur
 // ═══════════════════════════════════════════════════════════
-const CORS_PROXY = 'https://api.allorigins.win/raw?url=';
+const CORS_PROXY = 'https://api.rss2json.com/v1/api.json?rss_url=';
 
 const FEEDS = {
   dealabs: {
@@ -568,10 +568,23 @@ async function fetchAllFeeds() {
 async function fetchRSS(url) {
   const proxyUrl = CORS_PROXY + encodeURIComponent(url);
   const res = await fetch(proxyUrl);
-  const text = await res.text();
-  const xml = new DOMParser().parseFromString(text, 'text/xml');
-  const items = xml.querySelectorAll('item');
-  return Array.from(items);
+  const data = await res.json();
+
+  if (!data.items) return [];
+
+  return data.items.map(item => {
+    const xml = new DOMParser().parseFromString(
+      `<item>
+        <title>${item.title}</title>
+        <link>${item.link}</link>
+        <description>${item.description}</description>
+        <pubDate>${item.pubDate}</pubDate>
+      </item>`,
+      'text/xml'
+    );
+
+    return xml.querySelector("item");
+  });
 }
 // ═══════════════════════════════════════════════════════════
 // PARSER UN ITEM RSS → objet deal
@@ -881,5 +894,6 @@ renderQueueItems();
 </script>
 </body>
 </html>
+
 
 
