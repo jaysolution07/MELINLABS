@@ -91,7 +91,109 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f4f8;color:#333;font-
 .loading{display:flex;align-items:center;justify-content:center;padding:50px;color:var(--teal-mid);}
 .spinner{width:20px;height:20px;border:3px solid var(--teal-light);border-top-color:var(--teal-mid);border-radius:50%;animation:spin .8s linear infinite;margin-right:10px;}
 @keyframes spin{to{transform:rotate(360deg);}}
-@media print{.topbar,.tabs,.btn,#toast{display:none!important;}.content{padding:0;}}
+@media print {
+  /* ── Couleurs forcées ── */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* ── Désactive complètement le layout flex/scroll ── */
+  html {
+    height: auto !important;
+    overflow: visible !important;
+  }
+  body {
+    display: block !important;
+    height: auto !important;
+    overflow: visible !important;
+    background: #fff !important;
+  }
+
+  /* ── Cache la nav ── */
+  .topbar, .tabs, .tab-div,
+  #toast, #conn-status, .bio-badge,
+  .progress-zone,
+  .app-card-actions, .add-form,
+  .inactive-title,
+  .comment-box .btn,
+  button { display: none !important; }
+
+  /* ── Zone de contenu : plus de scroll, occupe tout ── */
+  .content {
+    display: block !important;
+    flex: none !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    padding: 6px !important;
+  }
+
+  /* ── Wrappers overflow-x → visible ── */
+  div[style*="overflow-x"] {
+    overflow: visible !important;
+    overflow-x: visible !important;
+  }
+
+  /* ── Tables ── */
+  .releve-table, .temp-table {
+    width: 100% !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+    font-size: 8px !important;
+  }
+  .releve-table thead, .temp-table thead {
+    display: table-header-group !important;
+  }
+  .releve-table tr, .temp-table tr {
+    page-break-inside: avoid;
+  }
+  .releve-table thead th, .temp-table thead th {
+    font-size: 8px !important;
+    padding: 2px 1px !important;
+  }
+  .releve-table tbody td, .temp-table td {
+    font-size: 8px !important;
+    padding: 1px !important;
+  }
+  .releve-table thead th.th-equip { min-width: 100px !important; }
+  .releve-table thead th.th-day, .releve-table tbody td { min-width: 0 !important; width: 18px !important; }
+
+  /* ── Checkboxes ── */
+  .cb-wrap input[type=checkbox] {
+    width: 10px !important;
+    height: 10px !important;
+  }
+
+  /* ── Section headers ── */
+  .sec-hdr {
+    page-break-after: avoid;
+    font-size: 10px !important;
+    padding: 3px 6px !important;
+  }
+
+  /* ── Meta / commentaires ── */
+  .meta-row {
+    box-shadow: none !important;
+    border: 1px solid #ccc !important;
+    margin-bottom: 5px !important;
+    font-size: 10px !important;
+    flex-wrap: wrap;
+  }
+  .comment-box {
+    box-shadow: none !important;
+    border: 1px solid #ccc !important;
+    page-break-inside: avoid;
+    margin-top: 6px !important;
+  }
+  .comment-box textarea {
+    min-height: 40px !important;
+    font-size: 9px !important;
+  }
+
+  /* ── Format page ── */
+  @page { size: A4 landscape; margin: 8mm; }
+}
 </style>
 </head>
 <body>
@@ -104,7 +206,8 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f4f8;color:#333;font-
   <div style="display:flex;gap:8px;align-items:center;">
     <span id="conn-status">⏳</span>
     <span class="bio-badge">✅ BIO</span>
-    <button class="btn btn-white" onclick="window.print()">🖨️</button>
+    <button class="btn btn-white" onclick="printPage()">🖨️ Imprimer</button>
+    <button class="btn" style="background:#7B1FA2;color:#fff" onclick="showCloture()">📦 Clôturer le mois</button>
   </div>
 </div>
 
@@ -122,6 +225,49 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f4f8;color:#333;font-
 </div>
 
 <div id="toast"></div>
+
+<!-- Modal clôture bi-annuel -->
+<div id="modal-cloture-bi" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:12px;padding:28px;max-width:420px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,.3);">
+    <h2 style="font-size:16px;font-weight:700;color:#7B1FA2;margin-bottom:6px">📦 Clôturer les fréquences bi-annuelles</h2>
+    <p style="font-size:12px;color:#555;margin-bottom:16px;line-height:1.6">
+      ✅ Exporte la feuille en <strong>PDF dans Google Drive</strong><br>
+      ✅ Remet toutes les cases à zéro<br>
+      ⚠️ Action irréversible
+    </p>
+    <div style="background:#f5f5f5;border-radius:8px;padding:12px;margin-bottom:16px">
+      <label style="font-size:11px;font-weight:700;color:#333;display:block;margin-bottom:6px">Nom du dossier Drive :</label>
+      <input id="cloture-bi-label" type="text" style="width:100%;border:1px solid #ccc;border-radius:6px;padding:7px 10px;font-size:13px;font-weight:600" placeholder="ex: 2026 – Bi-Annuel S1">
+    </div>
+    <div id="cloture-bi-result" style="display:none;font-size:11px;padding:10px;border-radius:6px;margin-bottom:14px"></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+      <button class="btn" style="background:#eee;color:#333" onclick="document.getElementById('modal-cloture-bi').style.display='none'">Annuler</button>
+      <button class="btn" style="background:#7B1FA2;color:#fff" id="btn-cloturer-bi" onclick="confirmerClotureBi()">📤 Exporter et remettre à zéro</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal clôture -->
+<div id="modal-cloture" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;display:none;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:12px;padding:28px;max-width:440px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,.3);">
+    <h2 style="font-size:16px;font-weight:700;color:#7B1FA2;margin-bottom:6px">📦 Clôturer le mois</h2>
+    <p style="font-size:12px;color:#555;margin-bottom:16px;line-height:1.6">
+      Cette action va :<br>
+      ✅ Exporter chaque feuille en <strong>PDF dans Google Drive</strong><br>
+      ✅ Remettre toutes les cases à zéro pour le mois suivant<br>
+      ⚠️ Les fréquences bi-annuelles <strong>ne sont pas</strong> remises à zéro
+    </p>
+    <div style="background:#f5f5f5;border-radius:8px;padding:12px;margin-bottom:16px">
+      <label style="font-size:11px;font-weight:700;color:#333;display:block;margin-bottom:6px">Nom du dossier Drive qui sera créé :</label>
+      <input id="cloture-label" type="text" style="width:100%;border:1px solid #ccc;border-radius:6px;padding:7px 10px;font-size:13px;font-weight:600" placeholder="ex: 2026-03 – Mars">
+    </div>
+    <div id="cloture-result" style="display:none;font-size:11px;padding:10px;border-radius:6px;margin-bottom:14px"></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+      <button class="btn" style="background:#eee;color:#333" onclick="closeCloture()">Annuler</button>
+      <button class="btn" style="background:#7B1FA2;color:#fff" id="btn-cloturer" onclick="confirmerCloture()">📤 Exporter et remettre à zéro</button>
+    </div>
+  </div>
+</div>
 
 <script>
 // ══ CONFIG ════════════════════════════════════════════════
@@ -201,7 +347,7 @@ const DATA = {
   ]}
 };
 const MONTHS=['Jan','Fev','Mar','Avr','Mai','Juin','Juil','Août','Sept','Oct','Nov','Déc'];
-const TEMPS_NEG=['···',-9,-10,-11,-12,-13,-14,-15,-16,-17,-18,-19,-20,-21,-22,'···'];
+const TEMPS_NEG=[-9,-10,-11,-12,-13,-14,-15,-16,-17,-18,-19,-20,-21,-22];
 const TEMPS_MAT=[9,8,7,6,5,4,3,2,1,0,-1];
 const ALERT_NEG=new Set([-15,-14,-13,-12,-11,-10,-9]);
 const TARGET_NEG=new Set([-18,-19,-20,-21,-22]);
@@ -425,6 +571,11 @@ function buildBiannuel() {
   <div class="comment-box"><h3>📝 Anomalies & Commentaires</h3>
     <textarea id="cmt-biannuel" placeholder="Date + description...">${esc(S.comments['biannuel']||'')}</textarea>
     <button class="btn btn-primary" style="margin-top:5px" onclick="saveComment('biannuel')">💾 Enregistrer</button>
+  </div>
+  <div style="margin-top:12px;padding:14px;background:#F3E5F5;border-radius:8px;border-left:4px solid #7B1FA2;">
+    <div style="font-size:12px;font-weight:700;color:#7B1FA2;margin-bottom:6px">📦 Clôturer les fréquences bi-annuelles</div>
+    <div style="font-size:11px;color:#555;margin-bottom:10px">Exporte cette feuille en PDF dans Google Drive et remet toutes les cases à zéro. À faire quand vous jugez la période terminée (6 mois, 1 an...).</div>
+    <button class="btn" style="background:#7B1FA2;color:#fff" onclick="showClotureBi()">📤 Exporter et remettre à zéro</button>
   </div>`;
   return html;
 }
@@ -434,7 +585,7 @@ function buildTempNeg(app) {
   const key=app.id; if(!S.appChecks[key]) S.appChecks[key]={};
   const days=Array.from({length:31},(_,i)=>i+1);
   let total=0,checked=0;
-  TEMPS_NEG.forEach(t=>{ if(t==='···') return; days.forEach(d=>['AM','PM'].forEach(slot=>{ total++; if(S.appChecks[key][t+'__'+d+'__'+slot]) checked++; })); });
+  TEMPS_NEG.forEach(t=>{ days.forEach(d=>['AM','PM'].forEach(slot=>{ total++; if(S.appChecks[key][t+'__'+d+'__'+slot]) checked++; })); });
   const pct=total>0?Math.round(checked/total*100):0;
   let html=`
   <div class="meta-row">
@@ -452,13 +603,12 @@ function buildTempNeg(app) {
   </div>
   <div style="overflow-x:auto;"><table class="temp-table">
     <thead>
-      <tr style="background:#1565C0;color:#fff"><th class="t-label">T°</th>${days.map(d=>`<th colspan="2">${d}</th>`).join('')}<th>Visa</th></tr>
-      <tr style="background:#1976D2;color:#fff;font-size:8px"><th></th>${days.map(()=>'<th class="ampm-label">AM</th><th class="ampm-label">PM</th>').join('')}<th></th></tr>
+      <tr style="background:#1565C0;color:#fff"><th class="t-label">T°</th>${days.map(d=>`<th colspan="2">${d}</th>`).join('')}</tr>
+      <tr style="background:#1976D2;color:#fff;font-size:8px"><th></th>${days.map(()=>'<th class="ampm-label">AM</th><th class="ampm-label">PM</th>').join('')}</tr>
     </thead><tbody>`;
   TEMPS_NEG.forEach(t=>{
     let cls,lbl;
-    if(t==='···'){cls='temp-dot';lbl='···';}
-    else if(ALERT_NEG.has(t)){cls='temp-alert';lbl='✗ '+t+'°C';}
+    if(ALERT_NEG.has(t)){cls='temp-alert';lbl='✗ '+t+'°C';}
     else if(TARGET_NEG.has(t)){cls='temp-ok';lbl='✓ '+t+'°C';}
     else{cls='temp-warn';lbl=t+'°C';}
     html+=`<tr><td class="t-label ${cls}">${lbl}</td>`;
@@ -468,11 +618,9 @@ function buildTempNeg(app) {
         html+=`<td class="${cls}"><div class="cb-wrap"><input type="checkbox" ${ck} onchange="tickApp('${key}',${JSON.stringify(t)},${d},'${slot}',this.checked)"></div></td>`;
       });
     });
-    html+=`<td class="temp-dot"></td></tr>`;
+    html+=`</tr>`;
   });
-  html+=`<tr style="background:var(--teal-light)"><td class="t-label" style="font-weight:700;font-size:10px">Visa</td>`;
-  days.forEach(d=>{ html+=`<td colspan="2"><input type="text" maxlength="4" style="width:100%;border:none;background:transparent;text-align:center;font-size:9px"></td>`; });
-  html+=`<td></td></tr></tbody></table></div>
+  html+=`</tbody></table></div>
   <div class="comment-box"><h3>📝 Anomalies</h3>
     <textarea id="cmt-app-${key}" placeholder="Date + description...">${esc(S.comments['app_'+key]||'')}</textarea>
     <button class="btn btn-primary" style="margin-top:5px" onclick="saveAppComment('${key}')">💾 Enregistrer</button>
@@ -512,7 +660,7 @@ function buildTempMat(app) {
       const ck=S.appChecks[key][t+'__'+d]?'checked':'';
       html+=`<td class="${cls}"><div class="cb-wrap"><input type="checkbox" ${ck} onchange="tickApp('${key}',${t},${d},null,this.checked)"></div></td>`;
     });
-    html+=`<td style="background:var(--teal-alt)"></td></tr>`;
+    html+=`</tr>`;
   });
   html+=`</tbody></table></div>
   <div class="comment-box"><h3>📝 Anomalies</h3>
@@ -707,6 +855,123 @@ function toast(msg, err=false) {
   const t=document.getElementById('toast');
   t.textContent=msg; t.className='show '+(err?'err':'ok');
   clearTimeout(t._t); t._t=setTimeout(()=>t.className='',2000);
+}
+
+function printPage() {
+  // Met à jour l'attribut data-tab pour le titre d'impression
+  const labels = {
+    chaud: 'Laboratoire Chaud',
+    froid: 'Laboratoire Froid',
+    autres: 'Autres Zones',
+    biannuel: 'Fréquences Bi-Annuelles',
+    'temp-manager': 'Appareils'
+  };
+  let label = labels[S.tab] || S.tab;
+  if (S.tab.startsWith('app_')) {
+    const app = S.appareils.find(a => a.id === S.tab.replace('app_',''));
+    label = app ? app.nom : 'Appareil';
+  }
+  document.getElementById('main-content').setAttribute('data-tab', label);
+  window.print();
+}
+
+function showClotureBi() {
+  const now = new Date();
+  document.getElementById('cloture-bi-label').value = now.getFullYear() + ' – Bi-Annuel';
+  document.getElementById('cloture-bi-result').style.display = 'none';
+  document.getElementById('btn-cloturer-bi').disabled = false;
+  document.getElementById('btn-cloturer-bi').textContent = '📤 Exporter et remettre à zéro';
+  document.getElementById('modal-cloture-bi').style.display = 'flex';
+}
+
+async function confirmerClotureBi() {
+  const label = document.getElementById('cloture-bi-label').value.trim();
+  if (!label) { toast('⚠️ Entrez un nom', true); return; }
+  if (!confirm('Confirmer la clôture bi-annuelle "' + label + '" ?\n\nToutes les cases seront remises à zéro.')) return;
+  const btn = document.getElementById('btn-cloturer-bi');
+  btn.disabled = true; btn.textContent = '⏳ Export en cours...';
+  const res = document.getElementById('cloture-bi-result');
+  try {
+    const r = await api('cloturerBiannuel', { label });
+    res.style.display = 'block';
+    if (r.ok) {
+      res.style.background = '#E8F5E9'; res.style.color = '#2E7D32';
+      res.innerHTML = '✅ <strong>' + r.exported + '</strong> exporté dans Drive !';
+      btn.textContent = '✓ Terminé';
+      // Vider le cache local biannuel
+      delete S.checks['biannuel'];
+      delete S.comments['biannuel'];
+      S.loaded.delete('biannuel');
+    } else {
+      res.style.background = '#FFEBEE'; res.style.color = '#C62828';
+      res.innerHTML = '❌ ' + r.error;
+      btn.disabled = false; btn.textContent = '📤 Réessayer';
+    }
+  } catch(e) {
+    res.style.display = 'block';
+    res.style.background = '#FFEBEE'; res.style.color = '#C62828';
+    res.innerHTML = '❌ ' + e.message;
+    btn.disabled = false; btn.textContent = '📤 Réessayer';
+  }
+}
+
+function showCloture() {
+  // Pré-remplir avec le mois en cours
+  const now = new Date();
+  const mois = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  const label = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + ' – ' + mois[now.getMonth()];
+  document.getElementById('cloture-label').value = label;
+  document.getElementById('cloture-result').style.display = 'none';
+  document.getElementById('btn-cloturer').disabled = false;
+  document.getElementById('btn-cloturer').textContent = '📤 Exporter et remettre à zéro';
+  document.getElementById('modal-cloture').style.display = 'flex';
+}
+
+function closeCloture() {
+  document.getElementById('modal-cloture').style.display = 'none';
+}
+
+async function confirmerCloture() {
+  const label = document.getElementById('cloture-label').value.trim();
+  if (!label) { toast('⚠️ Entrez un nom de dossier', true); return; }
+  if (!confirm('Confirmer la clôture de "' + label + '" ?\n\nCette action est irréversible — assurez-vous que toutes les données du mois sont bien saisies.')) return;
+
+  const btn = document.getElementById('btn-cloturer');
+  btn.disabled = true;
+  btn.textContent = '⏳ Export en cours...';
+  const res = document.getElementById('cloture-result');
+  res.style.display = 'none';
+
+  try {
+    const r = await api('cloturerMois', { moisLabel: label });
+    res.style.display = 'block';
+    if (r.ok) {
+      res.style.background = '#E8F5E9';
+      res.style.color = '#2E7D32';
+      res.innerHTML = '<strong>✅ Clôture réussie !</strong><br>' +
+        r.exported.map(f => '📄 ' + f).join('<br>') +
+        '<br><br>📁 Dossier Drive : <strong>' + label + '</strong>';
+      btn.textContent = '✓ Terminé';
+      // Invalider le cache local pour forcer rechargement
+      S.loaded.clear();
+      S.checks = {}; S.appChecks = {}; S.comments = {}; S.meta = {};
+    } else {
+      res.style.background = '#FFEBEE';
+      res.style.color = '#C62828';
+      res.innerHTML = '<strong>⚠️ Clôture partielle</strong><br>' +
+        (r.errors || []).join('<br>') +
+        (r.exported.length ? '<br><br>Exportés : ' + r.exported.join(', ') : '');
+      btn.disabled = false;
+      btn.textContent = '📤 Réessayer';
+    }
+  } catch(e) {
+    res.style.display = 'block';
+    res.style.background = '#FFEBEE';
+    res.style.color = '#C62828';
+    res.innerHTML = '❌ Erreur : ' + e.message;
+    btn.disabled = false;
+    btn.textContent = '📤 Réessayer';
+  }
 }
 
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
