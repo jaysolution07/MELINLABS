@@ -2,118 +2,175 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Tempclean</title>
 <style>
 :root {
   --teal-dark:#1B6B7B;--teal-mid:#2E9DB5;--teal-light:#C8EFF5;
   --teal-alt:#E0F7FA;--green:#4CAF50;--green-light:#D7F5DC;
-  --red:#F44336;--white:#fff;--radius:8px;--shadow:0 1px 5px rgba(0,0,0,.1);
+  --red:#F44336;--white:#fff;--radius:10px;--shadow:0 2px 8px rgba(0,0,0,.12);
+  --touch-min:44px;
 }
-*{box-sizing:border-box;margin:0;padding:0;}
-html,body{height:100%;}
-body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f4f8;color:#333;font-size:13px;display:flex;flex-direction:column;}
-.topbar{background:var(--teal-dark);color:#fff;padding:10px 18px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,.3);flex-shrink:0;}
-.topbar h1{font-size:16px;font-weight:700;}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f4f8;color:#333;font-size:14px;display:flex;flex-direction:column;}
+
+/* ── TOPBAR ── */
+.topbar{background:var(--teal-dark);color:#fff;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,.3);flex-shrink:0;gap:8px;}
+.topbar h1{font-size:15px;font-weight:700;white-space:nowrap;}
 .topbar .sub{font-size:10px;opacity:.75;margin-top:1px;}
-#conn-status{font-size:11px;padding:3px 10px;border-radius:20px;background:rgba(255,255,255,.15);color:#fff;}
-.bio-badge{background:var(--green);color:#fff;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;}
-.btn{border:none;border-radius:6px;cursor:pointer;font-weight:600;transition:all .15s;padding:6px 13px;font-size:12px;}
+#conn-status{font-size:11px;padding:3px 9px;border-radius:20px;background:rgba(255,255,255,.15);color:#fff;white-space:nowrap;}
+.topbar-right{display:flex;gap:6px;align-items:center;flex-shrink:0;}
+
+/* ── BOUTONS ── */
+.btn{border:none;border-radius:8px;cursor:pointer;font-weight:600;transition:all .15s;padding:8px 14px;font-size:13px;min-height:var(--touch-min);display:inline-flex;align-items:center;justify-content:center;gap:4px;touch-action:manipulation;}
+.btn:active{transform:scale(.96);opacity:.85;}
 .btn-white{background:#fff;color:var(--teal-dark);}
-.btn-white:hover{background:var(--teal-light);}
 .btn-primary{background:var(--teal-mid);color:#fff;}
 .btn-primary:hover{background:var(--teal-dark);}
-.btn-danger{background:var(--red);color:#fff;padding:4px 9px;font-size:11px;}
-.btn-dup{background:#7B1FA2;color:#fff;padding:4px 9px;font-size:11px;}
-.btn-sm{padding:4px 9px;font-size:11px;}
-.tabs{background:var(--teal-mid);display:flex;overflow-x:auto;padding:0 12px;gap:1px;scrollbar-width:thin;flex-shrink:0;}
-.tab{padding:8px 13px;color:rgba(255,255,255,.7);cursor:pointer;font-size:12px;font-weight:600;border-bottom:3px solid transparent;white-space:nowrap;transition:all .2s;display:flex;align-items:center;gap:5px;}
-.tab:hover{color:#fff;}
+.btn-danger{background:var(--red);color:#fff;}
+.btn-dup{background:#7B1FA2;color:#fff;}
+.btn-sm{padding:6px 11px;font-size:12px;min-height:36px;}
+.btn-icon{padding:8px;min-width:var(--touch-min);}
+
+/* ── TABS ── */
+.tabs{background:var(--teal-mid);display:flex;overflow-x:auto;padding:0 8px;gap:0;scrollbar-width:none;flex-shrink:0;-webkit-overflow-scrolling:touch;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{padding:11px 13px;color:rgba(255,255,255,.7);cursor:pointer;font-size:12px;font-weight:600;border-bottom:3px solid transparent;white-space:nowrap;transition:all .2s;display:flex;align-items:center;gap:5px;min-height:var(--touch-min);touch-action:manipulation;}
+.tab:active{background:rgba(255,255,255,.15);}
 .tab.active{color:#fff;border-bottom-color:#fff;background:rgba(255,255,255,.12);}
 .tab .badge{background:rgba(255,255,255,.25);border-radius:10px;padding:1px 6px;font-size:10px;}
-.tab-div{width:1px;background:rgba(255,255,255,.25);margin:6px 2px;}
-.content{flex:1;overflow-y:auto;overflow-x:auto;padding:14px;}
-.meta-row{display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap;align-items:center;background:#fff;padding:9px 13px;border-radius:var(--radius);box-shadow:var(--shadow);}
+.tab-div{width:1px;background:rgba(255,255,255,.25);margin:8px 3px;flex-shrink:0;}
+
+/* ── CONTENT ── */
+.content{flex:1;overflow-y:auto;overflow-x:hidden;padding:12px;-webkit-overflow-scrolling:touch;}
+
+/* ── META ROW ── */
+.meta-row{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center;background:#fff;padding:10px 13px;border-radius:var(--radius);box-shadow:var(--shadow);}
 .meta-row label{font-size:11px;font-weight:700;color:var(--teal-dark);}
-.meta-row input,.meta-row select{border:1px solid #ccc;border-radius:5px;padding:4px 8px;font-size:12px;}
-.meta-row input:focus{outline:none;border-color:var(--teal-mid);}
-.progress-zone{background:#fff;border-radius:var(--radius);padding:9px 13px;margin-bottom:12px;box-shadow:var(--shadow);}
-.progress-bar{background:#e0e0e0;border-radius:100px;height:9px;overflow:hidden;}
+.meta-row input,.meta-row select{border:1px solid #ccc;border-radius:7px;padding:7px 10px;font-size:14px;min-height:var(--touch-min);background:#fff;}
+.meta-row input[type=month]{min-width:150px;}
+.meta-row input[type=text]{min-width:80px;}
+.meta-row input:focus{outline:none;border-color:var(--teal-mid);box-shadow:0 0 0 2px rgba(46,157,181,.2);}
+
+/* ── PROGRESS ── */
+.progress-zone{background:#fff;border-radius:var(--radius);padding:10px 13px;margin-bottom:12px;box-shadow:var(--shadow);}
+.progress-bar{background:#e0e0e0;border-radius:100px;height:10px;overflow:hidden;}
 .progress-fill{height:100%;background:var(--teal-mid);border-radius:100px;transition:width .4s;}
-.progress-label{font-size:10px;color:#777;margin-top:2px;text-align:right;}
-.sec-hdr{background:var(--teal-light);color:var(--teal-dark);font-size:12px;font-weight:700;padding:6px 9px;margin:8px 0 0;border-left:4px solid var(--teal-mid);border-radius:4px;}
-.releve-table{width:100%;border-collapse:collapse;background:#fff;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);font-size:11px;}
+.progress-label{font-size:11px;color:#777;margin-top:3px;text-align:right;}
+
+/* ── SECTION HEADER ── */
+.sec-hdr{background:var(--teal-light);color:var(--teal-dark);font-size:12px;font-weight:700;padding:8px 10px;margin:8px 0 0;border-left:4px solid var(--teal-mid);border-radius:4px;}
+
+/* ── TABLE WRAPPER ── */
+.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:var(--radius);box-shadow:var(--shadow);}
+
+/* ── RELEVE TABLE ── */
+.releve-table{width:100%;border-collapse:collapse;background:#fff;font-size:12px;}
 .releve-table thead tr{background:var(--teal-dark);}
-.releve-table thead th{padding:4px 2px;text-align:center;font-weight:700;border:1px solid rgba(255,255,255,.15);font-size:10px;color:#fff;}
-.releve-table thead th.th-equip{text-align:left;padding-left:8px;min-width:150px;}
-.releve-table thead th.th-period{min-width:70px;}
-.releve-table thead th.th-day{width:24px;min-width:24px;}
+.releve-table thead th{padding:6px 3px;text-align:center;font-weight:700;border:1px solid rgba(255,255,255,.15);font-size:10px;color:#fff;}
+.releve-table thead th.th-equip{text-align:left;padding-left:10px;min-width:140px;position:sticky;left:0;z-index:2;background:var(--teal-dark);}
+.releve-table thead th.th-period{min-width:65px;}
+.releve-table thead th.th-day{width:32px;min-width:32px;}
 .releve-table tbody tr:nth-child(odd){background:#fff;}
 .releve-table tbody tr:nth-child(even){background:var(--teal-alt);}
-.releve-table tbody tr:hover{background:#B2EBF2;}
-.releve-table tbody td{padding:2px;border:1px solid #ccc;vertical-align:middle;}
-.releve-table tbody td.td-equip{font-weight:600;padding-left:8px;}
+.releve-table tbody tr:active{background:#B2EBF2;}
+.releve-table tbody td{padding:3px;border:1px solid #ddd;vertical-align:middle;}
+.releve-table tbody td.td-equip{font-weight:600;padding-left:10px;position:sticky;left:0;z-index:1;background:inherit;min-width:140px;font-size:12px;}
 .releve-table tbody td.td-period{text-align:center;font-size:10px;color:#555;}
 .bio-row td{background:var(--green-light)!important;}
-.bio-row td.td-equip{color:#2e7d32;font-weight:700;}
-.cb-wrap{display:flex;align-items:center;justify-content:center;}
-.cb-wrap input[type=checkbox]{width:14px;height:14px;cursor:pointer;accent-color:var(--teal-mid);}
+.bio-row td.td-equip{color:#2e7d32;font-weight:700;background:var(--green-light)!important;}
+
+/* ── CHECKBOXES ── */
+.cb-wrap{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:2px;}
+.cb-wrap input[type=checkbox]{width:22px;height:22px;cursor:pointer;accent-color:var(--teal-mid);touch-action:manipulation;}
 .bio-row .cb-wrap input[type=checkbox]{accent-color:var(--green);}
-.temp-table{width:100%;border-collapse:collapse;background:#fff;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);font-size:10px;}
-.temp-table th,.temp-table td{border:1px solid #ccc;padding:2px 1px;text-align:center;}
-.t-label{font-weight:700;min-width:52px;padding:2px 4px;}
+
+/* ── INPUT pH ── */
+.ph-input{width:40px;font-size:11px;border:1px solid #aaa;border-radius:4px;padding:2px 3px;text-align:center;background:#fff;touch-action:manipulation;}
+
+/* ── TEMP TABLES ── */
+.temp-table{width:100%;border-collapse:collapse;background:#fff;font-size:11px;}
+.temp-table th,.temp-table td{border:1px solid #ccc;padding:3px 2px;text-align:center;}
+.t-label{font-weight:700;min-width:54px;padding:3px 5px;font-size:11px;position:sticky;left:0;z-index:1;}
 .temp-ok{background:#E8F5E9;color:#2E7D32;}
 .temp-warn{background:#FFF8E1;color:#F57F17;}
 .temp-alert{background:#FFEBEE;color:#C62828;}
-.temp-dot{background:#E0E0E0;color:#757575;}
 .ampm-label{font-size:8px;font-weight:700;color:#fff;}
-.appareils-manager{background:#fff;border-radius:var(--radius);padding:13px;margin-bottom:13px;box-shadow:var(--shadow);}
-.appareils-manager h3{font-size:13px;font-weight:700;color:var(--teal-dark);margin-bottom:11px;}
-.app-list{display:flex;flex-direction:column;gap:7px;margin-bottom:13px;}
-.app-card{display:flex;align-items:center;gap:8px;padding:8px 11px;border-radius:6px;border:1px solid #e0e0e0;background:#fafafa;}
-.app-card.active{border-left:3px solid var(--teal-mid);}
-.app-card.inactive{opacity:.55;border-left:3px solid #ccc;}
-.app-card .app-name{font-weight:700;font-size:12px;flex:1;}
-.app-card .app-type{font-size:10px;color:#888;background:#e0e0e0;padding:2px 7px;border-radius:10px;}
-.app-card input.rename-input{border:1px solid var(--teal-mid);border-radius:4px;padding:3px 7px;font-size:12px;font-weight:700;flex:1;}
-.app-card-actions{display:flex;gap:4px;flex-wrap:wrap;}
-.add-form{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;padding:9px;background:#f5f5f5;border-radius:6px;}
-.add-form label{font-size:11px;font-weight:700;color:var(--teal-dark);}
-.add-form input,.add-form select{border:1px solid #ccc;border-radius:5px;padding:5px 9px;font-size:12px;}
-.inactive-title{font-size:11px;font-weight:700;color:#999;margin:10px 0 6px;}
-.comment-box{background:#fff;border-radius:var(--radius);padding:11px 13px;margin-top:12px;box-shadow:var(--shadow);}
-.comment-box h3{font-size:12px;font-weight:700;color:var(--teal-dark);margin-bottom:6px;}
-.comment-box textarea{width:100%;min-height:65px;border:1px solid #ccc;border-radius:5px;padding:6px;font-size:11px;resize:vertical;font-family:inherit;}
-#toast{position:fixed;bottom:16px;right:16px;padding:8px 15px;border-radius:7px;font-size:12px;opacity:0;transition:opacity .3s;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,.3);pointer-events:none;}
+.temp-table .cb-wrap input[type=checkbox]{width:20px;height:20px;}
+
+/* ── MANAGER ── */
+.appareils-manager{background:#fff;border-radius:var(--radius);padding:14px;margin-bottom:14px;box-shadow:var(--shadow);}
+.appareils-manager h3{font-size:14px;font-weight:700;color:var(--teal-dark);margin-bottom:12px;}
+.app-list{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
+.app-card{display:flex;align-items:flex-start;gap:10px;padding:12px;border-radius:10px;border:1px solid #e0e0e0;background:#fafafa;flex-wrap:wrap;}
+.app-card.active{border-left:4px solid var(--teal-mid);}
+.app-card.inactive{opacity:.55;border-left:4px solid #ccc;}
+.app-card-info{display:flex;align-items:center;gap:8px;flex:1;min-width:0;}
+.app-card .app-name{font-weight:700;font-size:13px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.app-card .app-type{font-size:10px;color:#888;background:#e0e0e0;padding:3px 8px;border-radius:10px;white-space:nowrap;}
+.app-card input.rename-input{border:1px solid var(--teal-mid);border-radius:6px;padding:6px 10px;font-size:13px;font-weight:700;flex:1;min-height:var(--touch-min);}
+.app-card-actions{display:flex;gap:6px;flex-wrap:wrap;width:100%;}
+.add-form{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;padding:12px;background:#f5f5f5;border-radius:8px;}
+.add-form label{font-size:12px;font-weight:700;color:var(--teal-dark);}
+.add-form input,.add-form select{border:1px solid #ccc;border-radius:7px;padding:8px 10px;font-size:14px;min-height:var(--touch-min);background:#fff;width:100%;}
+.add-form > div{flex:1;min-width:160px;}
+.inactive-title{font-size:12px;font-weight:700;color:#999;margin:12px 0 8px;}
+
+/* ── COMMENT BOX ── */
+.comment-box{background:#fff;border-radius:var(--radius);padding:12px 14px;margin-top:12px;box-shadow:var(--shadow);}
+.comment-box h3{font-size:13px;font-weight:700;color:var(--teal-dark);margin-bottom:8px;}
+.comment-box textarea{width:100%;min-height:80px;border:1px solid #ccc;border-radius:7px;padding:8px 10px;font-size:14px;resize:vertical;font-family:inherit;-webkit-appearance:none;}
+.comment-box textarea:focus{outline:none;border-color:var(--teal-mid);}
+
+/* ── TOAST ── */
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);padding:10px 20px;border-radius:24px;font-size:13px;opacity:0;transition:opacity .3s;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.25);pointer-events:none;white-space:nowrap;max-width:90vw;text-align:center;}
 #toast.show{opacity:1;}
 #toast.ok{background:#1B6B7B;color:#fff;}
 #toast.err{background:#c62828;color:#fff;}
-.loading{display:flex;align-items:center;justify-content:center;padding:50px;color:var(--teal-mid);}
-.spinner{width:20px;height:20px;border:3px solid var(--teal-light);border-top-color:var(--teal-mid);border-radius:50%;animation:spin .8s linear infinite;margin-right:10px;}
+
+/* ── LOADING ── */
+.loading{display:flex;align-items:center;justify-content:center;padding:60px 20px;color:var(--teal-mid);flex-direction:column;gap:12px;}
+.spinner{width:28px;height:28px;border:3px solid var(--teal-light);border-top-color:var(--teal-mid);border-radius:50%;animation:spin .8s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
+
+/* ── MODAL ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1000;align-items:flex-end;justify-content:center;padding:0;}
+@media(min-width:600px){.modal-overlay{align-items:center;padding:20px;}}
+.modal-box{background:#fff;border-radius:20px 20px 0 0;padding:24px 20px 32px;width:100%;max-width:480px;box-shadow:0 -4px 40px rgba(0,0,0,.2);max-height:90vh;overflow-y:auto;}
+@media(min-width:600px){.modal-box{border-radius:16px;padding:28px;}}
+.modal-box h2{font-size:16px;font-weight:700;color:#7B1FA2;margin-bottom:8px;}
+.modal-box p{font-size:13px;color:#555;margin-bottom:16px;line-height:1.6;}
+.modal-input-wrap{background:#f5f5f5;border-radius:10px;padding:12px;margin-bottom:16px;}
+.modal-input-wrap label{font-size:12px;font-weight:700;color:#333;display:block;margin-bottom:6px;}
+.modal-input-wrap input{width:100%;border:1px solid #ccc;border-radius:8px;padding:10px 12px;font-size:15px;font-weight:600;min-height:var(--touch-min);background:#fff;}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;}
+.modal-actions .btn{flex:1;min-width:100px;}
+
+/* ── RESPONSIVE AJUSTEMENTS ── */
+@media(max-width:480px){
+  .topbar h1{font-size:14px;}
+  .btn{font-size:12px;padding:7px 10px;}
+  .tab{padding:10px 10px;font-size:11px;}
+  .releve-table{font-size:11px;}
+  .releve-table tbody td.td-equip{min-width:120px;}
+  .cb-wrap input[type=checkbox]{width:24px;height:24px;}
+}
+
+/* ── PRINT ── */
 @media print {
   *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}
   html,body{height:auto!important;overflow:visible!important;display:block!important;background:#fff!important;}
-  /* Cache tout sauf le contenu */
-  .topbar,.tabs,.tab-div,#toast,.progress-zone,
-  .app-card-actions,.add-form,.inactive-title,
-  .comment-box .btn,button,.btn{display:none!important;}
-  /* Le contenu occupe toute la page */
-  .content{
-    display:block!important;position:absolute!important;top:0!important;left:0!important;
-    width:100%!important;height:auto!important;overflow:visible!important;padding:4mm!important;
-  }
-  /* Tables compactes */
-  .releve-table,.temp-table{
-    width:100%!important;box-shadow:none!important;
-    overflow:visible!important;font-size:7px!important;
-    border:1px solid #999!important;
-  }
+  .topbar,.tabs,.tab-div,#toast,.progress-zone,.app-card-actions,
+  .add-form,.inactive-title,.comment-box .btn,button,.btn,#toast,.meta-row button{display:none!important;}
+  .content{display:block!important;position:absolute!important;top:0!important;left:0!important;width:100%!important;height:auto!important;overflow:visible!important;padding:4mm!important;}
+  .table-scroll{overflow:visible!important;box-shadow:none!important;}
+  .releve-table,.temp-table{width:100%!important;box-shadow:none!important;overflow:visible!important;font-size:7px!important;border:1px solid #999!important;}
   .releve-table thead{display:table-header-group!important;}
   .releve-table tr,.temp-table tr{page-break-inside:avoid;}
   .releve-table thead th,.temp-table thead th{font-size:7px!important;padding:1px!important;}
   .releve-table tbody td,.temp-table td{font-size:7px!important;padding:1px!important;}
-  .releve-table thead th.th-equip{min-width:90px!important;}
+  .releve-table thead th.th-equip,.releve-table tbody td.td-equip{position:static!important;min-width:90px!important;}
   .releve-table thead th.th-day,.releve-table tbody td{width:14px!important;min-width:0!important;}
   .cb-wrap input[type=checkbox]{width:9px!important;height:9px!important;}
   .sec-hdr{page-break-after:avoid;font-size:8px!important;padding:2px 4px!important;}
@@ -129,62 +186,61 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f4f8;color:#333;font-
 
 <div class="topbar">
   <div>
-    <h1>🧹TempClean🌡️</h1>
+    <h1>🧹 TempClean 🌡️</h1>
     <div class="sub" id="ss-name">Connexion...</div>
   </div>
-  <div style="display:flex;gap:8px;align-items:center;">
+  <div class="topbar-right">
     <span id="conn-status">⏳</span>
-    <span class="bio-badge">✅ BIO</span>
-    <button class="btn btn-white" onclick="printPage()">🖨️ Imprimer</button>
-    <button class="btn" style="background:#7B1FA2;color:#fff" onclick="showCloture()">📦 Clôturer le mois</button>
+    <button class="btn btn-white btn-sm" onclick="printPage()">🖨️</button>
+    <button class="btn btn-sm" style="background:#7B1FA2;color:#fff" onclick="showCloture()">📦 Clôturer</button>
   </div>
 </div>
 
 <div class="tabs" id="tabs-bar">
-  <div class="tab active" onclick="switchTab('chaud',this)">🔥 Labo Chaud</div>
-  <div class="tab" onclick="switchTab('froid',this)">❄️ Labo Froid</div>
-  <div class="tab" onclick="switchTab('autres',this)">🏭 Autres Zones</div>
-  <div class="tab" onclick="switchTab('biannuel',this)">📅 Bi-Annuel</div>
+  <div class="tab active" onclick="switchTab('chaud',this)">🔥 Chaud</div>
+  <div class="tab" onclick="switchTab('froid',this)">❄️ Froid</div>
+  <div class="tab" onclick="switchTab('autres',this)">🏭 Autres</div>
+  <div class="tab" onclick="switchTab('biannuel',this)">📅 Bi-Ann.</div>
   <div class="tab-div"></div>
   <div class="tab" onclick="switchTab('temp-manager',this)">⚙️ Appareils <span class="badge" id="badge-app">0</span></div>
 </div>
 
 <div class="content" id="main-content">
-  <div class="loading"><div class="spinner"></div> Connexion à Google Sheets...</div>
+  <div class="loading"><div class="spinner"></div><span>Connexion...</span></div>
 </div>
 
 <div id="toast"></div>
 
 <!-- Modal clôture bi-annuel -->
-<div id="modal-cloture-bi" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;align-items:center;justify-content:center;">
-  <div style="background:#fff;border-radius:12px;padding:28px;max-width:420px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,.3);">
-    <h2 style="font-size:16px;font-weight:700;color:#7B1FA2;margin-bottom:6px">📦 Clôturer les fréquences bi-annuelles</h2>
-    <p style="font-size:12px;color:#555;margin-bottom:16px;line-height:1.6">✅ Exporte la feuille en <strong>PDF dans Google Drive</strong><br>✅ Remet toutes les cases à zéro<br>⚠️ Action irréversible</p>
-    <div style="background:#f5f5f5;border-radius:8px;padding:12px;margin-bottom:16px">
-      <label style="font-size:11px;font-weight:700;color:#333;display:block;margin-bottom:6px">Nom du dossier Drive :</label>
-      <input id="cloture-bi-label" type="text" style="width:100%;border:1px solid #ccc;border-radius:6px;padding:7px 10px;font-size:13px;font-weight:600" placeholder="ex: 2026 – Bi-Annuel S1">
+<div id="modal-cloture-bi" class="modal-overlay">
+  <div class="modal-box">
+    <h2>📦 Clôturer les fréquences bi-annuelles</h2>
+    <p>✅ Ouvre la fenêtre d'impression pour sauvegarder en <strong>PDF</strong><br>✅ Remet toutes les cases à zéro<br>⚠️ Action irréversible</p>
+    <div class="modal-input-wrap">
+      <label>Nom du fichier PDF :</label>
+      <input id="cloture-bi-label" type="text" placeholder="ex: 2026 – Bi-Annuel S1">
     </div>
-    <div id="cloture-bi-result" style="display:none;font-size:11px;padding:10px;border-radius:6px;margin-bottom:14px"></div>
-    <div style="display:flex;gap:8px;justify-content:flex-end">
+    <div id="cloture-bi-result" style="display:none;font-size:12px;padding:10px;border-radius:8px;margin-bottom:14px"></div>
+    <div class="modal-actions">
       <button class="btn" style="background:#eee;color:#333" onclick="document.getElementById('modal-cloture-bi').style.display='none'">Annuler</button>
-      <button class="btn" style="background:#7B1FA2;color:#fff" id="btn-cloturer-bi" onclick="confirmerClotureBi()">📤 Exporter et remettre à zéro</button>
+      <button class="btn" style="background:#7B1FA2;color:#fff" id="btn-cloturer-bi" onclick="confirmerClotureBi()">📤 Exporter</button>
     </div>
   </div>
 </div>
 
-<!-- Modal clôture -->
-<div id="modal-cloture" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;align-items:center;justify-content:center;">
-  <div style="background:#fff;border-radius:12px;padding:28px;max-width:440px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,.3);">
-    <h2 style="font-size:16px;font-weight:700;color:#7B1FA2;margin-bottom:6px">📦 Clôturer le mois</h2>
-    <p style="font-size:12px;color:#555;margin-bottom:16px;line-height:1.6">Cette action va :<br>✅ Exporter chaque feuille en <strong>PDF dans Google Drive</strong><br>✅ Remettre toutes les cases à zéro pour le mois suivant<br>⚠️ Les fréquences bi-annuelles <strong>ne sont pas</strong> remises à zéro</p>
-    <div style="background:#f5f5f5;border-radius:8px;padding:12px;margin-bottom:16px">
-      <label style="font-size:11px;font-weight:700;color:#333;display:block;margin-bottom:6px">Nom du dossier Drive qui sera créé :</label>
-      <input id="cloture-label" type="text" style="width:100%;border:1px solid #ccc;border-radius:6px;padding:7px 10px;font-size:13px;font-weight:600" placeholder="ex: 2026-03 – Mars">
+<!-- Modal clôture mois -->
+<div id="modal-cloture" class="modal-overlay">
+  <div class="modal-box">
+    <h2>📦 Clôturer le mois</h2>
+    <p>✅ Ouvre la fenêtre d'impression pour sauvegarder en <strong>PDF</strong><br>✅ Remet toutes les cases à zéro pour le mois suivant<br>⚠️ Les fréquences bi-annuelles <strong>ne sont pas</strong> remises à zéro</p>
+    <div class="modal-input-wrap">
+      <label>Nom du fichier PDF :</label>
+      <input id="cloture-label" type="text" placeholder="ex: 2026-03 – Mars">
     </div>
-    <div id="cloture-result" style="display:none;font-size:11px;padding:10px;border-radius:6px;margin-bottom:14px"></div>
-    <div style="display:flex;gap:8px;justify-content:flex-end">
+    <div id="cloture-result" style="display:none;font-size:12px;padding:10px;border-radius:8px;margin-bottom:14px"></div>
+    <div class="modal-actions">
       <button class="btn" style="background:#eee;color:#333" onclick="closeCloture()">Annuler</button>
-      <button class="btn" style="background:#7B1FA2;color:#fff" id="btn-cloturer" onclick="confirmerCloture()">📤 Exporter et remettre à zéro</button>
+      <button class="btn" style="background:#7B1FA2;color:#fff" id="btn-cloturer" onclick="confirmerCloture()">📤 Exporter</button>
     </div>
   </div>
 </div>
@@ -275,29 +331,11 @@ const S = {
   appareils:[], renaming:{}, loaded:new Set()
 };
 
-// ══ CLÉ UNIQUE PAR ITEM ══════════════════════════════════════════════
-// Utilise un index numérique pour éviter tout problème de caractères spéciaux
-function itemKey(tabId, itemIndex, day) {
-  return 'i' + itemIndex + '__' + day;
-}
-
-// Map nom → index pour retrouver l'état au chargement
-function buildItemIndex(tabId) {
-  const map = {}; // nom → index
-  if (tabId === 'biannuel') {
-    DATA.biannuel.sections.forEach(sec => sec.items.forEach((it, idx) => { map[it.n] = idx; }));
-  } else {
-    let idx = 0;
-    DATA[tabId].sections.forEach(sec => sec.items.forEach(it => { map[it.n] = idx++; }));
-  }
-  return map;
-}
-
 window.onload = async () => {
   try {
     const r = await api('ping');
     if (r.ok) {
-      document.getElementById('conn-status').textContent = '✅ Connecté';
+      document.getElementById('conn-status').textContent = '✅';
       document.getElementById('conn-status').style.background = 'rgba(76,175,80,.4)';
       document.getElementById('ss-name').textContent = r.ssName;
     } else { showConnError(r.error); return; }
@@ -309,11 +347,10 @@ window.onload = async () => {
 };
 
 function showConnError(msg) {
-  document.getElementById('conn-status').textContent = '❌ Hors ligne';
+  document.getElementById('conn-status').textContent = '❌';
   document.getElementById('conn-status').style.background = 'rgba(244,67,54,.4)';
   document.getElementById('main-content').innerHTML =
-    `<div style="padding:30px;color:#c62828;"><strong>❌ Impossible de joindre Google Sheets</strong><br><br>${msg}<br><br>
-    <em>Vérifiez que le script est déployé en accès public et que l'ID du Sheets est correct.</em></div>`;
+    `<div style="padding:30px;color:#c62828;"><strong>❌ Impossible de joindre Google Sheets</strong><br><br>${msg}</div>`;
 }
 
 function updateAppareilsTabs() {
@@ -341,7 +378,7 @@ function switchTab(tab, el) {
 
 async function loadAndRender(tab) {
   const c = document.getElementById('main-content');
-  c.innerHTML = '<div class="loading"><div class="spinner"></div> Chargement...</div>';
+  c.innerHTML = '<div class="loading"><div class="spinner"></div><span>Chargement...</span></div>';
   try {
     if (tab === 'biannuel') {
       const st = await api('loadBiannuelState');
@@ -372,7 +409,6 @@ function applyState(tabId, st) {
   });
 }
 
-// ══ RENDER ════════════════════════════════════════════════════════════
 function renderTab(tab) {
   const c = document.getElementById('main-content');
   if (tab==='temp-manager') c.innerHTML = buildManager();
@@ -391,11 +427,10 @@ function buildHebdo(tabId) {
   if(!S.checks[tabId]) S.checks[tabId]={};
   if(!S.meta[tabId]) S.meta[tabId]={month:new Date().toISOString().slice(0,7),visa:''};
 
-  // Calcul progression
   let total=0, checked=0;
   days.forEach(day=>{ total++; if(S.checks[tabId]['BIO__'+day]) checked++; });
   let globalIdx = 0;
-  d.sections.forEach(s=>s.items.forEach(it=>{
+  d.sections.forEach(s=>s.items.forEach(()=>{
     days.forEach(day=>{ total++; if(S.checks[tabId]['i'+globalIdx+'__'+day]) checked++; });
     globalIdx++;
   }));
@@ -406,15 +441,15 @@ function buildHebdo(tabId) {
     <label>Mois / Année :</label>
     <input type="month" value="${S.meta[tabId].month||''}" onchange="S.meta['${tabId}'].month=this.value;api('saveMeta',{sheetName:'${SHEET_NAMES[tabId]}',moisAnnee:this.value,visa:S.meta['${tabId}'].visa||''})">
     <label>Visa :</label>
-    <input type="text" placeholder="Initiales" value="${esc(S.meta[tabId].visa||'')}" style="width:85px" onchange="S.meta['${tabId}'].visa=this.value;api('saveMeta',{sheetName:'${SHEET_NAMES[tabId]}',moisAnnee:S.meta['${tabId}'].month||'',visa:this.value})">
-    <strong style="color:var(--teal-dark);font-size:12px;">${d.title}</strong>
+    <input type="text" placeholder="Initiales" value="${esc(S.meta[tabId].visa||'')}" style="width:90px" onchange="S.meta['${tabId}'].visa=this.value;api('saveMeta',{sheetName:'${SHEET_NAMES[tabId]}',moisAnnee:S.meta['${tabId}'].month||'',visa:this.value})">
+    <strong style="color:var(--teal-dark);font-size:13px;">${d.title}</strong>
   </div>
   <div class="progress-zone">
-    <div style="font-size:11px;font-weight:700;color:var(--teal-dark);margin-bottom:5px;">Progression</div>
+    <div style="font-size:12px;font-weight:700;color:var(--teal-dark);margin-bottom:6px;">Progression du mois</div>
     <div class="progress-bar"><div class="progress-fill" id="pb-${tabId}" style="width:${pct}%"></div></div>
-    <div class="progress-label" id="pl-${tabId}">${checked}/${total} (${pct}%)</div>
+    <div class="progress-label" id="pl-${tabId}">${checked} / ${total} cases (${pct}%)</div>
   </div>
-  <div style="overflow-x:auto;">
+  <div class="table-scroll">
   <table class="releve-table">
     <thead><tr>
       <th class="th-equip">Équipement</th><th class="th-period">Périodicité</th>
@@ -422,7 +457,7 @@ function buildHebdo(tabId) {
     </tr></thead><tbody>
     <tr class="bio-row">
       <td class="td-equip">✅ Produit BIO</td>
-      <td class="td-period" style="background:var(--green-light)">Quotidien</td>
+      <td class="td-period" style="background:var(--green-light)"></td>
       ${days.map(day=>{
         const ck = S.checks[tabId]['BIO__'+day] ? 'checked' : '';
         return `<td style="background:var(--green-light)"><div class="cb-wrap"><input type="checkbox" ${ck} onchange="tick('${tabId}','BIO',-1,${day},this.checked)"></div></td>`;
@@ -434,10 +469,16 @@ function buildHebdo(tabId) {
     html += `<tr><td colspan="33" class="sec-hdr">${sec.name}</td></tr>`;
     sec.items.forEach(it => {
       const idx = globalIdx;
+      const isPh = it.n === 'pH eau de rinçage';
       html += `<tr><td class="td-equip">${esc(it.n)}</td><td class="td-period">${it.p}</td>
         ${days.map(day => {
           const ck = S.checks[tabId]['i'+idx+'__'+day] ? 'checked' : '';
-          return `<td><div class="cb-wrap"><input type="checkbox" ${ck} onchange="tick('${tabId}',null,${idx},${day},this.checked)"></div></td>`;
+          const phVal = isPh ? (S.checks[tabId]['ph__'+idx+'__'+day] || '') : '';
+          const phVisible = isPh && S.checks[tabId]['i'+idx+'__'+day] ? '' : 'display:none';
+          return `<td><div class="cb-wrap">
+            <input type="checkbox" ${ck} onchange="tick('${tabId}',null,${idx},${day},this.checked)${isPh?`;togglePh(this,'ph-${tabId}-${idx}-${day}')`:''}" >
+            ${isPh ? `<input type="number" id="ph-${tabId}-${idx}-${day}" class="ph-input" step="any" min="0" max="14" value="${phVal}" style="${phVisible}" onchange="savePh('${tabId}',${idx},${day},this.value)">` : ''}
+          </div></td>`;
         }).join('')}</tr>`;
       globalIdx++;
     });
@@ -445,8 +486,8 @@ function buildHebdo(tabId) {
 
   html += `</tbody></table></div>
   <div class="comment-box"><h3>📝 Anomalies & Commentaires</h3>
-    <textarea id="cmt-${tabId}" placeholder="Date + description...">${esc(S.comments[tabId]||'')}</textarea>
-    <button class="btn btn-primary" style="margin-top:5px" onclick="saveComment('${tabId}')">💾 Enregistrer</button>
+    <textarea id="cmt-${tabId}" placeholder="Date + description des anomalies...">${esc(S.comments[tabId]||'')}</textarea>
+    <button class="btn btn-primary" style="margin-top:8px;width:100%" onclick="saveComment('${tabId}')">💾 Enregistrer le commentaire</button>
   </div>`;
   return html;
 }
@@ -458,7 +499,7 @@ function buildBiannuel() {
   let total=0, checked=0;
   MONTHS.forEach((_,mi)=>{ total++; if(S.checks['biannuel']['BIO__'+mi]) checked++; });
   let globalIdx = 0;
-  d.sections.forEach(s=>s.items.forEach(it=>{
+  d.sections.forEach(s=>s.items.forEach(()=>{
     MONTHS.forEach((_,mi)=>{ total++; if(S.checks['biannuel']['i'+globalIdx+'__'+mi]) checked++; });
     globalIdx++;
   }));
@@ -466,23 +507,23 @@ function buildBiannuel() {
 
   let html = `
   <div class="meta-row">
-    <label>Année :</label><input type="number" value="${new Date().getFullYear()}" style="width:80px">
-    <label>Visa :</label><input type="text" placeholder="Initiales" style="width:85px">
+    <label>Année :</label><input type="number" value="${new Date().getFullYear()}" style="width:90px">
+    <label>Visa :</label><input type="text" placeholder="Initiales" style="width:90px">
   </div>
   <div class="progress-zone">
-    <div style="font-size:11px;font-weight:700;color:var(--teal-dark);margin-bottom:5px;">Progression annuelle</div>
+    <div style="font-size:12px;font-weight:700;color:var(--teal-dark);margin-bottom:6px;">Progression annuelle</div>
     <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
-    <div class="progress-label">${checked}/${total} (${pct}%)</div>
+    <div class="progress-label">${checked} / ${total} cases (${pct}%)</div>
   </div>
-  <div style="overflow-x:auto;">
+  <div class="table-scroll">
   <table class="releve-table">
     <thead><tr>
       <th class="th-equip">Équipement</th><th class="th-period">Périodicité</th>
-      ${MONTHS.map(m=>`<th style="min-width:50px">${m}</th>`).join('')}
+      ${MONTHS.map(m=>`<th style="min-width:44px">${m}</th>`).join('')}
     </tr></thead><tbody>
     <tr class="bio-row">
       <td class="td-equip">✅ Produit BIO</td>
-      <td class="td-period" style="background:var(--green-light)">Mensuel</td>
+      <td class="td-period" style="background:var(--green-light)"></td>
       ${MONTHS.map((_,mi)=>{
         const ck = S.checks['biannuel']['BIO__'+mi] ? 'checked' : '';
         return `<td style="background:var(--green-light)"><div class="cb-wrap"><input type="checkbox" ${ck} onchange="tickBi(-1,${mi},this.checked)"></div></td>`;
@@ -506,12 +547,12 @@ function buildBiannuel() {
   html += `</tbody></table></div>
   <div class="comment-box"><h3>📝 Anomalies & Commentaires</h3>
     <textarea id="cmt-biannuel" placeholder="Date + description...">${esc(S.comments['biannuel']||'')}</textarea>
-    <button class="btn btn-primary" style="margin-top:5px" onclick="saveComment('biannuel')">💾 Enregistrer</button>
+    <button class="btn btn-primary" style="margin-top:8px;width:100%" onclick="saveComment('biannuel')">💾 Enregistrer</button>
   </div>
-  <div style="margin-top:12px;padding:14px;background:#F3E5F5;border-radius:8px;border-left:4px solid #7B1FA2;">
-    <div style="font-size:12px;font-weight:700;color:#7B1FA2;margin-bottom:6px">📦 Clôturer les fréquences bi-annuelles</div>
-    <div style="font-size:11px;color:#555;margin-bottom:10px">Exporte cette feuille en PDF dans Google Drive et remet toutes les cases à zéro.</div>
-    <button class="btn" style="background:#7B1FA2;color:#fff" onclick="showClotureBi()">📤 Exporter et remettre à zéro</button>
+  <div style="margin-top:14px;padding:16px;background:#F3E5F5;border-radius:12px;border-left:4px solid #7B1FA2;">
+    <div style="font-size:13px;font-weight:700;color:#7B1FA2;margin-bottom:6px">📦 Clôturer les fréquences bi-annuelles</div>
+    <div style="font-size:12px;color:#555;margin-bottom:12px">Exporte en PDF et remet toutes les cases à zéro.</div>
+    <button class="btn" style="background:#7B1FA2;color:#fff;width:100%" onclick="showClotureBi()">📤 Exporter et remettre à zéro</button>
   </div>`;
   return html;
 }
@@ -525,21 +566,21 @@ function buildTempNeg(app) {
   const pct=total>0?Math.round(checked/total*100):0;
   let html=`
   <div class="meta-row">
-    <span style="font-size:13px;font-weight:700;color:#1565C0">❄️ ${esc(app.nom)}</span>
+    <span style="font-size:14px;font-weight:700;color:#1565C0">❄️ ${esc(app.nom)}</span>
     <label>Mois/Année :</label><input type="month" value="${new Date().toISOString().slice(0,7)}" id="meta-m-${key}">
-    <label>Visa :</label><input type="text" style="width:75px" id="meta-v-${key}" placeholder="Initiales">
-    <button class="btn btn-primary btn-sm" onclick="saveAppMeta('${key}')">💾</button>
+    <label>Visa :</label><input type="text" style="width:80px" id="meta-v-${key}" placeholder="Initiales">
+    <button class="btn btn-primary btn-sm" style="width:100%" onclick="saveAppMeta('${key}')">💾 Enregistrer</button>
   </div>
   <div class="meta-row" style="background:#FFF3E0">
-    <span style="font-size:11px;font-weight:700;color:#E65100">✗ alerte ≥ −15°C &nbsp;|&nbsp; ✓ cible ≤ −18°C &nbsp;|&nbsp; ⚠️ En cas de dépassement, prévenir un Responsable</span>
+    <span style="font-size:12px;font-weight:700;color:#E65100">✗ alerte ≥ −15°C &nbsp;|&nbsp; ✓ cible ≤ −18°C</span>
   </div>
   <div class="progress-zone">
     <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:#1565C0"></div></div>
     <div class="progress-label">${checked}/${total} (${pct}%)</div>
   </div>
-  <div style="overflow-x:auto;"><table class="temp-table">
+  <div class="table-scroll"><table class="temp-table">
     <thead>
-      <tr style="background:#1565C0;color:#fff"><th class="t-label">T°</th>${days.map(d=>`<th colspan="2">${d}</th>`).join('')}</tr>
+      <tr style="background:#1565C0;color:#fff"><th class="t-label">T°</th>${days.map(d=>`<th colspan="2" style="min-width:40px">${d}</th>`).join('')}</tr>
       <tr style="background:#1976D2;color:#fff;font-size:8px"><th></th>${days.map(()=>'<th class="ampm-label">AM</th><th class="ampm-label">PM</th>').join('')}</tr>
     </thead><tbody>`;
   TEMPS_NEG.forEach(t=>{
@@ -559,7 +600,7 @@ function buildTempNeg(app) {
   html+=`</tbody></table></div>
   <div class="comment-box"><h3>📝 Anomalies</h3>
     <textarea id="cmt-app-${key}" placeholder="Date + description...">${esc(S.comments['app_'+key]||'')}</textarea>
-    <button class="btn btn-primary" style="margin-top:5px" onclick="saveAppComment('${key}')">💾 Enregistrer</button>
+    <button class="btn btn-primary" style="margin-top:8px;width:100%" onclick="saveAppComment('${key}')">💾 Enregistrer</button>
   </div>`;
   return html;
 }
@@ -573,21 +614,24 @@ function buildTempMat(app) {
   const pct=total>0?Math.round(checked/total*100):0;
   let html=`
   <div class="meta-row">
-    <span style="font-size:13px;font-weight:700;color:#00695C">🧪 ${esc(app.nom)}</span>
+    <span style="font-size:14px;font-weight:700;color:#00695C">🧪 ${esc(app.nom)}</span>
     <label>Année/Mois :</label><input type="month" value="${new Date().toISOString().slice(0,7)}" id="meta-m-${key}">
-    <label>Visa :</label><input type="text" style="width:75px" id="meta-v-${key}" placeholder="Initiales">
-    <button class="btn btn-primary btn-sm" onclick="saveAppMeta('${key}')">💾</button>
+    <label>Visa :</label><input type="text" style="width:80px" id="meta-v-${key}" placeholder="Initiales">
+    <button class="btn btn-primary btn-sm" style="width:100%" onclick="saveAppMeta('${key}')">💾 Enregistrer</button>
   </div>
   <div class="meta-row" style="background:#E0F2F1">
-    <span style="font-size:11px;font-weight:700;color:#004D40">✓ cible ≤ 4°C &nbsp;|&nbsp; ✗ alerte ≥ 6°C &nbsp;|&nbsp; 🔬 Thermomètre laser</span>
+    <span style="font-size:12px;font-weight:700;color:#004D40">✓ cible ≤ 4°C &nbsp;|&nbsp; ✗ alerte ≥ 6°C &nbsp;|&nbsp; 🔬 Thermomètre laser</span>
   </div>
   <div class="progress-zone">
     <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:#00695C"></div></div>
     <div class="progress-label">${checked}/${total} (${pct}%)</div>
   </div>
-  <div style="overflow-x:auto;"><table class="temp-table">
-    <thead><tr style="background:#00695C;color:#fff"><th class="t-label" style="background:#004D40">T°</th>${days.map(d=>`<th>${d}</th>`).join('')}<th>Visa</th></tr></thead>
-    <tbody>`;
+  <div class="table-scroll"><table class="temp-table">
+    <thead><tr style="background:#00695C;color:#fff">
+      <th class="t-label" style="background:#004D40">T°</th>
+      ${days.map(d=>`<th style="min-width:28px">${d}</th>`).join('')}
+      <th>Visa</th>
+    </tr></thead><tbody>`;
   TEMPS_MAT.forEach(t=>{
     let cls,icon;
     if(t>=6){cls='temp-alert';icon='✗ ';}else if(t<=4){cls='temp-ok';icon='✓ ';}else{cls='temp-warn';icon='';}
@@ -601,7 +645,7 @@ function buildTempMat(app) {
   html+=`</tbody></table></div>
   <div class="comment-box"><h3>📝 Anomalies</h3>
     <textarea id="cmt-app-${key}" placeholder="Date + description...">${esc(S.comments['app_'+key]||'')}</textarea>
-    <button class="btn btn-primary" style="margin-top:5px" onclick="saveAppComment('${key}')">💾 Enregistrer</button>
+    <button class="btn btn-primary" style="margin-top:8px;width:100%" onclick="saveAppComment('${key}')">💾 Enregistrer</button>
   </div>`;
   return html;
 }
@@ -610,22 +654,22 @@ function buildTempMat(app) {
 function buildManager() {
   const actifs=S.appareils.filter(a=>a.actif);
   const inactifs=S.appareils.filter(a=>!a.actif);
-  let cards=actifs.map(a=>buildCard(a,true)).join('')||'<p style="color:#999;font-size:12px;padding:8px 0">Aucun appareil actif.</p>';
+  let cards=actifs.map(a=>buildCard(a,true)).join('')||'<p style="color:#999;font-size:13px;padding:10px 0">Aucun appareil actif.</p>';
   let inCards=inactifs.length?`<div class="inactive-title">🗂️ Désactivés</div>${inactifs.map(a=>buildCard(a,false)).join('')}`:'';
   return `
   <div class="appareils-manager">
-    <h3>🌡️ Gestion des appareils de température</h3>
+    <h3>🌡️ Gestion des appareils</h3>
     <div class="app-list">${cards}</div>
     ${inCards}
     <div class="add-form">
-      <div><label>Nom de l'appareil</label><br><input type="text" id="new-nom" placeholder="Ex: Chambre froide sud" style="width:200px;margin-top:3px"></div>
-      <div><label>Type</label><br>
-        <select id="new-type" style="margin-top:3px">
+      <div><label>Nom de l'appareil</label><input type="text" id="new-nom" placeholder="Ex: Chambre froide sud" style="margin-top:5px"></div>
+      <div><label>Type</label>
+        <select id="new-type" style="margin-top:5px">
           <option value="neg">❄️ Chambre froide négative</option>
           <option value="mat">🧪 Cuve de maturation</option>
         </select>
       </div>
-      <button class="btn btn-primary" onclick="ajouterAppareil()">➕ Ajouter</button>
+      <button class="btn btn-primary" style="width:100%;margin-top:4px" onclick="ajouterAppareil()">➕ Ajouter un appareil</button>
     </div>
   </div>`;
 }
@@ -635,15 +679,17 @@ function buildCard(app, actif) {
   const lbl=app.type==='neg'?'Chambre ⊖':'Maturation';
   const isRen=S.renaming[app.id];
   return `<div class="app-card ${actif?'active':'inactive'}">
-    <span style="font-size:18px">${icon}</span>
-    ${isRen
-      ? `<input class="rename-input" id="ren-${app.id}" value="${esc(app.nom)}" onkeydown="if(event.key==='Enter')confirmRen('${app.id}')">`
-      : `<span class="app-name">${esc(app.nom)}</span>`}
-    <span class="app-type">${lbl}</span>
+    <div class="app-card-info">
+      <span style="font-size:22px">${icon}</span>
+      ${isRen
+        ? `<input class="rename-input" id="ren-${app.id}" value="${esc(app.nom)}" onkeydown="if(event.key==='Enter')confirmRen('${app.id}')">`
+        : `<span class="app-name">${esc(app.nom)}</span>`}
+      <span class="app-type">${lbl}</span>
+    </div>
     <div class="app-card-actions">
       ${isRen
-        ? `<button class="btn btn-primary btn-sm" onclick="confirmRen('${app.id}')">✓</button>
-           <button class="btn btn-sm" style="background:#eee" onclick="cancelRen('${app.id}')">✕</button>`
+        ? `<button class="btn btn-primary btn-sm" onclick="confirmRen('${app.id}')">✓ OK</button>
+           <button class="btn btn-sm" style="background:#eee" onclick="cancelRen('${app.id}')">✕ Annuler</button>`
         : actif
           ? `<button class="btn btn-sm" style="background:#E3F2FD;color:#1565C0" onclick="goToApp('${app.id}')">👁 Voir</button>
              <button class="btn btn-dup btn-sm" onclick="dupApp('${app.id}')">⎘ Dupliquer</button>
@@ -658,13 +704,11 @@ function buildCard(app, actif) {
 // ══ ACTIONS CHECKBOX ══════════════════════════════════════════════════
 async function tick(tabId, itemName, itemIdx, day, val) {
   if(!S.checks[tabId]) S.checks[tabId]={};
-  // BIO utilise son propre nom, les autres utilisent l'index numérique
   const stateKey = itemName === 'BIO' ? 'BIO__'+day : 'i'+itemIdx+'__'+day;
-  // La clé envoyée au backend : BIO pour BIO, index pour les autres
   const backendKey = itemName === 'BIO' ? 'BIO' : 'i'+itemIdx;
   S.checks[tabId][stateKey] = val;
   updateProg(tabId);
-  toast(val?'✅':'☐');
+  toast(val?'✅ Coché':'☐ Décoché');
   try {
     const r = await api('saveHebdo', { sheetName: SHEET_NAMES[tabId], itemName: backendKey, day, value: val });
     if (r && !r.ok) toast('⚠️ '+r.error, true);
@@ -676,7 +720,7 @@ async function tickBi(itemIdx, monthIndex, val) {
   const stateKey = itemIdx === -1 ? 'BIO__'+monthIndex : 'i'+itemIdx+'__'+monthIndex;
   const backendKey = itemIdx === -1 ? 'BIO' : 'i'+itemIdx;
   S.checks['biannuel'][stateKey] = val;
-  toast(val?'✅':'☐');
+  toast(val?'✅ Coché':'☐ Décoché');
   try {
     const r = await api('saveBiannuel', { itemName: backendKey, monthIndex, value: val });
     if (r && !r.ok) toast('⚠️ '+r.error, true);
@@ -694,12 +738,28 @@ async function tickApp(appId, tempVal, day, slot, val) {
   } catch(e) { toast('❌ '+e.message, true); }
 }
 
+// ══ PH ═══════════════════════════════════════════════════════════════
+function togglePh(cb, inputId) {
+  const el = document.getElementById(inputId);
+  if (!el) return;
+  el.style.display = cb.checked ? '' : 'none';
+  if (!cb.checked) el.value = '';
+}
+async function savePh(tabId, idx, day, val) {
+  const key = 'ph__' + idx + '__' + day;
+  if (!S.checks[tabId]) S.checks[tabId] = {};
+  S.checks[tabId][key] = val;
+  try {
+    await api('saveHebdo', { sheetName: SHEET_NAMES[tabId], itemName: 'ph__i' + idx, day, value: val });
+  } catch(e) { toast('❌ ' + e.message, true); }
+}
+
 // ══ SAVE COMMENT / META ═══════════════════════════════════════════════
 async function saveComment(tabId) {
   const el=document.getElementById('cmt-'+tabId); if(!el) return;
   S.comments[tabId]=el.value;
   const sn = tabId==='biannuel' ? 'Fréquences Bi-Annuelles' : SHEET_NAMES[tabId];
-  try { await api('saveComment',{sheetName:sn,comment:el.value}); toast('💾 Enregistré'); }
+  try { await api('saveComment',{sheetName:sn,comment:el.value}); toast('💾 Commentaire enregistré'); }
   catch(e){ toast('❌ '+e.message,true); }
 }
 async function saveAppComment(appId) {
@@ -761,7 +821,7 @@ async function delApp(id) {
   } catch(e){ toast('❌ '+e.message,true); }
 }
 async function supprimerDefinitivement(id, nom) {
-  if(!confirm('⚠️ Supprimer définitivement "'+nom+'" ?\n\nCela va supprimer :\n- L\'appareil de la liste\n- Sa feuille dans Sheets\n- Toutes ses données\n\nACTION IRRÉVERSIBLE')) return;
+  if(!confirm('⚠️ Supprimer définitivement "'+nom+'" ?\n\nACTION IRRÉVERSIBLE')) return;
   try {
     const r = await api('supprimerDefinitivement', { id });
     if(r.ok) {
@@ -769,13 +829,11 @@ async function supprimerDefinitivement(id, nom) {
       if(S.tab === 'app_'+id) S.tab = 'temp-manager';
       S.loaded.delete('app_'+id);
       delete S.appChecks[id];
-      updateAppareilsTabs();
-      renderTab('temp-manager');
+      updateAppareilsTabs(); renderTab('temp-manager');
       toast('💀 Supprimé définitivement');
     } else { toast('❌ '+r.error, true); }
   } catch(e) { toast('❌ '+e.message, true); }
 }
-
 async function reactApp(id) {
   try {
     await api('reactiverAppareil',{id});
@@ -802,78 +860,71 @@ function updateProg(tabId) {
   }));
   const pct=total>0?Math.round(checked/total*100):0;
   const pb=document.getElementById('pb-'+tabId); if(pb) pb.style.width=pct+'%';
-  const pl=document.getElementById('pl-'+tabId); if(pl) pl.textContent=`${checked}/${total} (${pct}%)`;
+  const pl=document.getElementById('pl-'+tabId); if(pl) pl.textContent=`${checked} / ${total} cases (${pct}%)`;
 }
 
 // ══ UTILS ════════════════════════════════════════════════════════════
 function toast(msg, err=false) {
   const t=document.getElementById('toast');
   t.textContent=msg; t.className='show '+(err?'err':'ok');
-  clearTimeout(t._t); t._t=setTimeout(()=>t.className='',2000);
+  clearTimeout(t._t); t._t=setTimeout(()=>t.className='',2200);
 }
 function printPage() {
-  // Force le rechargement du layout avant impression
-  document.body.classList.add('printing');
   window.print();
-  document.body.classList.remove('printing');
 }
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
+// ══ CLÔTURE BI-ANNUEL ════════════════════════════════════════════════
 function showClotureBi() {
   document.getElementById('cloture-bi-label').value = new Date().getFullYear() + ' – Bi-Annuel';
   document.getElementById('cloture-bi-result').style.display = 'none';
   document.getElementById('btn-cloturer-bi').disabled = false;
-  document.getElementById('btn-cloturer-bi').textContent = '📤 Exporter et remettre à zéro';
+  document.getElementById('btn-cloturer-bi').textContent = '📤 Exporter';
   document.getElementById('modal-cloture-bi').style.display = 'flex';
 }
 async function confirmerClotureBi() {
-  const label=document.getElementById('cloture-bi-label').value.trim();
-  if(!label){ toast('⚠️ Entrez un nom',true); return; }
+  const label = document.getElementById('cloture-bi-label').value.trim();
+  if(!label){ toast('⚠️ Entrez un nom', true); return; }
   if(!confirm('Confirmer la clôture bi-annuelle "'+label+'" ?')) return;
-  const btn=document.getElementById('btn-cloturer-bi');
-  btn.disabled=true; btn.textContent='⏳ Génération PDF...';
+  const btn = document.getElementById('btn-cloturer-bi');
+  btn.disabled = true; btn.textContent = '⏳...';
   try {
-    // 1. Génère et ouvre le PDF depuis l'app
     genererPdfBiannuel(label);
-    // 2. Archive les données sur le backend
-    const r=await api('cloturerBiannuel',{label});
-    const res=document.getElementById('cloture-bi-result');
-    res.style.display='block';
-    if(r.ok){
-      res.style.background='#E8F5E9'; res.style.color='#2E7D32';
-      res.innerHTML='✅ PDF ouvert — sauvegardez-le. Données archivées !';
-      btn.textContent='✓ Terminé';
-      delete S.checks['biannuel']; S.loaded.delete('biannuel');
+    const r = await api('cloturerBiannuel', { label });
+    const res = document.getElementById('cloture-bi-result');
+    res.style.display = 'block';
+    if (r.ok) {
+      res.style.background = '#E8F5E9'; res.style.color = '#2E7D32';
+      res.innerHTML = '✅ PDF ouvert — sauvegardez-le. Données remises à zéro !';
+      btn.textContent = '✓ Terminé';
+      S.checks['biannuel'] = {}; S.comments['biannuel'] = ''; S.loaded.delete('biannuel');
+      setTimeout(() => {
+        document.getElementById('modal-cloture-bi').style.display = 'none';
+        if (S.tab === 'biannuel') loadAndRender('biannuel');
+      }, 1500);
     } else {
-      res.style.background='#FFEBEE'; res.style.color='#C62828';
-      res.innerHTML='❌ '+r.error; btn.disabled=false; btn.textContent='📤 Réessayer';
+      res.style.background = '#FFEBEE'; res.style.color = '#C62828';
+      res.innerHTML = '❌ ' + r.error;
+      btn.disabled = false; btn.textContent = '📤 Réessayer';
     }
-  } catch(e){ toast('❌ '+e.message,true); btn.disabled=false; btn.textContent='📤 Réessayer'; }
+  } catch(e) { toast('❌ '+e.message, true); btn.disabled = false; btn.textContent = '📤 Réessayer'; }
 }
 
 function genererPdfBiannuel(label) {
   const css = document.querySelector('style').innerHTML;
-  const fileName = label.replace(/[^a-zA-Z0-9\-\.]/g, '_') + '.pdf';
-
-  const body = `<div class="page-section">
-    <div class="print-title">📅 Fréquences Bi-Annuelles — ${label}</div>
-    ${buildBiannuel()}
-  </div>`;
-
-  const fullHtml = `<!DOCTYPE html><html lang="fr"><head>
-    <meta charset="UTF-8"><title>${label}</title>
-    <style>
-      ${css}
+  const body = `<div class="page-section"><div class="print-title">📅 Fréquences Bi-Annuelles — ${label}</div>${buildBiannuel()}</div>`;
+  const fullHtml = `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>${label}</title>
+    <style>${css}
       body{background:#fff;font-size:11px;margin:0;}
-      .topbar,.tabs,.tab-div,.progress-zone,.app-card-actions,
-      .add-form,.inactive-title,.comment-box .btn,button,.btn,
-      #toast,.meta-row button{display:none!important;}
-      .print-title{font-size:13px;font-weight:700;color:#1B6B7B;
-        padding:5px 0;border-bottom:2px solid #1B6B7B;margin-bottom:8px;}
+      .topbar,.tabs,.tab-div,.progress-zone,.app-card-actions,.add-form,.inactive-title,
+      .comment-box .btn,button,.btn,#toast,.meta-row button{display:none!important;}
+      .print-title{font-size:13px;font-weight:700;color:#1B6B7B;padding:5px 0;border-bottom:2px solid #1B6B7B;margin-bottom:8px;}
       .page-section{padding:6mm;}
+      .table-scroll{overflow:visible!important;}
       .releve-table,.temp-table{font-size:7px!important;width:100%!important;}
       .releve-table thead th,.temp-table th{font-size:7px!important;padding:1px!important;}
       .releve-table tbody td,.temp-table td{font-size:7px!important;padding:1px!important;}
+      .releve-table thead th.th-equip,.releve-table tbody td.td-equip{position:static!important;min-width:90px!important;}
       .cb-wrap input[type=checkbox]{width:9px!important;height:9px!important;}
       .sec-hdr{font-size:8px!important;padding:2px 4px!important;}
       .meta-row{font-size:9px!important;padding:4px 8px!important;box-shadow:none!important;border:1px solid #ccc!important;}
@@ -882,93 +933,84 @@ function genererPdfBiannuel(label) {
       .comment-box textarea{min-height:25px!important;font-size:8px!important;}
       *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}
       @page{size:A4 landscape;margin:6mm;}
-    </style>
-  </head><body>${body}
-  <script>
-    document.title = '${label}';
-    window.onload = function() {
-      setTimeout(function(){ window.print(); setTimeout(function(){ window.close(); }, 2000); }, 600);
-    };
-  <\/script></body></html>`;
-
+    </style></head><body>${body}
+  <script>document.title='${label}';window.onload=function(){setTimeout(function(){window.print();setTimeout(function(){window.close();},2000);},600);};<\/script></body></html>`;
   const blob = new Blob([fullHtml], { type: 'text/html' });
   const url = URL.createObjectURL(blob);
   const win = window.open(url, '_blank');
-  if (!win) {
-    const a = document.createElement('a');
-    a.href = url; a.download = fileName.replace('.pdf','.html'); a.click();
-    toast('⚠️ Popup bloqué — fichier HTML téléchargé', true);
-  }
+  if (!win) { const a=document.createElement('a'); a.href=url; a.download=label.replace(/[^a-zA-Z0-9\-]/g,'_')+'.html'; a.click(); toast('⚠️ Popup bloqué', true); }
 }
+
+// ══ CLÔTURE MOIS ═════════════════════════════════════════════════════
 function showCloture() {
-  const now=new Date();
-  const mois=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
-  document.getElementById('cloture-label').value=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+' – '+mois[now.getMonth()];
-  document.getElementById('cloture-result').style.display='none';
-  document.getElementById('btn-cloturer').disabled=false;
-  document.getElementById('btn-cloturer').textContent='📤 Exporter et remettre à zéro';
-  document.getElementById('modal-cloture').style.display='flex';
+  const now = new Date();
+  const mois = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  document.getElementById('cloture-label').value = now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+' – '+mois[now.getMonth()];
+  document.getElementById('cloture-result').style.display = 'none';
+  document.getElementById('btn-cloturer').disabled = false;
+  document.getElementById('btn-cloturer').textContent = '📤 Exporter';
+  document.getElementById('modal-cloture').style.display = 'flex';
 }
-function closeCloture(){ document.getElementById('modal-cloture').style.display='none'; }
+function closeCloture() { document.getElementById('modal-cloture').style.display = 'none'; }
+
 async function confirmerCloture() {
-  const label=document.getElementById('cloture-label').value.trim();
-  if(!label){ toast('⚠️ Entrez un nom',true); return; }
+  const label = document.getElementById('cloture-label').value.trim();
+  if(!label){ toast('⚠️ Entrez un nom', true); return; }
   if(!confirm('Confirmer la clôture "'+label+'" ? Action irréversible.')) return;
-  const btn=document.getElementById('btn-cloturer'); btn.disabled=true; btn.textContent='⏳ Génération PDF...';
-  const res=document.getElementById('cloture-result'); res.style.display='none';
+  const btn = document.getElementById('btn-cloturer');
+  btn.disabled = true; btn.textContent = '⏳...';
+  const res = document.getElementById('cloture-result');
+  res.style.display = 'none';
   try {
-    // 1. Génère le PDF depuis l'app (ouvre une fenêtre d'impression)
     await genererPdfCloture(label);
-    // 2. Remet à zéro les données sur le backend
-    const r=await api('cloturerMois',{moisLabel:label});
-    res.style.display='block';
-    if(r.ok){
-      res.style.background='#E8F5E9'; res.style.color='#2E7D32';
-      res.innerHTML='<strong>✅ Clôture réussie !</strong><br>📄 Le PDF <strong>'+label+'</strong> s\'est ouvert — sauvegardez-le en PDF depuis la fenêtre d\'impression.<br>✅ Données remises à zéro.';
-      btn.textContent='✓ Terminé';
-      S.loaded.clear(); S.checks={}; S.appChecks={}; S.comments={}; S.meta={};
+    const r = await api('cloturerMois', { moisLabel: label });
+    res.style.display = 'block';
+    if (r.ok) {
+      res.style.background = '#E8F5E9'; res.style.color = '#2E7D32';
+      res.innerHTML = '<strong>✅ Clôture réussie !</strong><br>📄 Sauvegardez le PDF depuis la fenêtre d\'impression.';
+      btn.textContent = '✓ Terminé';
+      S.loaded.clear(); S.checks = {}; S.appChecks = {}; S.comments = {}; S.meta = {};
+      setTimeout(() => {
+        closeCloture();
+        loadAndRender('chaud');
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelector('.tab:first-child').classList.add('active');
+        S.tab = 'chaud';
+      }, 1500);
     } else {
-      res.style.background='#FFEBEE'; res.style.color='#C62828';
-      res.innerHTML='⚠️ '+(r.error||'Erreur'); btn.disabled=false; btn.textContent='📤 Réessayer';
+      res.style.background = '#FFEBEE'; res.style.color = '#C62828';
+      res.innerHTML = '⚠️ ' + (r.error || 'Erreur');
+      btn.disabled = false; btn.textContent = '📤 Réessayer';
     }
-  } catch(e){ res.style.display='block'; res.style.background='#FFEBEE'; res.style.color='#C62828'; res.innerHTML='❌ '+e.message; btn.disabled=false; btn.textContent='📤 Réessayer'; }
+  } catch(e) {
+    res.style.display = 'block'; res.style.background = '#FFEBEE'; res.style.color = '#C62828';
+    res.innerHTML = '❌ ' + e.message;
+    btn.disabled = false; btn.textContent = '📤 Réessayer';
+  }
 }
 
 async function genererPdfCloture(label) {
   const css = document.querySelector('style').innerHTML;
   let body = '';
-
   ['chaud','froid','autres'].forEach(tabId => {
-    body += `<div class="page-section">
-      <div class="print-title">📋 ${DATA[tabId].title} — ${label}</div>
-      ${buildHebdo(tabId)}
-    </div><div class="page-break"></div>`;
+    body += `<div class="page-section"><div class="print-title">📋 ${DATA[tabId].title} — ${label}</div>${buildHebdo(tabId)}</div><div class="page-break"></div>`;
   });
-
   S.appareils.filter(a=>a.actif).forEach(app => {
-    body += `<div class="page-section">
-      <div class="print-title">${app.type==='neg'?'❄️':'🧪'} ${esc(app.nom)} — ${label}</div>
-      ${app.type==='neg' ? buildTempNeg(app) : buildTempMat(app)}
-    </div><div class="page-break"></div>`;
+    body += `<div class="page-section"><div class="print-title">${app.type==='neg'?'❄️':'🧪'} ${esc(app.nom)} — ${label}</div>${app.type==='neg'?buildTempNeg(app):buildTempMat(app)}</div><div class="page-break"></div>`;
   });
-
-  const fileName = label.replace(/[^a-zA-Z0-9\-\.]/g, '_') + '.pdf';
-
-  const fullHtml = `<!DOCTYPE html><html lang="fr"><head>
-    <meta charset="UTF-8"><title>${label}</title>
-    <style>
-      ${css}
+  const fullHtml = `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>${label}</title>
+    <style>${css}
       body{background:#fff;font-size:11px;margin:0;}
-      .topbar,.tabs,.tab-div,.progress-zone,.app-card-actions,
-      .add-form,.inactive-title,.comment-box .btn,button,.btn,
-      #toast,.meta-row button{display:none!important;}
-      .print-title{font-size:13px;font-weight:700;color:#1B6B7B;
-        padding:5px 0;border-bottom:2px solid #1B6B7B;margin-bottom:8px;}
+      .topbar,.tabs,.tab-div,.progress-zone,.app-card-actions,.add-form,.inactive-title,
+      .comment-box .btn,button,.btn,#toast,.meta-row button{display:none!important;}
+      .print-title{font-size:13px;font-weight:700;color:#1B6B7B;padding:5px 0;border-bottom:2px solid #1B6B7B;margin-bottom:8px;}
       .page-break{page-break-after:always;}
       .page-section{padding:6mm;}
+      .table-scroll{overflow:visible!important;}
       .releve-table,.temp-table{font-size:7px!important;width:100%!important;}
       .releve-table thead th,.temp-table th{font-size:7px!important;padding:1px!important;}
       .releve-table tbody td,.temp-table td{font-size:7px!important;padding:1px!important;}
+      .releve-table thead th.th-equip,.releve-table tbody td.td-equip{position:static!important;min-width:90px!important;}
       .cb-wrap input[type=checkbox]{width:9px!important;height:9px!important;}
       .sec-hdr{font-size:8px!important;padding:2px 4px!important;}
       .meta-row{font-size:9px!important;padding:4px 8px!important;box-shadow:none!important;border:1px solid #ccc!important;}
@@ -977,35 +1019,13 @@ async function genererPdfCloture(label) {
       .comment-box textarea{min-height:25px!important;font-size:8px!important;}
       *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}
       @page{size:A4 landscape;margin:6mm;}
-    </style>
-  </head><body>${body}
-  <script>
-    window.__fileName = '${fileName}';
-    window.onload = function() {
-      // Téléchargement automatique via print dialog en PDF
-      // On utilise le titre de la page comme nom de fichier suggéré
-      document.title = '${label}';
-      setTimeout(function(){
-        window.print();
-        setTimeout(function(){ window.close(); }, 2000);
-      }, 600);
-    };
-  <\/script></body></html>`;
-
-  // Crée un Blob HTML et l'ouvre dans un iframe caché pour déclencher l'impression
+    </style></head><body>${body}
+  <script>document.title='${label}';window.onload=function(){setTimeout(function(){window.print();setTimeout(function(){window.close();},2000);},600);};<\/script></body></html>`;
   const blob = new Blob([fullHtml], { type: 'text/html' });
   const url = URL.createObjectURL(blob);
   const win = window.open(url, '_blank');
-  if (!win) {
-    // Si popup bloqué, fallback : télécharge le HTML
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = fileName.replace('.pdf','.html');
-    a.click();
-    toast('⚠️ Popup bloqué — fichier HTML téléchargé', true);
-  }
+  if (!win) { const a=document.createElement('a'); a.href=url; a.download=label.replace(/[^a-zA-Z0-9\-]/g,'_')+'.html'; a.click(); toast('⚠️ Popup bloqué', true); }
 }
 </script>
 </body>
 </html>
-
