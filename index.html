@@ -40,6 +40,17 @@
 html,body{height:100%;overflow:hidden;}
 body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f4f8;color:#333;font-size:14px;}
 
+/* Bannière mise à jour */
+.update-banner{display:none;position:fixed;bottom:0;left:0;right:0;z-index:8999;
+  background:linear-gradient(135deg,#1B6B7B,#2E9DB5);color:#fff;
+  padding:12px 16px;align-items:center;justify-content:space-between;gap:10px;
+  box-shadow:0 -4px 20px rgba(0,0,0,.25);font-size:13px;font-weight:600;}
+.update-banner.show{display:flex;}
+.update-banner .upd-msg{display:flex;align-items:center;gap:8px;}
+.update-banner .upd-btn{background:#fff;color:var(--teal-dark);border:none;border-radius:8px;
+  padding:8px 16px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;}
+.update-banner .upd-btn:active{opacity:.8;}
+
 /* ══════════════════════════════════════════════════════
    PAGE LOGIN
 ══════════════════════════════════════════════════════ */
@@ -538,6 +549,12 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f4f8;color:#333;font-
     <button class="btn" style="background:#7B1FA2;color:#fff" onclick="confirmerCloturePesees()">📤 Exporter & Effacer</button>
   </div>
 </div></div>
+
+<!-- Bannière mise à jour PWA -->
+<div class="update-banner" id="update-banner">
+  <div class="upd-msg">🚀 <span>Nouvelle version disponible !</span></div>
+  <button class="upd-btn" onclick="applyUpdate()">Mettre à jour</button>
+</div>
 
 <script>
 // ════════════════════════════════════════════════════════════════════
@@ -1369,7 +1386,42 @@ function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').
 function fmtDateHeure(d){const dt=d||new Date(),pad=n=>String(n).padStart(2,'0');return`${pad(dt.getDate())}/${pad(dt.getMonth()+1)}/${dt.getFullYear()} ${pad(dt.getHours())}:${pad(dt.getMinutes())}`;}
 function fmtDisplayDate(s){if(!s)return'';if(/^\d{2}\/\d{2}\/\d{4}/.test(s))return s;if(/^\d{4}-\d{2}-\d{2}/.test(s)){const[y,m,d]=s.slice(0,10).split('-');return`${d}/${m}/${y}`;}const dt=new Date(s);if(!isNaN(dt)){const pad=n=>String(n).padStart(2,'0');return`${pad(dt.getDate())}/${pad(dt.getMonth()+1)}/${dt.getFullYear()} ${pad(dt.getHours())}:${pad(dt.getMinutes())}`;}return s;}
 
-if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{});}
+// ── Service Worker + détection mise à jour ───────────────────────
+let _newWorker = null;
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js').then(reg => {
+    // Vérifie si une mise à jour est déjà en attente
+    if (reg.waiting) showUpdateBanner(reg.waiting);
+
+    // Écoute les nouvelles mises à jour détectées
+    reg.addEventListener('updatefound', () => {
+      const newWorker = reg.installing;
+      newWorker.addEventListener('statechange', () => {
+        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+          showUpdateBanner(newWorker);
+        }
+      });
+    });
+  }).catch(() => {});
+
+  // Recharge la page quand le nouveau SW prend le contrôle
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    window.location.reload();
+  });
+}
+
+function showUpdateBanner(worker) {
+  _newWorker = worker;
+  document.getElementById('update-banner').classList.add('show');
+}
+
+function applyUpdate() {
+  if (_newWorker) {
+    _newWorker.postMessage('SKIP_WAITING');
+  } else {
+    window.location.reload();
+  }
+}
 
 // ════════════════════════════════════════════════════════════════════
 //  CLÔTURES
