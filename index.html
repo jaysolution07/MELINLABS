@@ -164,6 +164,7 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f4f8;color:#333;font-
 .topbar h1{font-size:15px;font-weight:700;white-space:nowrap;}
 .topbar .sub{font-size:10px;opacity:.75;margin-top:1px;}
 #conn-status{font-size:11px;padding:3px 9px;border-radius:20px;background:rgba(255,255,255,.15);color:#fff;white-space:nowrap;}
+.demo-pill{font-size:11px;padding:3px 9px;border-radius:20px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.25);color:#fff;white-space:nowrap;}
 .topbar-right{display:flex;gap:6px;align-items:center;flex-shrink:0;}
 .btn{border:none;border-radius:8px;cursor:pointer;font-weight:600;transition:all .15s;padding:8px 14px;font-size:13px;min-height:var(--touch-min);display:inline-flex;align-items:center;justify-content:center;gap:4px;touch-action:manipulation;}
 .btn:active{transform:scale(.96);opacity:.85;}
@@ -456,9 +457,10 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f4f8;color:#333;font-
     </div>
     <div class="topbar-right">
       <span id="conn-status">⏳</span>
+      <span id="demo-pill" class="demo-pill" style="display:none">Demo investisseurs</span>
       <button class="btn btn-white btn-sm" onclick="printPage()">🖨️</button>
       <button class="btn btn-sm" style="background:#7B1FA2;color:#fff" onclick="showCloture()">📦 Clôturer</button>
-      <button class="btn btn-sm" style="background:rgba(255,255,255,.15);color:#fff" onclick="logout()" title="Déconnexion">🚪</button>
+      <button id="btn-logout" class="btn btn-sm" style="background:rgba(255,255,255,.15);color:#fff" onclick="logout()" title="Déconnexion">🚪</button>
     </div>
   </div>
 
@@ -480,19 +482,29 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f4f8;color:#333;font-
       <div class="sidebar-item" data-tab="pesees" onclick="sidebarNav('pesees',this)"><span class="si-icon">⚖️</span> Pesées</div>
       <div class="sidebar-section-title">Températures</div>
       <div class="sidebar-item" data-tab="temp-manager" onclick="sidebarNav('temp-manager',this)"><span class="si-icon">⚙️</span> Appareils <span class="si-badge" id="badge-app-sidebar">0</span></div>
+      <div class="sidebar-item" data-tab="maintenance" onclick="sidebarNav('maintenance',this)"><span class="si-icon">M</span> Entretien machines</div>
+      <div class="sidebar-item" data-tab="freezer" onclick="sidebarNav('freezer',this)"><span class="si-icon">F</span> Inventaire congelateur</div>
       <div id="sidebar-appareils"></div>
-      <div class="sidebar-section-title">Administration</div>
-      <div class="sidebar-item" data-tab="elog" onclick="sidebarNav('elog',this)"><span class="si-icon">📋</span> Journal E-Log</div>
-    </div>
-  </div>
+     <div class="sidebar-section-title">Administration</div>
+<div class="sidebar-item" data-tab="elog" onclick="sidebarNav('elog',this)">
+  <span class="si-icon">📋</span> Journal E-Log
+</div>
 
-  <div class="tabs" id="tabs-bar">
+<div class="sidebar-item" onclick="logout(); closeSidebar();" style="color:#c62828;font-weight:700;">
+  <span class="si-icon">🚪</span> Déconnexion
+</div>
+</div>
+</div>
+
+<div class="tabs" id="tabs-bar">
     <div class="tab active" data-tab="chaud" onclick="switchTab('chaud',this)">🔥 Chaud</div>
     <div class="tab" data-tab="froid" onclick="switchTab('froid',this)">❄️ Froid</div>
     <div class="tab" data-tab="autres" onclick="switchTab('autres',this)">🏭 Autres</div>
     <div class="tab" data-tab="biannuel" onclick="switchTab('biannuel',this)">📅 Bi-Ann.</div>
     <div class="tab" data-tab="prelevements" onclick="switchTab('prelevements',this)">🔬 Prélèv.</div>
     <div class="tab" data-tab="pesees" onclick="switchTab('pesees',this)">⚖️ Pesées</div>
+    <div class="tab" data-tab="maintenance" onclick="switchTab('maintenance',this)">Machines</div>
+    <div class="tab" data-tab="freezer" onclick="switchTab('freezer',this)">Congelateur</div>
     <div class="tab-div"></div>
     <div class="tab" data-tab="temp-manager" onclick="switchTab('temp-manager',this)">⚙️ Appareils <span class="badge" id="badge-app">0</span></div>
     <div class="tab" data-tab="elog" onclick="switchTab('elog',this)">📋 E-Log</div>
@@ -560,8 +572,10 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f4f8;color:#333;font-
 // ════════════════════════════════════════════════════════════════════
 //  ⚙️ CONFIGURATION — REMPLACE CES DEUX URLs
 // ════════════════════════════════════════════════════════════════════
-// URL de ton Master GAS (gestion login + elog)
+
 const MASTER_API_URL = 'https://script.google.com/macros/s/AKfycbysG2pctGrrGyAcCLAZtOl2RmLUAj6S6cAqK9gJPrbPA9boz51fo2Umy_yo3ydVEWw-/exec';
+const DEMO_MODE = false;
+const DEMO_COMPANY_NAME = 'TempClean Demo Investors';
 
 // ════════════════════════════════════════════════════════════════════
 //  LOGIN
@@ -617,14 +631,21 @@ function startLock() {
 }
 
 async function doLogin() {
-  clearLoginError();
-  const id  = document.getElementById('inp-id').value.trim();
-  const mdp = document.getElementById('inp-pwd').value;
-  if (!id)  { showLoginError('Veuillez saisir votre identifiant.'); document.getElementById('inp-id').focus(); return; }
-  if (!mdp) { showLoginError('Veuillez saisir votre mot de passe.'); document.getElementById('inp-pwd').focus(); return; }
+  if (DEMO_MODE) { startDemoSession(); return; }
 
+  clearLoginError();
+
+  const id = document.getElementById('inp-id').value.trim();
+  const mdp = document.getElementById('inp-pwd').value.trim();
   const btn = document.getElementById('btn-login');
-  btn.disabled = true; btn.classList.add('loading');
+
+  if (!id || !mdp) {
+    showLoginError('Veuillez saisir votre identifiant et votre mot de passe.');
+    return;
+  }
+
+  btn.disabled = true;
+  btn.classList.add('loading');
 
   try {
     const res = await fetch(MASTER_API_URL, {
@@ -637,11 +658,11 @@ async function doLogin() {
 
     if (data.ok) {
       btn.querySelector('.btn-login-text').textContent = '✅ Connexion réussie…';
-      API_URL = data.webappUrl;
+      API_URL = data.webappUrl || DIRECT_API_URL;
       // Persiste au refresh, effacé à la fermeture de l'onglet/navigateur
-      sessionStorage.setItem('tc_api_url', data.webappUrl);
-      sessionStorage.setItem('tc_nom', data.nom);
-      setTimeout(() => showApp(data.nom), 700);
+      sessionStorage.setItem('tc_api_url', API_URL);
+      sessionStorage.setItem('tc_nom', data.nom || id || 'TempClean');
+      setTimeout(() => showApp(data.nom || id || 'TempClean'), 700);
     } else {
       loginAttempts++;
       updateDots();
@@ -659,16 +680,39 @@ async function doLogin() {
   }
 }
 
+function tryOpenFromMasterRedirect() {
+  const params = new URLSearchParams(window.location.search);
+  const nom = (params.get('nom') || params.get('company') || '').trim();
+  const apiUrl = (params.get('webappUrl') || params.get('apiUrl') || DIRECT_API_URL || '').trim();
+  if (!nom || !apiUrl) return false;
+  API_URL = apiUrl;
+  sessionStorage.setItem('tc_api_url', API_URL);
+  sessionStorage.setItem('tc_nom', nom);
+  try {
+    const cleanUrl = window.location.origin + window.location.pathname;
+    window.history.replaceState({}, document.title, cleanUrl);
+  } catch (e) {}
+  showApp(nom);
+  return true;
+}
+
 function showApp(nomEntreprise) {
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('app-screen').classList.add('visible');
   document.getElementById('ss-name').textContent = nomEntreprise || '';
   const sbn = document.getElementById('sidebar-ss-name');
   if (sbn) sbn.textContent = nomEntreprise || '';
+  if (DEMO_MODE) {
+    const pill = document.getElementById('demo-pill');
+    const btn = document.getElementById('btn-logout');
+    if (pill) pill.style.display = 'inline-flex';
+    if (btn) btn.style.display = 'none';
+  }
   initApp();
 }
 
 function logout() {
+  if (DEMO_MODE) { toast('Mode demo actif - deconnexion desactivee'); return; }
   if (!confirm('Se déconnecter ?')) return;
   API_URL = '';
   sessionStorage.removeItem('tc_api_url');
@@ -676,7 +720,7 @@ function logout() {
   document.getElementById('app-screen').classList.remove('visible');
   document.getElementById('login-screen').style.display = 'flex';
   // Reset état
-  Object.assign(S, {tab:'chaud',checks:{},appChecks:{},comments:{},meta:{},appareils:[],renaming:{},loaded:new Set(),prelevements:[],pesees:[],editingReleve:null,editingPesee:null});
+  Object.assign(S, {tab:'chaud',checks:{},appChecks:{},comments:{},meta:{},appareils:[],renaming:{},loaded:new Set(),prelevements:[],pesees:[],machines:[],maintenanceRows:[],maintenanceMachineId:'',editingReleve:null,editingPesee:null,editingMaintenance:null,editingFreezerId:null,freezerItems:[],freezerMeta:{dateDebut:'',dateFin:'',filtreRack:''},freezerDraft:{produit:'',placements:[]},freezerSearch:''});
   elogRows = [];
   // Reset bouton login
   const btn = document.getElementById('btn-login');
@@ -688,6 +732,11 @@ function logout() {
 }
 
 window.onload = () => {
+  if (DEMO_MODE) {
+    startDemoSession();
+    return;
+  }
+  if (tryOpenFromMasterRedirect()) return;
   // Si une session existe déjà (refresh), on repart directement dans l'app
   const savedUrl = sessionStorage.getItem('tc_api_url');
   const savedNom = sessionStorage.getItem('tc_nom');
@@ -703,6 +752,7 @@ window.onload = () => {
 //  API
 // ════════════════════════════════════════════════════════════════════
 async function api(action, params={}) {
+  if (DEMO_MODE) return demoApi(action, params);
   const res = await fetch(API_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'text/plain' },
@@ -713,6 +763,7 @@ async function api(action, params={}) {
 }
 
 async function masterApi(action, params={}) {
+  if (DEMO_MODE) return demoMasterApi(action, params);
   if (!MASTER_API_URL) return null;
   try {
     const res = await fetch(MASTER_API_URL, {
@@ -788,13 +839,334 @@ const TEMPS_NEG=[-9,-10,-11,-12,-13,-14,-15,-16,-17,-18,-19,-20,-21,-22];
 const TEMPS_MAT=[9,8,7,6,5,4,3,2,1,0,-1];
 const ALERT_NEG=new Set([-15,-14,-13,-12,-11,-10,-9]);
 const TARGET_NEG=new Set([-18,-19,-20,-21,-22]);
+const FREEZER_SIDES = [
+  { key:'gauche', title:'Cote gauche', racks:18 },
+  { key:'droite', title:'Cote droit', racks:21 }
+];
+const FREEZER_LEVEL_COUNT = 3;
 
 const S = {
   tab:'chaud', checks:{}, appChecks:{}, comments:{}, meta:{},
   appareils:[], renaming:{}, loaded:new Set(),
-  prelevements:[], pesees:[], editingReleve:null, editingPesee:null
+  prelevements:[], pesees:[], machines:[], maintenanceRows:[], maintenanceMachineId:'',
+  editingReleve:null, editingPesee:null, editingMaintenance:null, editingFreezerId:null,
+  freezerItems:[], freezerMeta:{dateDebut:'',dateFin:'',filtreRack:''}, freezerDraft:{produit:'',placements:[]}, freezerSearch:''
 };
 let elogRows = [];
+
+function deepClone(obj){ return JSON.parse(JSON.stringify(obj)); }
+function demoUnique(arr){ return [...new Set(arr.filter(n => n >= 1 && n <= 31))].sort((a,b)=>a-b); }
+function demoMonthDays(pattern, seed){
+  const s = seed % 4;
+  const low = String(pattern || '').toLowerCase();
+  if (low.includes('jour')) return demoUnique([1+s,4+s,7+s,10+s,13+s,16+s,19+s,22+s,25+s,28+s]);
+  if (low.includes('cycle')) return demoUnique([4+s,11+s,18+s,25+s]);
+  if (low.includes('mois')) return demoUnique([8+s,21+s]);
+  return demoUnique([2+s,9+s,16+s,23+s,30-s]);
+}
+function buildDemoHebdoState(tabId, month, visa, comment){
+  const state = { _month: month, _visa: visa, _comment: comment };
+  for (let day = 1; day <= 31; day++) state['BIO__'+day] = ![7,14,21,28].includes(day);
+  let idx = 0;
+  DATA[tabId].sections.forEach(sec => sec.items.forEach((item) => {
+    demoMonthDays(item.p, idx + tabId.length).forEach(day => {
+      state['i'+idx+'__'+day] = true;
+      if (item.n === 'pH eau de rinçage') state['ph__i'+idx+'__'+day] = (7 + ((day + idx) % 8) / 10).toFixed(1);
+    });
+    idx++;
+  }));
+  return state;
+}
+function buildDemoBiannuelState(){
+  const state = {
+    _month: '2026',
+    _visa: 'QM',
+    _comment: 'Janvier 2026 - nettoyage semestriel realise sur plafonds et murs. Septembre 2026 - controle ventilation negatif renforce apres poussiere au niveau des grilles.'
+  };
+  MONTHS.forEach((_, mi) => { state['BIO__'+mi] = ![3,9].includes(mi); });
+  let idx = 0;
+  DATA.biannuel.sections.forEach(sec => sec.items.forEach((item) => {
+    let months = [0,6];
+    const p = String(item.p || '').toLowerCase();
+    if (p.includes('3 mois')) months = [0,3,6,9];
+    else if (p.includes('mois')) months = [1,7];
+    else if (p.includes('ann')) months = [8];
+    months.forEach(mi => { state['i'+idx+'__'+mi] = true; });
+    idx++;
+  }));
+  return state;
+}
+function buildDemoNegState(profile){
+  const state = {};
+  for (let day = 1; day <= 31; day++) {
+    const am = profile.amAlerts?.[day] ?? (day % 11 === 0 ? -15 : day % 6 === 0 ? -17 : -18);
+    const pm = profile.pmAlerts?.[day] ?? (day % 13 === 0 ? -14 : day % 5 === 0 ? -17 : -19);
+    state[`${am}__${day}__AM`] = true;
+    state[`${pm}__${day}__PM`] = true;
+  }
+  return state;
+}
+function buildDemoMatState(profile){
+  const state = {};
+  for (let day = 1; day <= 31; day++) {
+    const temp = profile.alerts?.[day] ?? (day % 9 === 0 ? 6 : day % 4 === 0 ? 5 : day % 3 === 0 ? 3 : 4);
+    state[`${temp}__${day}`] = true;
+  }
+  return state;
+}
+function createDemoStore(){
+  const appareils = [
+    { id:'cf_neg_stock', nom:'Chambre froide negative stock', type:'neg', actif:true },
+    { id:'cf_neg_expe', nom:'Chambre froide expedition', type:'neg', actif:true },
+    { id:'cuve_vanille', nom:'Cuve maturation vanille', type:'mat', actif:true },
+    { id:'cuve_fraise', nom:'Cuve maturation fraise', type:'mat', actif:true },
+    { id:'armoire_tests', nom:'Armoire tests R&D', type:'mat', actif:false }
+  ];
+  return {
+    appareils,
+    appMeta: {
+      cf_neg_stock:{ moisAnnee:'2026-03', visa:'ML' },
+      cf_neg_expe:{ moisAnnee:'2026-03', visa:'SD' },
+      cuve_vanille:{ moisAnnee:'2026-03', visa:'LM' },
+      cuve_fraise:{ moisAnnee:'2026-03', visa:'TC' }
+    },
+    comments: {
+      app_cf_neg_stock:'06/03/2026 - pointe a -15C sur la tournee du matin, porte restee ouverte 4 minutes pendant dechargement. 07/03/2026 - verification joint OK.',
+      app_cf_neg_expe:'13/03/2026 - ecart transitoire sur la releve PM, reprise a -19C apres degivrage et controle sonde.',
+      app_cuve_vanille:'09/03/2026 - cuve restee a 6C avant corrective. Lot bloque 20 min, recontrole conforme a 4C.',
+      app_cuve_fraise:'18/03/2026 - derive a 5C en fin de poste. Nettoyage sonde et verification agitation effectues.',
+      chaud:'12/03/2026 - pH eau de rincage a 7.8 sur circuit pasteurisateur, rincage prolonge puis validation a 7.2. 24/03/2026 - filtre Mix-Plant remplace apres encrassement visuel.',
+      froid:'11/03/2026 - piece evasee signee en retard sur l equipe nuit. Rattrapage fait avant demarrage du lot fraise. 21/03/2026 - CIP cuve renforce suite a residu gras en controle visuel.',
+      autres:'05/03/2026 - local poubelle nettoye avec retard apres surcharge expedition. 17/03/2026 - vestiaires remis en conformite apres rappel hygiene.',
+      biannuel:'S1 2026 - campagne semestrielle realisee a 96 pourcent. Reste a planifier le plafond reserve emballages sur semaine 40.'
+    },
+    hebdo: {
+      [SHEET_NAMES.chaud]: buildDemoHebdoState('chaud','2026-03','ML','12/03/2026 - pH eau de rincage a 7.8 sur circuit pasteurisateur, rincage prolonge puis validation a 7.2.\n24/03/2026 - filtre Mix-Plant remplace apres encrassement visuel.'),
+      [SHEET_NAMES.froid]: buildDemoHebdoState('froid','2026-03','SD','11/03/2026 - piece evasee signee en retard sur l equipe nuit.\n21/03/2026 - CIP cuve renforce suite a residu gras en controle visuel.'),
+      [SHEET_NAMES.autres]: buildDemoHebdoState('autres','2026-03','TC','05/03/2026 - local poubelle nettoye avec retard apres surcharge expedition.\n17/03/2026 - vestiaires remis en conformite apres rappel hygiene.')
+    },
+    biannuel: buildDemoBiannuelState(),
+    appStates: {
+      cf_neg_stock: buildDemoNegState({ amAlerts:{6:-15,18:-16}, pmAlerts:{13:-14,27:-15} }),
+      cf_neg_expe: buildDemoNegState({ amAlerts:{8:-16,20:-15}, pmAlerts:{10:-14,25:-15} }),
+      cuve_vanille: buildDemoMatState({ alerts:{9:6,19:6,27:5} }),
+      cuve_fraise: buildDemoMatState({ alerts:{18:5,22:6,30:5} }),
+      armoire_tests: buildDemoMatState({ alerts:{15:5} })
+    },
+    prelevements: [
+      { _rowIndex:1, date:'03/03/2026 09:20', operateur:'M. Leroy', surface:'Doseuse 4 becs', resJaune:'8', resRouge:'0', actionsCor:'RAS - nettoyage valide' },
+      { _rowIndex:2, date:'06/03/2026 14:10', operateur:'S. Dupont', surface:'Poignee chambre froide expedition', resJaune:'27', resRouge:'0', actionsCor:'Desinfection immediate, reprise du plan de nettoyage sur les poignees.' },
+      { _rowIndex:3, date:'11/03/2026 08:40', operateur:'L. Martin', surface:'Plan de travail conditionnement', resJaune:'14', resRouge:'0', actionsCor:'RAS - seuils conformes' },
+      { _rowIndex:4, date:'17/03/2026 16:05', operateur:'T. Colin', surface:'Bouton CIP laboratoire froid', resJaune:'39', resRouge:'1', actionsCor:'Arret production 20 min, nettoyage renforce, sensibilisation equipe et contre-analyse planifiee.' },
+      { _rowIndex:5, date:'24/03/2026 10:15', operateur:'M. Leroy', surface:'Cuve maturation vanille', resJaune:'19', resRouge:'0', actionsCor:'RAS - tendance a surveiller' },
+      { _rowIndex:6, date:'28/03/2026 07:55', operateur:'S. Dupont', surface:'Table emballage secondaire', resJaune:'6', resRouge:'0', actionsCor:'RAS' }
+    ],
+    pesees: [
+      { _rowIndex:1, date:'04/03/2026 09:10', produit:'Yaourt nature 125g', poidsTheorique:'125,0', poidsReel1:'124,8', poidsReel2:'125,2', poidsReel3:'124,9', actions:'RAS', visa:'ML' },
+      { _rowIndex:2, date:'07/03/2026 11:30', produit:'Dessert vanille 100g', poidsTheorique:'100,0', poidsReel1:'98,9', poidsReel2:'99,1', poidsReel3:'99,0', actions:'Reglage tete doseuse n2', visa:'SD' },
+      { _rowIndex:3, date:'12/03/2026 15:05', produit:'Fromage frais 250g', poidsTheorique:'250,0', poidsReel1:'251,2', poidsReel2:'250,8', poidsReel3:'251,0', actions:'RAS', visa:'LM' },
+      { _rowIndex:4, date:'18/03/2026 08:25', produit:'Coulis fraise 500g', poidsTheorique:'500,0', poidsReel1:'493,8', poidsReel2:'494,2', poidsReel3:'493,5', actions:'Blocage palette 45 min, recalage peseuse puis reprise', visa:'TC' },
+      { _rowIndex:5, date:'25/03/2026 13:45', produit:'Yaourt grec 150g', poidsTheorique:'150,0', poidsReel1:'150,7', poidsReel2:'150,4', poidsReel3:'150,5', actions:'RAS', visa:'ML' }
+    ],
+    logs: [
+      { rowIndex:301, date:'2026-03-03 07:12:11', nom:DEMO_COMPANY_NAME, id:'mleroy', event:'LOGIN', detail:'Connexion responsable qualite' },
+      { rowIndex:302, date:'2026-03-03 17:58:47', nom:DEMO_COMPANY_NAME, id:'', event:'CLOTURE', detail:'2026-02 - Fevrier' },
+      { rowIndex:303, date:'2026-03-05 06:54:22', nom:DEMO_COMPANY_NAME, id:'sdupont', event:'LOGIN', detail:'Connexion chef equipe matin' },
+      { rowIndex:304, date:'2026-03-06 14:15:03', nom:DEMO_COMPANY_NAME, id:'sdupont', event:'LOGIN_FAIL', detail:'Mot de passe incorrect - 1 tentative restante' },
+      { rowIndex:305, date:'2026-03-11 08:02:19', nom:DEMO_COMPANY_NAME, id:'lmartin', event:'LOGIN', detail:'Consultation releves froid et pesees' },
+      { rowIndex:306, date:'2026-03-17 16:44:12', nom:DEMO_COMPANY_NAME, id:'tcolin', event:'LOGIN', detail:'Saisie prelevements de surface' },
+      { rowIndex:307, date:'2026-03-22 18:01:58', nom:DEMO_COMPANY_NAME, id:'', event:'CLOTURE', detail:'2026-S1 - Bi-Annuel' },
+      { rowIndex:308, date:'2026-03-28 09:07:32', nom:DEMO_COMPANY_NAME, id:'invest-demo', event:'LOGIN', detail:'Session demonstration investisseurs' }
+    ]
+  };
+}
+const DEMO_STORE = createDemoStore();
+function demoSheetNameToTab(sheetName){
+  if (sheetName === 'Fréquences Bi-Annuelles') return 'biannuel';
+  return Object.keys(SHEET_NAMES).find(tab => SHEET_NAMES[tab] === sheetName);
+}
+function demoNextRow(rows){ return rows.length ? Math.max(...rows.map(r => Number(r._rowIndex || r.rowIndex || 0))) + 1 : 1; }
+async function demoApi(action, params={}){
+  switch(action){
+    case 'ping': return { ok:true };
+    case 'getAppData': return { appareils:deepClone(DEMO_STORE.appareils), comments:deepClone(DEMO_STORE.comments), meta:deepClone(DEMO_STORE.appMeta) };
+    case 'loadHebdoState': return deepClone(DEMO_STORE.hebdo[params.sheetName] || {});
+    case 'loadBiannuelState': return deepClone(DEMO_STORE.biannuel);
+    case 'loadAppareilState': return deepClone(DEMO_STORE.appStates[params.appareilId] || {});
+    case 'loadPrelevements': return { rows:deepClone(DEMO_STORE.prelevements) };
+    case 'loadPesees': return { rows:deepClone(DEMO_STORE.pesees) };
+    case 'saveHebdo': {
+      const st = DEMO_STORE.hebdo[params.sheetName] || (DEMO_STORE.hebdo[params.sheetName] = {});
+      const key = params.itemName === 'BIO' ? `BIO__${params.day}` : `${params.itemName}__${params.day}`;
+      st[key] = params.value;
+      return { ok:true };
+    }
+    case 'saveMeta': {
+      const st = DEMO_STORE.hebdo[params.sheetName] || (DEMO_STORE.hebdo[params.sheetName] = {});
+      st._month = params.moisAnnee || st._month || '2026-03';
+      st._visa = params.visa || '';
+      return { ok:true };
+    }
+    case 'saveComment': {
+      const tab = demoSheetNameToTab(params.sheetName);
+      if (tab === 'biannuel') DEMO_STORE.biannuel._comment = params.comment || '';
+      else if (tab) DEMO_STORE.hebdo[SHEET_NAMES[tab]]._comment = params.comment || '';
+      if (tab) DEMO_STORE.comments[tab] = params.comment || '';
+      return { ok:true };
+    }
+    case 'saveBiannuel': {
+      const key = params.itemName === 'BIO' ? `BIO__${params.monthIndex}` : `${params.itemName}__${params.monthIndex}`;
+      DEMO_STORE.biannuel[key] = params.value;
+      return { ok:true };
+    }
+    case 'saveAppareilTemp': {
+      const st = DEMO_STORE.appStates[params.appareilId] || (DEMO_STORE.appStates[params.appareilId] = {});
+      const key = params.slot ? `${params.tempVal}__${params.day}__${params.slot}` : `${params.tempVal}__${params.day}`;
+      st[key] = params.value;
+      return { ok:true };
+    }
+    case 'saveAppareilComment':
+      DEMO_STORE.comments['app_'+params.appareilId] = params.comment || '';
+      return { ok:true };
+    case 'saveAppareilMeta':
+      DEMO_STORE.appMeta[params.appareilId] = { moisAnnee:params.moisAnnee || '2026-03', visa:params.visa || '' };
+      return { ok:true };
+    case 'addPrelevement': {
+      const row = { _rowIndex:demoNextRow(DEMO_STORE.prelevements), ...params };
+      DEMO_STORE.prelevements.push(row);
+      return { ok:true, _rowIndex:row._rowIndex };
+    }
+    case 'updatePrelevement': {
+      const idx = DEMO_STORE.prelevements.findIndex(r => String(r._rowIndex) === String(params._rowIndex));
+      if (idx < 0) return { ok:false, error:'Prelevement introuvable' };
+      DEMO_STORE.prelevements[idx] = { ...DEMO_STORE.prelevements[idx], ...params };
+      return { ok:true };
+    }
+    case 'deletePrelevement':
+      DEMO_STORE.prelevements = DEMO_STORE.prelevements.filter(r => String(r._rowIndex) !== String(params._rowIndex));
+      return { ok:true };
+    case 'addPesee': {
+      const row = { _rowIndex:demoNextRow(DEMO_STORE.pesees), ...params };
+      DEMO_STORE.pesees.push(row);
+      return { ok:true, _rowIndex:row._rowIndex };
+    }
+    case 'updatePesee': {
+      const idx = DEMO_STORE.pesees.findIndex(r => String(r._rowIndex) === String(params._rowIndex));
+      if (idx < 0) return { ok:false, error:'Pesee introuvable' };
+      DEMO_STORE.pesees[idx] = { ...DEMO_STORE.pesees[idx], ...params };
+      return { ok:true };
+    }
+    case 'deletePesee':
+      DEMO_STORE.pesees = DEMO_STORE.pesees.filter(r => String(r._rowIndex) !== String(params._rowIndex));
+      return { ok:true };
+    case 'clearPrelevements':
+      DEMO_STORE.prelevements = [];
+      return { ok:true };
+    case 'clearPesees':
+      DEMO_STORE.pesees = [];
+      return { ok:true };
+    case 'loadFreezerData':
+      return { ok:true, items:deepClone(DEMO_STORE.freezerItems || []), meta:deepClone(DEMO_STORE.freezerMeta || {}) };
+    case 'addFreezerItem': {
+      const row = { _rowIndex:demoNextRow(DEMO_STORE.freezerItems || []), id:params.id || ('fz_'+Date.now()), produit:params.produit || '', emplacements:params.emplacements || '', checked:params.checked === true };
+      DEMO_STORE.freezerItems = DEMO_STORE.freezerItems || [];
+      DEMO_STORE.freezerItems.push(row);
+      return { ok:true, _rowIndex:row._rowIndex, id:row.id };
+    }
+    case 'updateFreezerItem': {
+      DEMO_STORE.freezerItems = DEMO_STORE.freezerItems || [];
+      const idx = DEMO_STORE.freezerItems.findIndex(r => String(r._rowIndex) === String(params._rowIndex));
+      if (idx < 0) return { ok:false, error:'Produit congelateur introuvable' };
+      DEMO_STORE.freezerItems[idx] = { ...DEMO_STORE.freezerItems[idx], ...params };
+      return { ok:true };
+    }
+    case 'deleteFreezerItem':
+      DEMO_STORE.freezerItems = (DEMO_STORE.freezerItems || []).filter(r => String(r._rowIndex) !== String(params._rowIndex));
+      return { ok:true };
+    case 'saveFreezerMeta':
+      DEMO_STORE.freezerMeta = { ...(DEMO_STORE.freezerMeta || {}), ...params };
+      return { ok:true };
+    case 'resetFreezerChecks':
+      DEMO_STORE.freezerItems = (DEMO_STORE.freezerItems || []).map(r => ({ ...r, checked:false }));
+      return { ok:true };
+    case 'addAppareil': {
+      const id = ('app_'+Date.now()).replace(/[^a-z0-9_]/gi,'').toLowerCase();
+      const app = { id, nom:params.nom, type:params.type, actif:true };
+      DEMO_STORE.appareils.push(app);
+      DEMO_STORE.appStates[id] = {};
+      DEMO_STORE.comments['app_'+id] = '';
+      return deepClone(app);
+    }
+    case 'dupliquerAppareil': {
+      const source = DEMO_STORE.appareils.find(a => a.id === params.sourceId);
+      if (!source) throw new Error('Appareil source introuvable');
+      const id = `${source.id}_copie_${Date.now()}`;
+      const app = { ...source, id, nom:`${source.nom} copie`, actif:true };
+      DEMO_STORE.appareils.push(app);
+      DEMO_STORE.appStates[id] = deepClone(DEMO_STORE.appStates[source.id] || {});
+      DEMO_STORE.comments['app_'+id] = DEMO_STORE.comments['app_'+source.id] || '';
+      return deepClone(app);
+    }
+    case 'renommerAppareil': {
+      const app = DEMO_STORE.appareils.find(a => a.id === params.id);
+      if (!app) throw new Error('Appareil introuvable');
+      app.nom = params.nouveauNom;
+      return { ok:true };
+    }
+    case 'supprimerAppareil': {
+      const app = DEMO_STORE.appareils.find(a => a.id === params.id);
+      if (app) app.actif = false;
+      return { ok:true };
+    }
+    case 'reactiverAppareil': {
+      const app = DEMO_STORE.appareils.find(a => a.id === params.id);
+      if (app) app.actif = true;
+      return { ok:true };
+    }
+    case 'supprimerDefinitivement':
+      DEMO_STORE.appareils = DEMO_STORE.appareils.filter(a => a.id !== params.id);
+      delete DEMO_STORE.appStates[params.id];
+      delete DEMO_STORE.comments['app_'+params.id];
+      delete DEMO_STORE.appMeta[params.id];
+      return { ok:true };
+    case 'cloturerBiannuel':
+      DEMO_STORE.biannuel = { _month:'2026', _visa:'', _comment:'' };
+      return { ok:true };
+    case 'cloturerMois':
+      return { ok:true };
+    default:
+      return { ok:true };
+  }
+}
+async function demoMasterApi(action, params={}){
+  switch(action){
+    case 'getLogs': return { ok:true, rows:deepClone(DEMO_STORE.logs).slice(0, params.limit || 300) };
+    case 'deleteLog':
+      DEMO_STORE.logs = DEMO_STORE.logs.filter(r => String(r.rowIndex) !== String(params.rowIndex));
+      return { ok:true };
+    case 'clearLogs':
+      DEMO_STORE.logs = [];
+      return { ok:true };
+    case 'logEvent':
+      DEMO_STORE.logs.unshift({ rowIndex:demoNextRow(DEMO_STORE.logs), date:'2026-03-30 10:00:00', nom:params.nom || DEMO_COMPANY_NAME, id:params.id || '', event:params.event || 'INFO', detail:params.detail || '' });
+      return { ok:true };
+    case 'login':
+      return { ok:true, webappUrl:'demo://tempclean', nom:DEMO_COMPANY_NAME };
+    default:
+      return { ok:true };
+  }
+}
+function startDemoSession(){
+  API_URL = 'demo://tempclean';
+  sessionStorage.setItem('tc_api_url', API_URL);
+  sessionStorage.setItem('tc_nom', DEMO_COMPANY_NAME);
+  const pill = document.getElementById('demo-pill');
+  if (pill) pill.style.display = 'inline-flex';
+  const btn = document.getElementById('btn-logout');
+  if (btn) btn.style.display = 'none';
+  document.getElementById('login-screen').style.display = 'none';
+  showApp(DEMO_COMPANY_NAME);
+}
 
 // ════════════════════════════════════════════════════════════════════
 //  INIT APP (appelé après login réussi)
@@ -810,6 +1182,8 @@ async function initApp() {
     } else { showConnError(r.error); return; }
     const data = await api('getAppData');
     S.appareils = data.appareils || [];
+    S.comments = { ...S.comments, ...(data.comments || {}) };
+    S.meta = { ...S.meta, ...(data.meta || {}) };
     updateAppareilsTabs();
     document.querySelectorAll('#tabs-bar .tab').forEach(t => t.classList.toggle('active', t.getAttribute('data-tab')==='chaud'));
     const defItem = document.querySelector('.sidebar-item[data-tab="chaud"]');
@@ -886,6 +1260,17 @@ async function loadAndRender(tab) {
     if (tab==='biannuel') { const st=await api('loadBiannuelState'); applyState('biannuel',st); }
     else if (tab==='prelevements') { const r=await api('loadPrelevements'); S.prelevements=r.rows||[]; }
     else if (tab==='pesees') { const r=await api('loadPesees'); S.pesees=r.rows||[]; }
+    else if (tab==='maintenance') {
+      const [machinesRes, maintenanceRes] = await Promise.all([api('loadMachines'), api('loadMaintenance')]);
+      S.machines = machinesRes.rows || [];
+      S.maintenanceRows = maintenanceRes.rows || [];
+      if (!S.maintenanceMachineId && S.machines.length) S.maintenanceMachineId = S.machines[0].id;
+    }
+    else if (tab==='freezer') {
+      const r=await api('loadFreezerData');
+      S.freezerItems = (r.items || []).map(normalizeFreezerItem);
+      S.freezerMeta = Object.assign({dateDebut:'',dateFin:'',filtreRack:''}, r.meta || {});
+    }
     else if (tab.startsWith('app_')) {
       const id=tab.replace('app_','');
       const st=await api('loadAppareilState',{appareilId:id});
@@ -915,13 +1300,42 @@ function renderTab(tab) {
   if (tab==='temp-manager') c.innerHTML=buildManager();
   else if (tab==='prelevements') c.innerHTML=buildPrelevements();
   else if (tab==='pesees') c.innerHTML=buildPesees();
+  else if (tab==='maintenance') c.innerHTML=buildMaintenance();
+  else if (tab==='freezer') c.innerHTML=buildFreezer();
   else if (tab==='elog') { /* géré par loadElog */ }
   else if (tab.startsWith('app_')) {
     const app=S.appareils.find(a=>a.id===tab.replace('app_',''));
     c.innerHTML=app?(app.type==='neg'?buildTempNeg(app):buildTempMat(app)):'<p style="padding:20px">Appareil introuvable</p>';
+    setTimeout(highlightTodayTempColumns, 0);
   }
   else if (tab==='biannuel') c.innerHTML=buildBiannuel();
   else c.innerHTML=buildHebdo(tab);
+}
+
+function highlightTodayTempColumns(){
+  const day = new Date().getDate();
+  document.querySelectorAll('.temp-table').forEach(table => {
+    const headRows = table.querySelectorAll('thead tr');
+    const bodyRows = table.querySelectorAll('tbody tr');
+    const isNeg = headRows.length > 1 && headRows[1].querySelectorAll('.ampm-label').length > 0;
+    if(isNeg){
+      const dayHeader = headRows[0]?.children[day];
+      if(dayHeader) dayHeader.style.cssText += 'background:#E65100;color:#fff;outline:2px solid #FFE0B2;outline-offset:-2px;';
+      const am = 1 + ((day - 1) * 2);
+      const pm = am + 1;
+      [headRows[1]?.children[am], headRows[1]?.children[pm]].forEach(cell => { if(cell) cell.style.cssText += 'background:#FFB74D;color:#4E342E;'; });
+      bodyRows.forEach(row => {
+        [row.children[am], row.children[pm]].forEach(cell => { if(cell) cell.style.cssText += 'background:#FFF8E1;outline:2px solid #E65100;outline-offset:-2px;'; });
+      });
+    } else {
+      const dayHeader = headRows[0]?.children[day];
+      if(dayHeader) dayHeader.style.cssText += 'background:#E65100;color:#fff;outline:2px solid #FFE0B2;outline-offset:-2px;';
+      bodyRows.forEach(row => {
+        const cell = row.children[day];
+        if(cell) cell.style.cssText += 'background:#FFF8E1;outline:2px solid #E65100;outline-offset:-2px;';
+      });
+    }
+  });
 }
 
 // ════════════════════════════════════════════════════════════════════
@@ -1161,6 +1575,606 @@ async function deletePesee(idx){
 }
 
 // ════════════════════════════════════════════════════════════════════
+// ----------------------------------------------------------------------------
+//  ENTRETIEN MACHINES
+// ----------------------------------------------------------------------------
+function maintenanceRowsForCurrentMachine(){
+  if(!S.maintenanceMachineId) return S.maintenanceRows;
+  return S.maintenanceRows.filter(r => r.machineId === S.maintenanceMachineId);
+}
+
+function machineNameById(id){
+  const m = S.machines.find(x => x.id === id);
+  return m ? m.nom : '';
+}
+
+function buildMaintenance(){
+  const currentMachineName = machineNameById(S.maintenanceMachineId);
+  const rows = maintenanceRowsForCurrentMachine();
+  let html = `<div class="releve-page-header">
+    <div><div class="releve-title">Entretien des machines</div><div class="releve-subtitle">Carnet d'entretien, maintenance preventive et corrective</div></div>
+    <span class="releve-count">${rows.length} releve${rows.length>1?'s':''}</span>
+  </div>
+  <div class="add-record-form">
+    <h3>Ajouter une machine</h3>
+    <div class="form-grid">
+      <div class="form-group"><label>Nom de la machine</label><input type="text" id="m-name" placeholder="Ex: Cuve pasteurisation"></div>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-primary" onclick="addMachineUi()">Ajouter la machine</button>
+    </div>
+  </div>
+  <div class="add-record-form">
+    <h3>Carnet d'entretien</h3>
+    <div class="form-grid">
+      <div class="form-group"><label>Machine</label><select id="maintenance-machine-select" onchange="changeMaintenanceMachine(this.value)">${buildMachineOptions()}</select></div>
+      <div class="form-group"><label>Date entretien</label><input type="text" id="maint-date" placeholder="JJ/MM/AAAA HH:MM" value="${fmtDateHeure()}"></div>
+      <div class="form-group"><label>Type maintenance</label><select id="maint-type"><option value="Preventive">Preventive</option><option value="Corrective">Corrective</option></select></div>
+      <div class="form-group full"><label>Entretien realise</label><textarea id="maint-work" rows="2" placeholder="Operations realisees"></textarea></div>
+      <div class="form-group full"><label>Produits utilises</label><textarea id="maint-products" rows="2" placeholder="Detergents, desinfectants, pieces"></textarea></div>
+      <div class="form-group full"><label>Problemes rencontres</label><textarea id="maint-problems" rows="2" placeholder="Panne, fuite, anomalie, remarque"></textarea></div>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-primary" onclick="addMaintenanceUi()">Enregistrer le releve</button>
+      <button class="btn" style="background:#f5f5f5;color:#555" onclick="clearMaintenanceForm()">Effacer</button>
+    </div>
+  </div>`;
+  html += `<div class="meta-row" style="margin-bottom:12px"><span style="font-size:13px;font-weight:700;color:var(--teal-dark)">Machine affichee : ${esc(currentMachineName || 'Toutes')}</span><span style="margin-left:auto;font-size:12px;color:#666">${S.machines.length} machine${S.machines.length>1?'s':''} enregistree${S.machines.length>1?'s':''}</span></div>`;
+  html += `<div class="records-table-wrap">`;
+  if(rows.length===0){
+    html += `<div class="records-empty">Aucun releve d'entretien pour cette machine.</div>`;
+  } else {
+    html += `<div class="table-scroll"><table class="records-table"><thead><tr>
+      <th>Machine</th><th>Date</th><th>Type</th><th>Entretien realise</th><th>Produits</th><th>Problemes</th><th style="width:80px">Actions</th>
+    </tr></thead><tbody>`;
+    rows.forEach(row => { html += S.editingMaintenance===row._rowIndex ? buildMaintenanceEditRow(row) : buildMaintenanceRow(row); });
+    html += `</tbody></table></div>`;
+  }
+  html += `</div>
+  <div class="cloture-zone" style="margin-top:16px;padding:16px;background:#E8F5E9;border-radius:12px;border-left:4px solid #2E7D32;">
+    <div style="font-size:13px;font-weight:700;color:#2E7D32;margin-bottom:4px">Export carnet entretien</div>
+    <div style="font-size:12px;color:#555;margin-bottom:12px">Export PDF de la machine selectionnee ou export puis suppression de tous les releves.</div>
+    <div class="form-actions">
+      <button class="btn" style="background:#2E7D32;color:#fff" onclick="exportMaintenancePdf(false)">Exporter PDF</button>
+      <button class="btn" style="background:#1B5E20;color:#fff" onclick="exportMaintenancePdf(true)">Exporter + cloturer</button>
+    </div>
+  </div>`;
+  return html;
+}
+
+function buildMachineOptions(){
+  const opts = [`<option value="">Toutes les machines</option>`];
+  S.machines.forEach(m => opts.push(`<option value="${esc(m.id)}" ${m.id===S.maintenanceMachineId?'selected':''}>${esc(m.nom)}</option>`));
+  return opts.join('');
+}
+
+function buildMaintenanceRow(row){
+  return `<tr>
+    <td style="font-weight:700">${esc(row.machineNom)}</td>
+    <td>${fmtDisplayDate(row.dateEntretien)}</td>
+    <td>${esc(row.typeMaintenance)}</td>
+    <td style="max-width:220px;word-break:break-word">${esc(row.entretienRealise)}</td>
+    <td style="max-width:200px;word-break:break-word">${esc(row.produitsUtilises)}</td>
+    <td style="max-width:200px;word-break:break-word">${esc(row.problemes)}</td>
+    <td class="td-actions-col"><button class="btn-row-edit" onclick="startEditMaintenance(${row._rowIndex})">Edit</button> <button class="btn-row-del" onclick="deleteMaintenanceUi(${row._rowIndex})">Del</button></td>
+  </tr>`;
+}
+
+function buildMaintenanceEditRow(row){
+  return `<tr class="record-edit-row">
+    <td>${esc(row.machineNom)}</td>
+    <td><input type="text" id="edit-maint-date-${row._rowIndex}" value="${esc(row.dateEntretien)}"></td>
+    <td><select id="edit-maint-type-${row._rowIndex}"><option value="Preventive" ${row.typeMaintenance==='Preventive'?'selected':''}>Preventive</option><option value="Corrective" ${row.typeMaintenance==='Corrective'?'selected':''}>Corrective</option></select></td>
+    <td><textarea id="edit-maint-work-${row._rowIndex}" rows="2">${esc(row.entretienRealise)}</textarea></td>
+    <td><textarea id="edit-maint-products-${row._rowIndex}" rows="2">${esc(row.produitsUtilises)}</textarea></td>
+    <td><textarea id="edit-maint-problems-${row._rowIndex}" rows="2">${esc(row.problemes)}</textarea></td>
+    <td class="td-actions-col"><button class="btn-row-save" onclick="saveEditMaintenance(${row._rowIndex})">OK</button> <button class="btn-row-cancel" onclick="cancelEditMaintenance()">X</button></td>
+  </tr>`;
+}
+
+function changeMaintenanceMachine(value){
+  S.maintenanceMachineId = value;
+  renderTab('maintenance');
+}
+
+async function addMachineUi(){
+  const nom = document.getElementById('m-name').value.trim();
+  if(!nom){toast('Nom machine obligatoire', true);return;}
+  try{
+    const r = await api('addMachine',{nom});
+    if(!r.ok){toast('Erreur: '+r.error,true);return;}
+    S.machines.push({_rowIndex:r._rowIndex,id:r.id,nom:r.nom,actif:true});
+    S.maintenanceMachineId = r.id;
+    document.getElementById('m-name').value = '';
+    renderTab('maintenance');
+    toast('Machine ajoutee');
+  }catch(e){toast('Erreur: '+e.message,true);}
+}
+
+async function addMaintenanceUi(){
+  const machineId = document.getElementById('maintenance-machine-select').value;
+  const machineNom = machineNameById(machineId);
+  const dateEntretien = document.getElementById('maint-date').value.trim();
+  const typeMaintenance = document.getElementById('maint-type').value;
+  const entretienRealise = document.getElementById('maint-work').value.trim();
+  const produitsUtilises = document.getElementById('maint-products').value.trim();
+  const problemes = document.getElementById('maint-problems').value.trim();
+  if(!machineId){toast('Choisis une machine', true);return;}
+  if(!dateEntretien){toast('Date entretien obligatoire', true);return;}
+  try{
+    const r = await api('addMaintenance',{machineId,machineNom,dateEntretien,typeMaintenance,entretienRealise,produitsUtilises,problemes});
+    if(!r.ok){toast('Erreur: '+r.error,true);return;}
+    S.maintenanceMachineId = machineId;
+    clearMaintenanceForm();
+    S.loaded.delete('maintenance');
+    await loadAndRender('maintenance');
+    toast('Releve entretien enregistre');
+  }catch(e){toast('Erreur: '+e.message,true);}
+}
+
+function clearMaintenanceForm(){
+  ['maint-work','maint-products','maint-problems'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+}
+
+function startEditMaintenance(rowIndex){ S.editingMaintenance = rowIndex; renderTab('maintenance'); }
+function cancelEditMaintenance(){ S.editingMaintenance = null; renderTab('maintenance'); }
+
+async function saveEditMaintenance(rowIndex){
+  const row = S.maintenanceRows.find(r => r._rowIndex===rowIndex);
+  if(!row) return;
+  const payload = {
+    _rowIndex: rowIndex,
+    machineId: row.machineId,
+    machineNom: row.machineNom,
+    dateEntretien: document.getElementById('edit-maint-date-'+rowIndex).value.trim(),
+    typeMaintenance: document.getElementById('edit-maint-type-'+rowIndex).value,
+    entretienRealise: document.getElementById('edit-maint-work-'+rowIndex).value.trim(),
+    produitsUtilises: document.getElementById('edit-maint-products-'+rowIndex).value.trim(),
+    problemes: document.getElementById('edit-maint-problems-'+rowIndex).value.trim()
+  };
+  try{
+    const r = await api('updateMaintenance', payload);
+    if(!r.ok){toast('Erreur: '+r.error,true);return;}
+    S.editingMaintenance = null;
+    S.loaded.delete('maintenance');
+    await loadAndRender('maintenance');
+    toast('Releve mis a jour');
+  }catch(e){toast('Erreur: '+e.message,true);}
+}
+
+async function deleteMaintenanceUi(rowIndex){
+  if(!confirm('Supprimer ce releve entretien ?')) return;
+  try{
+    const r = await api('deleteMaintenance',{_rowIndex:rowIndex});
+    if(!r.ok){toast('Erreur: '+r.error,true);return;}
+    S.loaded.delete('maintenance');
+    await loadAndRender('maintenance');
+    toast('Releve supprime');
+  }catch(e){toast('Erreur: '+e.message,true);}
+}
+
+function buildMaintenancePrintHtml(label){
+  const css=document.querySelector('style').innerHTML;
+  const body=`<div class="page-section"><div class="print-title">Carnet entretien machines - ${label}</div>${buildMaintenance()}</div>`;
+  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>${label}</title><style>${css} body{background:#fff;} .topbar,.tabs,.add-form,.add-record-form,.cloture-zone,button,.btn{display:none!important;} .table-scroll{overflow:visible!important;} .records-table{font-size:9px!important;width:100%!important;} *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;} @page{size:A4 landscape;margin:8mm;}</style></head><body>${body}\x3cscript\x3ewindow.onload=function(){setTimeout(function(){window.print();setTimeout(function(){window.close();},2000);},600);};<\/script></body></html>`;
+}
+
+async function exportMaintenancePdf(andClear){
+  const label = `Entretien_${(machineNameById(S.maintenanceMachineId)||'toutes').replace(/[^a-zA-Z0-9]/g,'_')}_${new Date().toISOString().slice(0,10)}`;
+  const fullHtml = buildMaintenancePrintHtml(label);
+  const blob=new Blob([fullHtml],{type:'text/html'}),url=URL.createObjectURL(blob),win=window.open(url,'_blank');
+  if(!win){const a=document.createElement('a');a.href=url;a.download=label+'.html';a.click();}
+  if(!andClear) return;
+  if(!confirm('Exporter puis supprimer tous les releves entretien ?')) return;
+  try{
+    const r = await api('clearMaintenance');
+    if(!r.ok){toast('Erreur: '+r.error,true);return;}
+    S.editingMaintenance = null;
+    S.loaded.delete('maintenance');
+    await loadAndRender('maintenance');
+    toast('Carnet entretien cloture');
+  }catch(e){toast('Erreur: '+e.message,true);}
+}
+
+// ----------------------------------------------------------------------------
+//  INVENTAIRE CONGELATEUR
+// ----------------------------------------------------------------------------
+function getFreezerRackOptions(){
+  const positions = [];
+  FREEZER_SIDES.forEach(sideCfg => {
+    for(let rack = 1; rack <= sideCfg.racks; rack++){
+      positions.push(freezerPositionKey(sideCfg.key, rack));
+    }
+  });
+  return [`<option value="">Tous les racks</option>`]
+    .concat(positions.map(pos => `<option value="${esc(pos)}" ${String(S.freezerMeta.filtreRack||'')===String(pos)?'selected':''}>${esc(freezerPositionLabel(pos))}</option>`))
+    .join('');
+}
+
+function freezerItemsFiltered(){
+  const rack = String(S.freezerMeta.filtreRack || '').trim();
+  const search = String(S.freezerSearch || '').trim().toLowerCase();
+  return S.freezerItems.filter(i => {
+    if(rack && !freezerPositionKeysForItem(i).includes(rack)) return false;
+    if(search){
+      const haystack = `${String(i.produit||'')} ${freezerPlacementSummary(i)}`.toLowerCase();
+      if(!haystack.includes(search)) return false;
+    }
+    return true;
+  });
+}
+
+function freezerSideLabel(side){
+  if(side==='droite') return 'Cote droit';
+  if(side==='gauche') return 'Cote gauche';
+  return 'Cote non defini';
+}
+
+function freezerPositionKey(side, rack){
+  const cote = String(side || '').trim().toLowerCase();
+  const rackNum = String(rack || '').trim();
+  if(!cote || !rackNum) return '';
+  return `${cote}-${rackNum}`;
+}
+
+function freezerPositionSort(a, b){
+  const order = { gauche: 0, droite: 1 };
+  const [sideA, rackA] = String(a || '').split('-');
+  const [sideB, rackB] = String(b || '').split('-');
+  if((order[sideA] ?? 9) !== (order[sideB] ?? 9)) return (order[sideA] ?? 9) - (order[sideB] ?? 9);
+  return Number(rackA || 0) - Number(rackB || 0);
+}
+
+function freezerPositionLabel(position){
+  const [side, rack] = String(position || '').split('-');
+  if(!side || !rack) return 'Rack non defini';
+  return `${freezerSideLabel(side)} - Rack ${rack}`;
+}
+
+function normalizeFreezerItem(item){
+  let placements = parseFreezerPlacements(item.emplacements);
+  if(!placements.length){
+    const cote = String(item.cote || '').trim().toLowerCase();
+    const rack = String(item.rack || '').trim();
+    let etages = Number(item.etages || 1);
+    if(Number.isFinite(etages) && etages > 0 && cote && rack){
+      if(etages > FREEZER_LEVEL_COUNT) etages = FREEZER_LEVEL_COUNT;
+      placements = [{ cote, rack, etages:Array.from({length:etages}, (_,i)=>i+1) }];
+    }
+  }
+  return Object.assign({}, item, {
+    placements,
+    emplacements: serializeFreezerPlacements(placements)
+  });
+}
+
+function parseFreezerPlacements(value){
+  return String(value || '')
+    .split(';')
+    .map(part => part.trim())
+    .filter(Boolean)
+    .map(part => {
+      const match = part.match(/^(gauche|droite)-(\d+)\[([\d,]+)\]$/i);
+      if(!match) return null;
+      const levels = String(match[3] || '')
+        .split(',')
+        .map(v => Number(v.trim()))
+        .filter(v => Number.isFinite(v) && v >= 1 && v <= FREEZER_LEVEL_COUNT);
+      if(!levels.length) return null;
+      return { cote:match[1].toLowerCase(), rack:String(match[2]), etages:Array.from(new Set(levels)).sort((a,b)=>a-b) };
+    })
+    .filter(Boolean)
+    .sort((a,b)=>freezerPositionSort(freezerPositionKey(a.cote, a.rack), freezerPositionKey(b.cote, b.rack)));
+}
+
+function serializeFreezerPlacements(placements){
+  return (placements || [])
+    .map(p => {
+      const levels = Array.from(new Set((p.etages || []).map(v => Number(v)).filter(v => Number.isFinite(v) && v >= 1 && v <= FREEZER_LEVEL_COUNT))).sort((a,b)=>a-b);
+      if(!p.cote || !p.rack || !levels.length) return '';
+      return `${p.cote}-${p.rack}[${levels.join(',')}]`;
+    })
+    .filter(Boolean)
+    .join(';');
+}
+
+function freezerPositionKeysForItem(item){
+  return (item.placements || []).map(p => freezerPositionKey(p.cote, p.rack)).filter(Boolean);
+}
+
+function freezerItemOccupiesLevel(item, side, rack, level){
+  return (item.placements || []).some(p => String(p.cote)===String(side) && String(p.rack)===String(rack) && (p.etages || []).includes(level));
+}
+
+function freezerItemsForRack(side, rack){
+  return S.freezerItems.filter(it => freezerItemOccupiesRack(it, side, rack));
+}
+
+function freezerItemOccupiesRack(item, side, rack){
+  return (item.placements || []).some(p => String(p.cote)===String(side) && String(p.rack)===String(rack));
+}
+
+function freezerItemsForLevel(side, rack, level){
+  return S.freezerItems.filter(it => freezerItemOccupiesLevel(it, side, rack, level));
+}
+
+function freezerPlacementSummary(item){
+  return (item.placements || []).map(p => `${freezerSideLabel(p.cote)} - Rack ${p.rack} (${(p.etages || []).join(',')})`).join(' | ');
+}
+
+function freezerSearchLabel(item){
+  return `${item.produit} | ${freezerPlacementSummary(item)}`;
+}
+
+function getFreezerProductSearchOptions(){
+  const labels = Array.from(new Set(S.freezerItems.map(item => freezerSearchLabel(item)).filter(Boolean))).sort((a,b)=>a.localeCompare(b,'fr',{sensitivity:'base'}));
+  return labels.map(label => `<option value="${esc(label)}"></option>`).join('');
+}
+
+function updateFreezerSearch(value){
+  S.freezerSearch = value;
+  renderTab('freezer');
+}
+
+function buildFreezerPlacementPicker(){
+  const filter = String(S.freezerMeta.filtreRack || '').trim();
+  if(!filter){
+    return `<div style="padding:14px;border:1px dashed #cfe4e8;border-radius:10px;background:#F8FCFD;color:#4f6b72;font-size:13px">Choisis d'abord un filtre rack au-dessus pour afficher uniquement le rack a remplir.</div>`;
+  }
+  const [side, rack] = filter.split('-');
+  let levelChecks = '';
+  for(let level = FREEZER_LEVEL_COUNT; level >= 1; level--){
+    levelChecks += `<label style="display:flex;align-items:center;gap:8px;font-size:14px;color:#444"><input type="checkbox" ${freezerDraftHasLevel(side, rack, level)?'checked':''} onchange="toggleFreezerDraftPlacement('${side}','${rack}',${level},this.checked)"> Etage ${level}</label>`;
+  }
+  return `<div style="border:1px solid #dceff3;border-radius:12px;padding:14px;background:#fff;max-width:420px">
+    <div style="font-size:13px;font-weight:700;color:#0f4f5c;margin-bottom:6px">${freezerPositionLabel(filter)}</div>
+    <div style="font-size:12px;color:#666;margin-bottom:10px">Coche les etages pour ce rack, puis change de filtre rack si tu veux en ajouter un autre a la meme reference.</div>
+    <div style="display:grid;gap:10px">${levelChecks}</div>
+  </div>`;
+}
+
+function freezerDraftHasLevel(side, rack, level){
+  return (S.freezerDraft.placements || []).some(p => String(p.cote)===String(side) && String(p.rack)===String(rack) && (p.etages || []).includes(level));
+}
+
+function toggleFreezerDraftPlacement(side, rack, level, checked){
+  const placements = (S.freezerDraft.placements || []).map(p => ({ cote:p.cote, rack:p.rack, etages:[...(p.etages || [])] }));
+  const idx = placements.findIndex(p => String(p.cote)===String(side) && String(p.rack)===String(rack));
+  if(idx < 0 && checked){
+    placements.push({ cote:side, rack:String(rack), etages:[level] });
+  } else if(idx >= 0){
+    const levels = new Set(placements[idx].etages || []);
+    if(checked) levels.add(level);
+    else levels.delete(level);
+    placements[idx].etages = Array.from(levels).sort((a,b)=>a-b);
+    if(!placements[idx].etages.length) placements.splice(idx,1);
+  }
+  S.freezerDraft.placements = placements.sort((a,b)=>freezerPositionSort(freezerPositionKey(a.cote, a.rack), freezerPositionKey(b.cote, b.rack)));
+  renderTab('freezer');
+}
+
+function updateFreezerDraftProduct(value){
+  S.freezerDraft.produit = value;
+}
+
+function buildFreezerDraftSummary(){
+  const placements = S.freezerDraft.placements || [];
+  if(!placements.length){
+    return `<div style="font-size:12px;color:#777">Aucun rack selectionne pour cette reference.</div>`;
+  }
+  return `<div style="display:grid;gap:6px">${placements.map(p => `<div style="font-size:12px;color:#0f4f5c;background:#F1F8FA;border:1px solid #dceff3;border-radius:999px;padding:6px 10px;display:inline-block;width:max-content">${esc(freezerSideLabel(p.cote))} - Rack ${esc(p.rack)} : etage${p.etages.length>1?'s':''} ${esc(p.etages.join(', '))}</div>`).join('')}</div>`;
+}
+
+function startEditFreezerItem(id){
+  const row = S.freezerItems.find(i => i.id === id);
+  if(!row) return;
+  S.editingFreezerId = id;
+  S.freezerDraft = {
+    produit: row.produit || '',
+    placements: (row.placements || []).map(p => ({ cote:p.cote, rack:p.rack, etages:[...(p.etages || [])] }))
+  };
+  const firstRack = freezerPositionKeysForItem(row)[0] || '';
+  if(firstRack) S.freezerMeta.filtreRack = firstRack;
+  renderTab('freezer');
+}
+
+function cancelEditFreezerItem(){
+  S.editingFreezerId = null;
+  S.freezerDraft = { produit:'', placements:[] };
+  renderTab('freezer');
+}
+
+function buildFreezer(){
+  const rows = freezerItemsFiltered();
+  const checkedCount = S.freezerItems.filter(i => i.checked).length;
+  const isEditing = !!S.editingFreezerId;
+  let html = `<div class="releve-page-header">
+    <div><div class="releve-title">Inventaire congelateur</div><div class="releve-subtitle">Verification des racks et cases a cocher par produit</div></div>
+    <span class="releve-count">${checkedCount}/${S.freezerItems.length} coches</span>
+  </div>
+  <div class="add-record-form">
+    <h3>Dates de verification</h3>
+    <div class="form-grid">
+      <div class="form-group"><label>Date debut</label><input type="text" id="fz-date-start" value="${esc(S.freezerMeta.dateDebut||'')}" placeholder="JJ/MM/AAAA HH:MM"></div>
+      <div class="form-group"><label>Date fin</label><input type="text" id="fz-date-end" value="${esc(S.freezerMeta.dateFin||'')}" placeholder="JJ/MM/AAAA HH:MM"></div>
+      <div class="form-group"><label>Filtre rack</label><select id="fz-filter" onchange="changeFreezerFilter(this.value)">${getFreezerRackOptions()}</select></div>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-primary" onclick="saveFreezerMetaUi()">Enregistrer les dates</button>
+    </div>
+  </div>
+  <div class="add-record-form">
+    <h3>${isEditing ? 'Modifier un produit' : 'Ajouter un produit a verifier'}</h3>
+    <div class="form-grid">
+      <div class="form-group"><label>Produit</label><input type="text" id="fz-product" value="${esc(S.freezerDraft.produit||'')}" oninput="updateFreezerDraftProduct(this.value)" placeholder="Ex: Sorbet framboise"></div>
+      <div class="form-group full"><label>Selection des racks / etages</label>${buildFreezerPlacementPicker()}<div style="font-size:12px;color:#666;margin-top:8px">Tu vois uniquement le rack filtre. Pour une meme reference, tu peux changer de filtre rack et continuer ta selection.</div></div>
+      <div class="form-group full"><label>Selection en cours</label>${buildFreezerDraftSummary()}</div>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-primary" onclick="addFreezerItemUi()">${isEditing ? 'Mettre a jour' : 'Ajouter'}</button>
+      <button class="btn" style="background:#f5f5f5;color:#555" onclick="${isEditing ? 'cancelEditFreezerItem()' : 'clearFreezerForm()'}">${isEditing ? 'Annuler' : 'Effacer'}</button>
+    </div>
+  </div>
+  <div class="add-record-form">
+    <h3>Recherche inventaire</h3>
+    <div class="form-grid">
+      <div class="form-group full"><label>Produit / emplacement</label><input type="text" id="fz-search" list="fz-product-search-list" value="${esc(S.freezerSearch||'')}" oninput="updateFreezerSearch(this.value)" placeholder="Ex: Sorbet framboise | Cote gauche - Rack 12 (1,2)"><datalist id="fz-product-search-list">${getFreezerProductSearchOptions()}</datalist></div>
+    </div>
+  </div>
+  <div class="records-table-wrap">`;
+  if(rows.length===0){
+    html += `<div class="records-empty">Aucun produit sur le filtre actuel.</div>`;
+  } else {
+    html += `<div class="table-scroll"><table class="records-table"><thead><tr>
+      <th>OK</th><th>Produit</th><th>Emplacements</th><th style="width:80px">Actions</th>
+    </tr></thead><tbody>`;
+    rows.forEach(row => {
+      html += `<tr>
+        <td style="text-align:center"><input type="checkbox" ${row.checked?'checked':''} onchange="toggleFreezerCheck('${row.id}',this.checked)"></td>
+        <td style="font-weight:600">${esc(row.produit)}</td>
+        <td>${esc(freezerPlacementSummary(row))}</td>
+        <td class="td-actions-col"><button class="btn-row-edit" onclick="startEditFreezerItem('${row.id}')">Edit</button> <button class="btn-row-del" onclick="deleteFreezerItemUi('${row.id}')">Del</button></td>
+      </tr>`;
+    });
+    html += `</tbody></table></div>`;
+  }
+  html += `</div>
+  <div class="records-table-wrap" style="margin-top:16px;padding:16px">
+    <div style="font-size:14px;font-weight:700;color:var(--teal-dark);margin-bottom:10px">Vue du congelateur</div>
+    ${buildFreezerLayout()}
+  </div>
+  <div class="cloture-zone" style="margin-top:16px;padding:16px;background:#FFF3E0;border-radius:12px;border-left:4px solid #E65100;">
+    <div style="font-size:13px;font-weight:700;color:#E65100;margin-bottom:4px">Cloture inventaire congelateur</div>
+    <div style="font-size:12px;color:#555;margin-bottom:12px">Export PDF ou export puis remise a zero des cases cochees. Les emplacements produits restent en place.</div>
+    <div class="form-actions">
+      <button class="btn" style="background:#E65100;color:#fff" onclick="exportFreezerPdf(false)">Exporter PDF</button>
+      <button class="btn" style="background:#BF360C;color:#fff" onclick="exportFreezerPdf(true)">Exporter + cloturer</button>
+    </div>
+  </div>`;
+  return html;
+}
+
+function buildFreezerLayout(){
+  return `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px">${FREEZER_SIDES.map(sideCfg => {
+    let racks = '';
+    for(let rack = 1; rack <= sideCfg.racks; rack++){
+      const items = freezerItemsForRack(sideCfg.key, rack);
+      const checked = items.length > 0 && items.every(it => it.checked);
+      const filteredOut = S.freezerMeta.filtreRack && freezerPositionKey(sideCfg.key, rack) !== String(S.freezerMeta.filtreRack);
+      let shelves = '';
+      for(let level = FREEZER_LEVEL_COUNT; level >= 1; level--){
+        const levelItems = freezerItemsForLevel(sideCfg.key, rack, level);
+        shelves += `<div style="border:1px solid #dceff3;border-radius:8px;padding:8px;background:${levelItems.length?'#F8FCFD':'#fff'}">
+          <div style="font-size:11px;font-weight:700;color:#1B6B7B;margin-bottom:5px">${level}e etage</div>
+          <div style="font-size:11px;color:#555">${levelItems.length ? levelItems.map(it => `<label style="display:block;margin-bottom:4px"><input type="checkbox" ${it.checked?'checked':''} onchange="toggleFreezerCheck('${it.id}',this.checked)"> ${esc(it.produit)}</label>`).join('') : 'Libre'}</div>
+        </div>`;
+      }
+      racks += `<div style="border:1px solid #cfe4e8;border-radius:12px;padding:12px;background:${checked?'#E8F5E9':'#fff'};opacity:${filteredOut?'0.35':'1'}">
+        <div style="font-size:13px;font-weight:700;color:#0f4f5c;margin-bottom:8px">Rack ${rack}</div>
+        <div style="display:grid;gap:8px">${shelves}</div>
+      </div>`;
+    }
+    return `<div>
+      <div style="font-size:14px;font-weight:700;color:#0f4f5c;margin-bottom:10px">${sideCfg.title}</div>
+      <div style="display:grid;gap:10px">${racks}</div>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+function clearFreezerForm(){
+  S.editingFreezerId = null;
+  S.freezerDraft = { produit:'', placements:[] };
+  renderTab('freezer');
+}
+
+function changeFreezerFilter(value){
+  S.freezerMeta.filtreRack = value;
+  saveFreezerMetaUi(true);
+  renderTab('freezer');
+}
+
+async function saveFreezerMetaUi(skipRender){
+  S.freezerMeta.dateDebut = document.getElementById('fz-date-start')?.value.trim() || S.freezerMeta.dateDebut || '';
+  S.freezerMeta.dateFin = document.getElementById('fz-date-end')?.value.trim() || S.freezerMeta.dateFin || '';
+  S.freezerMeta.filtreRack = document.getElementById('fz-filter')?.value || S.freezerMeta.filtreRack || '';
+  try{
+    const r = await api('saveFreezerMeta', S.freezerMeta);
+    if(!r.ok){toast('Erreur: '+r.error,true);return;}
+    if(!skipRender) toast('Meta congelateur enregistree');
+  }catch(e){toast('Erreur: '+e.message,true);}
+}
+
+async function addFreezerItemUi(){
+  const produit = String(S.freezerDraft.produit || '').trim();
+  const placements = S.freezerDraft.placements || [];
+  if(!produit || !placements.length){toast('Produit et au moins un emplacement obligatoires', true);return;}
+  try{
+    const editingRow = S.editingFreezerId ? S.freezerItems.find(i => i.id===S.editingFreezerId) : null;
+    const payload = editingRow
+      ? { _rowIndex:editingRow._rowIndex, id:editingRow.id, produit, emplacements:serializeFreezerPlacements(placements), checked:editingRow.checked }
+      : { produit, emplacements:serializeFreezerPlacements(placements), checked:false };
+    const r = await api(editingRow ? 'updateFreezerItem' : 'addFreezerItem', payload);
+    if(!r.ok){toast('Erreur: '+r.error,true);return;}
+    S.editingFreezerId = null;
+    S.freezerDraft = { produit:'', placements:[] };
+    S.loaded.delete('freezer');
+    await loadAndRender('freezer');
+    toast(editingRow ? 'Produit mis a jour' : 'Produit ajoute dans le congelateur');
+  }catch(e){toast('Erreur: '+e.message,true);}
+}
+
+async function toggleFreezerCheck(id, checked){
+  const row = S.freezerItems.find(i => i.id===id);
+  if(!row) return;
+  const payload = Object.assign({}, row, { checked });
+  try{
+    const r = await api('updateFreezerItem', payload);
+    if(!r.ok){toast('Erreur: '+r.error,true);return;}
+    row.checked = checked;
+    renderTab('freezer');
+  }catch(e){toast('Erreur: '+e.message,true);}
+}
+
+async function deleteFreezerItemUi(id){
+  if(!confirm('Supprimer ce produit du congelateur ?')) return;
+  const row = S.freezerItems.find(i => i.id===id);
+  if(!row) return;
+  try{
+    const r = await api('deleteFreezerItem',{_rowIndex:row._rowIndex});
+    if(!r.ok){toast('Erreur: '+r.error,true);return;}
+    if(S.editingFreezerId === id){
+      S.editingFreezerId = null;
+      S.freezerDraft = { produit:'', placements:[] };
+    }
+    S.loaded.delete('freezer');
+    await loadAndRender('freezer');
+    toast('Produit supprime');
+  }catch(e){toast('Erreur: '+e.message,true);}
+}
+
+function buildFreezerPrintHtml(label){
+  const css=document.querySelector('style').innerHTML;
+  const body=`<div class="page-section"><div class="print-title">Inventaire congelateur - ${label}</div>${buildFreezer()}</div>`;
+  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>${label}</title><style>${css} body{background:#fff;} .topbar,.tabs,.add-form,.add-record-form,.cloture-zone,button,.btn{display:none!important;} .table-scroll{overflow:visible!important;} .records-table{font-size:9px!important;width:100%!important;} *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;} @page{size:A4 landscape;margin:8mm;}</style></head><body>${body}\x3cscript\x3ewindow.onload=function(){setTimeout(function(){window.print();setTimeout(function(){window.close();},2000);},600);};<\/script></body></html>`;
+}
+
+async function exportFreezerPdf(andClear){
+  await saveFreezerMetaUi(true);
+  const label = `Congelateur_${new Date().toISOString().slice(0,10)}`;
+  const fullHtml = buildFreezerPrintHtml(label);
+  const blob=new Blob([fullHtml],{type:'text/html'}),url=URL.createObjectURL(blob),win=window.open(url,'_blank');
+  if(!win){const a=document.createElement('a');a.href=url;a.download=label+'.html';a.click();}
+  if(!andClear) return;
+  if(!confirm('Exporter puis remettre a zero uniquement les cases cochees ? Les emplacements produits resteront en place.')) return;
+  try{
+    const r = await api('resetFreezerChecks');
+    if(!r.ok){toast('Erreur: '+r.error,true);return;}
+    S.loaded.delete('freezer');
+    await loadAndRender('freezer');
+    toast('Cases inventaire remises a zero');
+  }catch(e){toast('Erreur: '+e.message,true);}
+}
+
 //  BUILD HEBDO
 // ════════════════════════════════════════════════════════════════════
 function buildHebdo(tabId){
@@ -1261,10 +2275,11 @@ function buildBiannuel(){
 // ════════════════════════════════════════════════════════════════════
 function buildTempNeg(app){
   const key=app.id;if(!S.appChecks[key])S.appChecks[key]={};
+  const meta=S.meta[key]||{};
   const days=Array.from({length:31},(_,i)=>i+1);let total=0,checked=0;
   TEMPS_NEG.forEach(t=>days.forEach(d=>['AM','PM'].forEach(slot=>{total++;if(S.appChecks[key][t+'__'+d+'__'+slot])checked++;})));
   const pct=total>0?Math.round(checked/total*100):0;
-  let html=`<div class="meta-row"><span style="font-size:14px;font-weight:700;color:#1565C0">❄️ ${esc(app.nom)}</span><label>Mois/Année :</label><input type="month" value="${new Date().toISOString().slice(0,7)}" id="meta-m-${key}"><label>Visa :</label><input type="text" style="width:80px" id="meta-v-${key}" placeholder="Initiales"><button class="btn btn-primary btn-sm" onclick="saveAppMeta('${key}')">💾 Enregistrer</button></div>
+  let html=`<div class="meta-row"><span style="font-size:14px;font-weight:700;color:#1565C0">❄️ ${esc(app.nom)}</span><label>Mois/Année :</label><input type="month" value="${meta.moisAnnee||new Date().toISOString().slice(0,7)}" id="meta-m-${key}"><label>Visa :</label><input type="text" style="width:80px" id="meta-v-${key}" placeholder="Initiales" value="${esc(meta.visa||'')}"><button class="btn btn-primary btn-sm" onclick="saveAppMeta('${key}')">💾 Enregistrer</button></div>
   <div class="meta-row" style="background:#FFF3E0"><span style="font-size:12px;font-weight:700;color:#E65100">✗ alerte ≥ −15°C &nbsp;|&nbsp; ✓ cible ≤ −18°C</span></div>
   <div class="progress-zone"><div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:#1565C0"></div></div><div class="progress-label">${checked}/${total} (${pct}%)</div></div>
   <div class="table-scroll"><table class="temp-table"><thead>
@@ -1283,10 +2298,11 @@ function buildTempNeg(app){
 
 function buildTempMat(app){
   const key=app.id;if(!S.appChecks[key])S.appChecks[key]={};
+  const meta=S.meta[key]||{};
   const days=Array.from({length:31},(_,i)=>i+1);let total=0,checked=0;
   TEMPS_MAT.forEach(t=>days.forEach(d=>{total++;if(S.appChecks[key][t+'__'+d])checked++;}));
   const pct=total>0?Math.round(checked/total*100):0;
-  let html=`<div class="meta-row"><span style="font-size:14px;font-weight:700;color:#00695C">🧪 ${esc(app.nom)}</span><label>Année/Mois :</label><input type="month" value="${new Date().toISOString().slice(0,7)}" id="meta-m-${key}"><label>Visa :</label><input type="text" style="width:80px" id="meta-v-${key}" placeholder="Initiales"><button class="btn btn-primary btn-sm" onclick="saveAppMeta('${key}')">💾 Enregistrer</button></div>
+  let html=`<div class="meta-row"><span style="font-size:14px;font-weight:700;color:#00695C">🧪 ${esc(app.nom)}</span><label>Année/Mois :</label><input type="month" value="${meta.moisAnnee||new Date().toISOString().slice(0,7)}" id="meta-m-${key}"><label>Visa :</label><input type="text" style="width:80px" id="meta-v-${key}" placeholder="Initiales" value="${esc(meta.visa||'')}"><button class="btn btn-primary btn-sm" onclick="saveAppMeta('${key}')">💾 Enregistrer</button></div>
   <div class="meta-row" style="background:#E0F2F1"><span style="font-size:12px;font-weight:700;color:#004D40">✓ cible ≤ 4°C &nbsp;|&nbsp; ✗ alerte ≥ 6°C</span></div>
   <div class="progress-zone"><div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:#00695C"></div></div><div class="progress-label">${checked}/${total} (${pct}%)</div></div>
   <div class="table-scroll"><table class="temp-table"><thead><tr style="background:#00695C;color:#fff"><th class="t-label" style="background:#004D40">T°</th>${days.map(d=>`<th style="min-width:28px">${d}</th>`).join('')}</tr></thead><tbody>`;
@@ -1357,7 +2373,7 @@ function togglePh(cb,inputId){const el=document.getElementById(inputId);if(!el)r
 async function savePh(tabId,idx,day,val){const key='ph__i'+idx+'__'+day;if(!S.checks[tabId])S.checks[tabId]={};S.checks[tabId][key]=val;try{await api('saveHebdo',{sheetName:SHEET_NAMES[tabId],itemName:'ph__i'+idx,day,value:val});}catch(e){toast('❌ '+e.message,true);}}
 async function saveComment(tabId){const el=document.getElementById('cmt-'+tabId);if(!el)return;S.comments[tabId]=el.value;const sn=tabId==='biannuel'?'Fréquences Bi-Annuelles':SHEET_NAMES[tabId];try{await api('saveComment',{sheetName:sn,comment:el.value});toast('💾 Commentaire enregistré');}catch(e){toast('❌ '+e.message,true);}}
 async function saveAppComment(appId){const el=document.getElementById('cmt-app-'+appId);if(!el)return;S.comments['app_'+appId]=el.value;try{await api('saveAppareilComment',{appareilId:appId,comment:el.value});toast('💾 Enregistré');}catch(e){toast('❌ '+e.message,true);}}
-async function saveAppMeta(appId){const m=document.getElementById('meta-m-'+appId)?.value||'',v=document.getElementById('meta-v-'+appId)?.value||'';try{await api('saveAppareilMeta',{appareilId:appId,moisAnnee:m,visa:v});toast('💾 Méta enregistrée');}catch(e){toast('❌ '+e.message,true);}}
+async function saveAppMeta(appId){const m=document.getElementById('meta-m-'+appId)?.value||'',v=document.getElementById('meta-v-'+appId)?.value||'';S.meta[appId]={moisAnnee:m,visa:v};try{await api('saveAppareilMeta',{appareilId:appId,moisAnnee:m,visa:v});toast('💾 Méta enregistrée');}catch(e){toast('❌ '+e.message,true);}}
 async function ajouterAppareil(){const nom=document.getElementById('new-nom').value.trim(),type=document.getElementById('new-type').value;if(!nom){toast('⚠️ Entrez un nom',true);return;}try{const app=await api('addAppareil',{nom,type});S.appareils.push(app);document.getElementById('new-nom').value='';updateAppareilsTabs();renderTab('temp-manager');toast('✅ '+app.nom+' créé !');}catch(e){toast('❌ '+e.message,true);}}
 async function dupApp(id){try{const app=await api('dupliquerAppareil',{sourceId:id});S.appareils.push(app);updateAppareilsTabs();renderTab('temp-manager');toast('✅ Dupliqué : '+app.nom);}catch(e){toast('❌ '+e.message,true);}}
 function startRen(id){S.renaming[id]=true;renderTab('temp-manager');setTimeout(()=>document.getElementById('ren-'+id)?.focus(),50);}
@@ -1410,17 +2426,10 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-function showUpdateBanner(worker) {
-  _newWorker = worker;
-  document.getElementById('update-banner').classList.add('show');
-}
+function showUpdateBanner() {}
 
 function applyUpdate() {
-  if (_newWorker) {
-    _newWorker.postMessage('SKIP_WAITING');
-  } else {
-    window.location.reload();
-  }
+  window.location.reload();
 }
 
 // ════════════════════════════════════════════════════════════════════
