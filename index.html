@@ -481,10 +481,19 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f4f8;color:#333;font-
       <div class="sidebar-item" data-tab="prelevements" onclick="sidebarNav('prelevements',this)"><span class="si-icon">🔬</span> Prélèvements</div>
       <div class="sidebar-item" data-tab="pesees" onclick="sidebarNav('pesees',this)"><span class="si-icon">⚖️</span> Pesées</div>
       <div class="sidebar-section-title">Températures</div>
-      <div class="sidebar-item" data-tab="temp-manager" onclick="sidebarNav('temp-manager',this)"><span class="si-icon">⚙️</span> Appareils <span class="si-badge" id="badge-app-sidebar">0</span></div>
-      <div class="sidebar-item" data-tab="maintenance" onclick="sidebarNav('maintenance',this)"><span class="si-icon">M</span> Entretien machines</div>
-      <div class="sidebar-item" data-tab="freezer" onclick="sidebarNav('freezer',this)"><span class="si-icon">F</span> Inventaire congelateur</div>
-      <div id="sidebar-appareils"></div>
+<div class="sidebar-item" data-tab="temp-manager" onclick="sidebarNav('temp-manager',this)">
+  <span class="si-icon">🌡️</span> Appareils
+  <span class="si-badge" id="badge-app-sidebar">0</span>
+</div>
+<div id="sidebar-appareils"></div>
+
+<div class="sidebar-section-title">Suivi & Maintenance</div>
+<div class="sidebar-item" data-tab="maintenance" onclick="sidebarNav('maintenance',this)">
+  <span class="si-icon">⚙️</span> Entretien machines
+</div>
+<div class="sidebar-item" data-tab="freezer" onclick="sidebarNav('freezer',this)">
+  <span class="si-icon">🧊</span> Inventaire congélateur
+</div>
      <div class="sidebar-section-title">Administration</div>
 <div class="sidebar-item" data-tab="elog" onclick="sidebarNav('elog',this)">
   <span class="si-icon">📋</span> Journal E-Log
@@ -503,8 +512,8 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f4f8;color:#333;font-
     <div class="tab" data-tab="biannuel" onclick="switchTab('biannuel',this)">📅 Bi-Ann.</div>
     <div class="tab" data-tab="prelevements" onclick="switchTab('prelevements',this)">🔬 Prélèv.</div>
     <div class="tab" data-tab="pesees" onclick="switchTab('pesees',this)">⚖️ Pesées</div>
-    <div class="tab" data-tab="maintenance" onclick="switchTab('maintenance',this)">Machines</div>
-    <div class="tab" data-tab="freezer" onclick="switchTab('freezer',this)">Congelateur</div>
+    <div class="tab" data-tab="maintenance" onclick="switchTab('maintenance',this)">🛠️ Machines</div>
+    <div class="tab" data-tab="freezer" onclick="switchTab('freezer',this)">🧊 Congelateur</div>
     <div class="tab-div"></div>
     <div class="tab" data-tab="temp-manager" onclick="switchTab('temp-manager',this)">⚙️ Appareils <span class="badge" id="badge-app">0</span></div>
     <div class="tab" data-tab="elog" onclick="switchTab('elog',this)">📋 E-Log</div>
